@@ -104,7 +104,7 @@ func TestClosedCheckKindSet(t *testing.T) {
 func TestClosedValuesExposeSortedValidatorSets(t *testing.T) {
 	values := ClosedValues()
 	checks := [][]string{
-		values.HostIDs, values.EnvironmentKinds, values.Purposes, values.Capabilities,
+		values.EnvironmentKinds, values.Purposes, values.Capabilities,
 		values.SupervisorKinds, values.RelationKinds, values.CheckKinds,
 	}
 	for _, got := range checks {
@@ -112,19 +112,12 @@ func TestClosedValuesExposeSortedValidatorSets(t *testing.T) {
 			t.Fatalf("closed values are not sorted: %v", got)
 		}
 	}
-	if !reflect.DeepEqual(values.HostIDs, []string{"amd", "arm", "local"}) {
-		t.Fatalf("host ids: %v", values.HostIDs)
-	}
-	values.HostIDs[0] = "mutated"
-	if ClosedValues().HostIDs[0] != "amd" {
-		t.Fatal("ClosedValues returned mutable validator storage")
-	}
 }
 
 func TestValidateManifestDetailedAggregatesIndependentFindings(t *testing.T) {
 	raw := runtimeFixtureRaw(t)
 	text := string(raw)
-	text = strings.Replace(text, "  host_id: local\n", "  host_id: local-linux\n", 1)
+	text = strings.Replace(text, "  host_id: local\n", "  host_id: Local Linux\n", 1)
 	text = strings.Replace(text, "  kind: workspace\n", "  kind: virtual_machine\n", 1)
 	text = strings.Replace(text, "  purpose: source_development\n", "  purpose: coding\n", 1)
 	text = strings.Replace(text, "  workdir: /workspace/demo\n", "  workdir: workspace/demo\n", 1)
@@ -202,7 +195,7 @@ func TestValidateManifestDetailedDoesNotEchoForbiddenSecretValue(t *testing.T) {
 
 func TestValidateManifestCompatibilityUsesFirstDetailedFinding(t *testing.T) {
 	raw := runtimeFixtureRaw(t)
-	text := strings.Replace(string(raw), "  host_id: local\n", "  host_id: local-linux\n", 1)
+	text := strings.Replace(string(raw), "  host_id: local\n", "  host_id: Local Linux\n", 1)
 	err := ValidateManifest([]byte(text), "demo")
 	if err == nil || !strings.HasPrefix(err.Error(), "runtime_host_id:") {
 		t.Fatalf("unexpected compatibility error: %v", err)
@@ -216,7 +209,7 @@ func TestValidateManifestDetailedMatchesStrictParser(t *testing.T) {
 		mutate func(string) string
 	}{
 		{name: "valid", mutate: func(s string) string { return s }},
-		{name: "host", mutate: func(s string) string { return strings.Replace(s, "  host_id: local\n", "  host_id: local-linux\n", 1) }},
+		{name: "host", mutate: func(s string) string { return strings.Replace(s, "  host_id: local\n", "  host_id: Local Linux\n", 1) }},
 		{name: "environment kind", mutate: func(s string) string {
 			return strings.Replace(s, "  kind: workspace\n", "  kind: virtual_machine\n", 1)
 		}},
@@ -274,6 +267,43 @@ func TestValidateManifestDetailedMatchesStrictParser(t *testing.T) {
 				t.Fatalf("validator/parser divergence: detailed_valid=%v strict_valid=%v detailed=%#v strict_err=%v", report.Valid, strictValid, report.Errors, strictErr)
 			}
 		})
+	}
+}
+
+func TestSingleEnvironmentDefaultsIDAndHostIsOptionalUserDefined(t *testing.T) {
+	raw := runtimeFixtureRaw(t)
+	text := string(raw)
+	text = strings.Replace(text, "- environment_id: local-workspace\n  host_id: local\n", "- host_id: laptop\n", 1)
+	// Keep the fixture single-environment so omission is unambiguous.
+	cut := strings.Index(text, "- environment_id: arm-production\n")
+	if cut < 0 {
+		t.Fatal("second environment fixture not found")
+	}
+	relations := strings.Index(text, "relations:\n")
+	if relations < cut {
+		t.Fatal("relations fixture not found")
+	}
+	text = text[:cut] + text[relations:]
+	text = strings.Replace(text, "relations:\n- kind: deploys_to\n  from: local-workspace\n  to: arm-production\n", "relations: []\n", 1)
+	report := ValidateManifestDetailed([]byte(text), "demo")
+	if !report.Valid {
+		t.Fatalf("single environment shorthand rejected: %#v", report.Errors)
+	}
+	manifest, err := parseManifest([]byte(text), "demo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(manifest.Environments) != 1 || manifest.Environments[0]["environment_id"] != "default" || manifest.Environments[0]["host_id"] != "laptop" {
+		t.Fatalf("normalized environment: %#v", manifest.Environments)
+	}
+}
+
+func TestMultiEnvironmentRequiresExplicitEnvironmentIDs(t *testing.T) {
+	raw := runtimeFixtureRaw(t)
+	text := strings.Replace(string(raw), "- environment_id: local-workspace\n", "- ", 1)
+	report := ValidateManifestDetailed([]byte(text), "demo")
+	if report.Valid {
+		t.Fatal("multi-environment manifest accepted missing environment_id")
 	}
 }
 

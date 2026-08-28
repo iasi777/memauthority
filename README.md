@@ -272,7 +272,7 @@ Pruning an item from active memory does not erase it from Git history. However, 
 V-Memory requires Git and Go 1.26.5 or later. Install the current stable release with:
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/v-memory@v1.1.0
+go install github.com/iasi777/v-memory/cmd/v-memory@v1.2.0
 ```
 
 Make sure your Go binary directory is on `PATH`, then verify the installation:
@@ -284,7 +284,7 @@ v-memory version
 Expected output:
 
 ```text
-v-memory 1.1.0
+v-memory 1.2.0
 ```
 
 No prebuilt release binaries are currently published. To build from a source checkout instead:
@@ -294,7 +294,7 @@ go build -trimpath -o ./v-memory ./cmd/v-memory
 ./v-memory version
 ```
 
-Release CI verifies the production Linux/ARM64 build. Other environments should build from source and run the project test suite before production use.
+Release CI runs the test suite, vet, and native CLI build on Linux, macOS, and Windows; Linux CI also verifies the production Linux/ARM64 target.
 
 ---
 
@@ -325,7 +325,8 @@ v-memory serve \
 
 - Omitting `--write-enabled` runs the service in **read-only mode**;
 - `state-dir` must be located outside the Vault Authority directory;
-- Do not mix Detached mode (direct file edits) and Managed mode (running service) concurrently.
+- Do not mix Detached mode (direct file edits) and Managed mode (running service) concurrently;
+- Optional declarative runtime metadata is **off by default** when a Vault has no registered runtime. Most single-machine users should leave it off. Existing Vaults with `runtime_resource` enable the runtime tools automatically; use `--runtime-enabled` only when you intentionally want to start recording work/deployment topology.
 
 For local setups, the simplest approach is having your MCP client spawn the command directly over stdio.
 
@@ -367,9 +368,9 @@ go build -trimpath -o ./v-memory ./cmd/v-memory
 
 ## Public Contract
 
-The current public compatibility baseline is **v1.1.0**.
+The current public compatibility baseline is **v1.2.0**.
 
-Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.1/`](docs/contract/v1.1/).
+Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.2/`](docs/contract/v1.2/).
 
 *This README and the user guides are explanatory; the versioned contract is authoritative when details differ.*
 
@@ -380,7 +381,7 @@ v-memory version
 v-memory --version
 ```
 
-For v1.1.0, both forms print `v-memory 1.1.0`.
+For v1.2.0, both forms print `v-memory 1.2.0`.
 
 ## Security
 
@@ -398,7 +399,7 @@ Before exposing the service over HTTP transport, make sure to read [`SECURITY.md
 - [`docs/FAQ.md`](docs/FAQ.md) — Frequently asked questions, design boundaries, and trade-offs
 - [`examples/README.md`](examples/README.md) — Runnable sample Vault and first local MCP session
 - [`SECURITY.md`](SECURITY.md) — Supported security line, deployment boundaries, and private reporting
-- [`docs/contract/v1.1/`](docs/contract/v1.1/) — Versioned v1.1 public contract
+- [`docs/contract/v1.2/`](docs/contract/v1.2/) — Versioned v1.2 public contract
 
 ## License
 

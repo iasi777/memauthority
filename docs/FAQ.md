@@ -4,7 +4,7 @@
 
 This FAQ covers the questions most likely to recur in day-to-day use.
 
-For exact APIs, schemas, security behavior, and compatibility rules, refer to the versioned public contract under [`contract/v1.1/`](contract/v1.1/).
+For exact APIs, schemas, security behavior, and compatibility rules, refer to the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 ---
 
@@ -190,6 +190,10 @@ V-Memory blocks high-confidence secret patterns, but it is not a general privacy
 Whether a home address, personal experience, business secret, or unpublished plan should be retained is still a user-and-agent decision.
 
 ---
+
+## Do I Need Runtime/Environment IDs for a Normal Local Project?
+
+Usually no. Runtime metadata is an optional advanced layer and is hidden by default when the Vault has no registered runtime. A normal single-machine project should start without it. If you later need durable deployment/work-environment topology, start `serve` with `--runtime-enabled`. `host_id` is optional and user-defined; a single environment can omit `environment_id`, which canonicalizes to `default`.
 
 ## Is V-Memory a RAG System, Knowledge Base, or Chat Archive?
 

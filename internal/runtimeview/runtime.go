@@ -18,11 +18,11 @@ import (
 
 var (
 	environmentIDRE = regexp.MustCompile(`^[a-z0-9][a-z0-9._-]{0,63}$`)
+	hostIDRE        = regexp.MustCompile(`^[a-z0-9][a-z0-9._-]{0,63}$`)
 	durationRE      = regexp.MustCompile(`^P([1-9][0-9]*)D$`)
 	forbiddenKeyRE  = regexp.MustCompile(`(?i)(token|password|secret|api[_-]?key|credential|command|shell|private[_-]?key)`)
 )
 
-var hostIDs = stringSet("local", "arm", "amd")
 var environmentKinds = stringSet("workspace", "deployment", "service", "archive")
 var purposes = stringSet("source_development", "test", "staging", "production", "production_reader", "disabled_mirror", "backup")
 var capabilities = stringSet("edit", "test", "build", "runtime_check", "deploy_source", "deploy_target", "read_only")
@@ -97,7 +97,7 @@ func (s *Service) ProjectRuntime(args QueryArgs) map[string]any {
 		out["message"] = "invalid runtime detail"
 		return out
 	}
-	if args.HostID != "" && !hostIDs[args.HostID] {
+	if args.HostID != "" && !hostIDRE.MatchString(args.HostID) {
 		out["status"] = "error"
 		out["code"] = "runtime_failed"
 		out["message"] = "invalid host_id"
@@ -232,6 +232,7 @@ func parseManifest(raw []byte, projectID string) (manifest, error) {
 	if !ok || len(envRaw) < 1 || len(envRaw) > 64 {
 		return manifest{}, fmt.Errorf("runtime_environments: runtime environments must contain 1 to 64 items")
 	}
+	envRaw = normalizeEnvironmentIDs(envRaw)
 	envs := make([]map[string]any, 0, len(envRaw))
 	ids := map[string]bool{}
 	for _, item := range envRaw {
@@ -273,17 +274,22 @@ func parseManifest(raw []byte, projectID string) (manifest, error) {
 
 func validateEnvironment(value any) (map[string]any, error) {
 	m, ok := value.(map[string]any)
-	required := []string{"environment_id", "host_id", "kind", "purpose", "description", "workdir", "capabilities", "supervisor", "checks", "boundaries"}
-	if !ok || !requiredSubsetAllowed(m, required, append(required, "repository")) {
+	required := []string{"environment_id", "kind", "purpose", "description", "workdir", "capabilities", "supervisor", "checks", "boundaries"}
+	allowed := append(append([]string{}, required...), "host_id", "repository")
+	if !ok || !requiredSubsetAllowed(m, required, allowed) {
 		return nil, fmt.Errorf("runtime_environment_schema: invalid environment fields")
 	}
 	id, err := cleanString(m["environment_id"], 64)
 	if err != nil || !environmentIDRE.MatchString(id) {
 		return nil, fmt.Errorf("runtime_environment_id: environment_id is invalid")
 	}
-	host, ok := m["host_id"].(string)
-	if !ok || !hostIDs[host] {
-		return nil, fmt.Errorf("runtime_host_id: unsupported host_id")
+	host := ""
+	if rawHost, exists := m["host_id"]; exists {
+		var err error
+		host, err = cleanString(rawHost, 64)
+		if err != nil || !hostIDRE.MatchString(host) {
+			return nil, fmt.Errorf("runtime_host_id: host_id is invalid")
+		}
 	}
 	kind, ok := m["kind"].(string)
 	if !ok || !environmentKinds[kind] {
@@ -329,7 +335,30 @@ func validateEnvironment(value any) (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-	return map[string]any{"environment_id": id, "host_id": host, "kind": kind, "purpose": purpose, "description": description, "workdir": workdir, "repository": repository, "capabilities": caps, "supervisor": supervisor, "checks": checks, "boundaries": boundaries}, nil
+	out := map[string]any{"environment_id": id, "kind": kind, "purpose": purpose, "description": description, "workdir": workdir, "repository": repository, "capabilities": caps, "supervisor": supervisor, "checks": checks, "boundaries": boundaries}
+	if host != "" {
+		out["host_id"] = host
+	}
+	return out, nil
+}
+
+func normalizeEnvironmentIDs(values []any) []any {
+	if len(values) != 1 {
+		return values
+	}
+	m, ok := values[0].(map[string]any)
+	if !ok {
+		return values
+	}
+	if _, exists := m["environment_id"]; exists {
+		return values
+	}
+	copy := make(map[string]any, len(m)+1)
+	for k, v := range m {
+		copy[k] = v
+	}
+	copy["environment_id"] = "default"
+	return []any{copy}
 }
 
 func validateRepository(value any) (any, error) {
@@ -589,7 +618,9 @@ func staleness(m manifest, now time.Time) (string, error) {
 func renderView(m manifest, hostID, environmentID, detail, stale string) map[string]any {
 	hostsSet := map[string]bool{}
 	for _, e := range m.Environments {
-		hostsSet[e["host_id"].(string)] = true
+		if host, ok := e["host_id"].(string); ok && host != "" {
+			hostsSet[host] = true
+		}
 	}
 	hosts := make([]string, 0, len(hostsSet))
 	for h := range hostsSet {
@@ -650,7 +681,9 @@ func environmentSummary(e map[string]any) map[string]any {
 	keys := []string{"environment_id", "host_id", "kind", "purpose", "description", "workdir", "repository", "capabilities"}
 	out := map[string]any{}
 	for _, k := range keys {
-		out[k] = e[k]
+		if value, exists := e[k]; exists {
+			out[k] = value
+		}
 	}
 	return out
 }

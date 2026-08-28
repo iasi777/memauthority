@@ -1,0 +1,1226 @@
+[
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Append project progress"
+    },
+    "description": "Append a dated typed progress entry through the durable Authority transaction without replacing existing progress history.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "content": {
+          "description": "Progress entry body. A single leading H1/H2 title is ignored because V-Memory owns the entry heading; H3/H4 subheadings are allowed, but H1/H2 headings inside the body are rejected.",
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "summary",
+        "content"
+      ],
+      "type": "object"
+    },
+    "name": "memory_append_progress",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Archive memory project"
+    },
+    "description": "Archive one V-Memory project in current-HEAD lifecycle metadata while preserving its Authority history.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "expected_index_revision": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "reason",
+        "expected_index_revision"
+      ],
+      "type": "object"
+    },
+    "name": "memory_archive_project",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": false,
+      "title": "Create memory project"
+    },
+    "description": "Create a new active V-Memory project with a program-owned canonical handoff scaffold; no Vault template file is required.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "description": "Optional unique routing aliases for the project.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "client_idempotency_key": {
+          "description": "Optional stable caller key for safe replay of the same mutation payload.",
+          "type": "string"
+        },
+        "create_rules_role": {
+          "description": "If true, also create an empty canonical rules role; handoff is always created.",
+          "type": "boolean"
+        },
+        "description": {
+          "description": "Short project description stored in INDEX.yaml.",
+          "type": "string"
+        },
+        "evidence": {
+          "description": "Optional structured evidence metadata for the mutation; do not place secrets in durable content.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "instance": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "instance",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "expected_index_revision": {
+          "description": "Current SHA-256 INDEX revision used for compare-and-swap.",
+          "type": "string"
+        },
+        "lifecycle": {
+          "description": "Must be active for a newly created project.",
+          "type": "string"
+        },
+        "local_path": {
+          "description": "Optional user-facing local path metadata; V-Memory does not read arbitrary host files from this value.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "project_id": {
+          "description": "Portable registered project id.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "description",
+        "lifecycle",
+        "expected_index_revision"
+      ],
+      "type": "object"
+    },
+    "name": "memory_create_project",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "openWorldHint": false,
+      "title": "Mark memory verified"
+    },
+    "description": "Record protected local or runtime verification state through the controlled mutation path after the required evidence has actually been checked.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "instance": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "instance",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "expected_resource_revision": {
+          "type": "string"
+        },
+        "not_verified": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        },
+        "verification_level": {
+          "description": "Verification kind: local verifies source code, configuration, documentation, static results, or other locally inspectable artifacts; runtime verifies the actual running environment, deployment state, or a real business flow.",
+          "enum": [
+            "local",
+            "runtime"
+          ],
+          "type": "string"
+        },
+        "verified_scope": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_resource_revision",
+        "verification_level",
+        "verified_scope",
+        "basis",
+        "result"
+      ],
+      "type": "object"
+    },
+    "name": "memory_mark_verified",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "openWorldHint": false,
+      "title": "Migrate memory lifecycle"
+    },
+    "description": "Perform the one-time legacy V-Memory lifecycle migration through the transaction kernel; this is a migration operation, not normal project editing.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "manifest": {
+          "additionalProperties": false,
+          "properties": {
+            "archive_reason": {
+              "type": "string"
+            },
+            "expected_index_revision": {
+              "type": "string"
+            },
+            "projects": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "project_id": {
+                    "type": "string"
+                  },
+                  "source_lifecycle": {
+                    "type": "string"
+                  },
+                  "target_lifecycle": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "project_id",
+                  "source_lifecycle",
+                  "target_lifecycle"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "schema_version": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "expected_index_revision",
+            "archive_reason",
+            "projects"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "manifest"
+      ],
+      "type": "object"
+    },
+    "name": "memory_migrate_lifecycle",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "readOnlyHint": true,
+      "title": "Read declarative runtime"
+    },
+    "description": "Use this to read stored declarative runtime location, environment, repository, supervisor, check, and boundary metadata for a project. It does not execute checks, inspect the V-Memory service itself, or prove current live deployment health.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "type": "string"
+        },
+        "environment_id": {
+          "type": "string"
+        },
+        "expected_resource_revision": {
+          "type": "string"
+        },
+        "host_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "name": "memory_project_runtime",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "readOnlyHint": true,
+      "title": "Read memory resource"
+    },
+    "description": "Use this to read a known handoff, rules, progress, or pitfalls memory resource by URI, optionally by heading or line range. Prefer it directly when the resource URI is already known; it does not read runtime resources. Eligible handoff reads also return checklist_items for top-level todos under 已知问题 / 待办.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "type": "string"
+        },
+        "expected_resource_revision": {
+          "type": "string"
+        },
+        "heading": {
+          "type": "string"
+        },
+        "line_end": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "line_start": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri"
+      ],
+      "type": "object"
+    },
+    "name": "memory_read",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Record project pitfall"
+    },
+    "description": "Idempotently append a typed reusable pitfall entry to project memory without replacing existing pitfalls.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "instance": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "instance",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "related": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "title",
+        "severity",
+        "tags",
+        "content"
+      ],
+      "type": "object"
+    },
+    "name": "memory_record_pitfall",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Record runtime observation"
+    },
+    "description": "Idempotently record a typed runtime conflict or completed fallback as control evidence without mutating project Authority.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "environment_id": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "host_id": {
+          "type": "string"
+        },
+        "observation": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "runtime_resource_revision": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "project_id",
+        "observation",
+        "client_idempotency_key"
+      ],
+      "type": "object"
+    },
+    "name": "memory_record_runtime_observation",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Restore memory project"
+    },
+    "description": "Restore one archived V-Memory project to active lifecycle state through the controlled mutation path.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "expected_index_revision": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_index_revision"
+      ],
+      "type": "object"
+    },
+    "name": "memory_restore_project",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "readOnlyHint": true,
+      "title": "Resolve memory project"
+    },
+    "description": "Use this when the target V-Memory project id is uncertain and you have a project name, alias, or repository identity. It resolves exact NFC-normalized, Unicode-casefolded registered project ids or aliases; do not use it when the project id or resource URI is already known.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "description": "Project routing query. Matching is exact after Unicode NFC normalization and case folding against project IDs and aliases; ambiguous and archived matches are reported explicitly.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "memory_route",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "readOnlyHint": true,
+      "title": "Search project memory"
+    },
+    "description": "Use this to locate relevant indexed sections inside a known project when the exact memory resource or section is unknown. It returns up to 50 coordinate-like hits for selective reading, not final proof or complete context; truncated=true means additional matches exist. It does not resolve uncertain project identity.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "cross_project": {
+          "description": "Set true to search all registered projects; otherwise project_id is required.",
+          "type": "boolean"
+        },
+        "project_id": {
+          "description": "Project id to search when cross_project is false.",
+          "type": "string"
+        },
+        "query": {
+          "description": "Text to search for in indexed memory sections; must be non-empty.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "memory_search",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Inspect memory service status"
+    },
+    "description": "Use this to inspect the V-Memory service and Authority workspace itself: Git head, owned snapshot, projection, write gate, fencing, journal, and recovery state. It does not report a project's deployment location or live production service health.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "name": "memory_status",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "openWorldHint": false,
+      "title": "Update handoff summary"
+    },
+    "description": "Use this for direct replacement of allowed canonical handoff sections with resource CAS. Prefer memory_update_sections when you need ordered append/insert/delete operations, checklist item changes, or edits outside the handoff role.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "instance": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "instance",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "expected_resource_revision": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "section_updates": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string"
+              },
+              "replacement": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "heading",
+              "replacement"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_resource_revision",
+        "section_updates"
+      ],
+      "type": "object"
+    },
+    "name": "memory_update_handoff",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "openWorldHint": false,
+      "title": "Update declarative runtime"
+    },
+    "description": "Use this only when optional runtime metadata is enabled and deployment/work-environment topology is worth retaining. A single environment may omit environment_id (canonicalized to default), host_id is optional and user-defined, and environment kinds archive/deployment/service/workspace, supervisors docker/docker_compose/none/process/systemd_system/systemd_user, and checks directory_exists/docker_compose_services/failed_units/file_exists/git_head/git_status/systemd_units remain validated vocabularies. It uses runtime and INDEX revision/CAS safeguards and does not execute deployments or live health checks.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "description": "Optional caller idempotency key. Reusing the same key with the same payload replays the committed result; reusing it for a different payload conflicts.",
+          "type": "string"
+        },
+        "expected_index_revision": {
+          "description": "Required INDEX CAS revision in sha256:\u003c64 hex\u003e form. Stale values return conflict after static runtime validation passes.",
+          "type": "string"
+        },
+        "expected_resource_revision": {
+          "description": "Runtime resource CAS revision in sha256:\u003c64 hex\u003e form when replacing an existing runtime. Omit only when creating the project's first registered runtime.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "project_id": {
+          "description": "Registered active V-Memory project id. runtime.project_id must match this value.",
+          "type": "string"
+        },
+        "runtime": {
+          "additionalProperties": false,
+          "properties": {
+            "environments": {
+              "description": "One to 64 declarative runtime environments. This metadata describes stored topology and does not execute or prove live checks.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "boundaries": {
+                    "additionalProperties": false,
+                    "description": "Mutation/deployment boundary flags. production_writer and mutation_requires_explicit_authorization are required booleans; single_writer is optional.",
+                    "properties": {
+                      "mutation_requires_explicit_authorization": {
+                        "type": "boolean"
+                      },
+                      "production_writer": {
+                        "type": "boolean"
+                      },
+                      "single_writer": {
+                        "type": [
+                          "null",
+                          "boolean"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "production_writer",
+                      "mutation_requires_explicit_authorization"
+                    ],
+                    "type": "object"
+                  },
+                  "capabilities": {
+                    "description": "Zero to 16 unique capabilities. Supported values: build, deploy_source, deploy_target, edit, read_only, runtime_check, test.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": [
+                      "null",
+                      "array"
+                    ]
+                  },
+                  "checks": {
+                    "description": "Zero to 32 declarative check specifications. Checks are stored only; memory_update_runtime does not execute them.",
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "compose_file": {
+                          "description": "Required absolute compose file path for docker_compose_services.",
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "kind": {
+                          "description": "Check discriminator. Supported values: directory_exists, docker_compose_services, failed_units, file_exists, git_head, git_status, systemd_units. Companion fields depend on kind.",
+                          "type": "string"
+                        },
+                        "path": {
+                          "description": "Required absolute path for file_exists and directory_exists.",
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "scope": {
+                          "description": "Required for systemd_units and failed_units; supported values: user, system.",
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "services": {
+                          "description": "Required non-empty service list for docker_compose_services.",
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": [
+                            "null",
+                            "array"
+                          ]
+                        },
+                        "target": {
+                          "description": "Optional for git_status and git_head; omitted values default to repository. If provided for those checks, the only supported value is repository.",
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "units": {
+                          "description": "Required non-empty unit list for systemd_units.",
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": [
+                            "null",
+                            "array"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ],
+                      "type": "object"
+                    },
+                    "type": [
+                      "null",
+                      "array"
+                    ]
+                  },
+                  "description": {
+                    "description": "Short non-empty single-line description, at most 500 characters.",
+                    "type": "string"
+                  },
+                  "environment_id": {
+                    "description": "Optional for a single environment; omission is canonicalized to default. Multi-environment manifests must provide a unique stable id matching ^[a-z0-9][a-z0-9._-]{0,63}$.",
+                    "type": "string"
+                  },
+                  "host_id": {
+                    "description": "Optional user-defined execution host identity matching ^[a-z0-9][a-z0-9._-]{0,63}$. Use it only when grouping multiple environments by machine or logical host is useful.",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "description": "Environment shape. Supported values: archive, deployment, service, workspace.",
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "description": "Environment purpose. Supported values: backup, disabled_mirror, production, production_reader, source_development, staging, test.",
+                    "type": "string"
+                  },
+                  "repository": {
+                    "additionalProperties": false,
+                    "description": "Optional repository metadata. When present, path and branch are required; path must be absolute and remote is optional.",
+                    "properties": {
+                      "branch": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "remote": {
+                        "type": [
+                          "null",
+                          "string"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "branch"
+                    ],
+                    "type": [
+                      "null",
+                      "object"
+                    ]
+                  },
+                  "supervisor": {
+                    "additionalProperties": false,
+                    "description": "Supervisor declaration. Required companion fields depend on supervisor.kind; only fields for that kind are accepted.",
+                    "properties": {
+                      "compose_file": {
+                        "description": "Required absolute compose file path only for docker_compose supervisors.",
+                        "type": [
+                          "null",
+                          "string"
+                        ]
+                      },
+                      "containers": {
+                        "description": "Required non-empty container list only for docker supervisors.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": [
+                          "null",
+                          "array"
+                        ]
+                      },
+                      "kind": {
+                        "description": "Supervisor discriminator. Supported values: docker, docker_compose, none, process, systemd_system, systemd_user. none requires no companion fields; systemd_user/systemd_system require units; docker_compose requires compose_file and services; docker requires containers; process requires process_name and pid_file.",
+                        "type": "string"
+                      },
+                      "pid_file": {
+                        "description": "Required absolute pid file path only for process supervisors.",
+                        "type": [
+                          "null",
+                          "string"
+                        ]
+                      },
+                      "process_name": {
+                        "description": "Required non-empty process name only for process supervisors.",
+                        "type": [
+                          "null",
+                          "string"
+                        ]
+                      },
+                      "services": {
+                        "description": "Required non-empty service list only for docker_compose supervisors.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": [
+                          "null",
+                          "array"
+                        ]
+                      },
+                      "units": {
+                        "description": "Required non-empty unit list only for systemd_user or systemd_system supervisors.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": [
+                          "null",
+                          "array"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  "workdir": {
+                    "description": "Absolute environment working directory without . or .. traversal segments.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "purpose",
+                  "description",
+                  "workdir",
+                  "repository",
+                  "capabilities",
+                  "supervisor",
+                  "checks",
+                  "boundaries"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "project_id": {
+              "description": "Project id stored in the runtime manifest; must equal the top-level project_id target.",
+              "type": "string"
+            },
+            "relations": {
+              "description": "Zero to 128 directed relations between declared environment_id values.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "from": {
+                    "description": "Source environment_id; must reference a declared environment and differ from to.",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "description": "Relation kind. Supported values: deploys_to, mirrors.",
+                    "type": "string"
+                  },
+                  "to": {
+                    "description": "Destination environment_id; must reference a declared environment and differ from from.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "schema_version": {
+              "description": "Runtime schema version. The only supported value is 1.",
+              "type": "integer"
+            },
+            "verification": {
+              "additionalProperties": false,
+              "description": "Either empty/unverified, or complete with verified_at, verified_by, stale_after, and one or more memory:// Authority evidence URIs.",
+              "properties": {
+                "evidence": {
+                  "description": "Authority evidence references only. Each value must be a memory:// URI; write observed facts to handoff/progress first, then reference that resource here.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": [
+                    "null",
+                    "array"
+                  ]
+                },
+                "stale_after": {
+                  "description": "Positive day duration in PnD form, for example P30D.",
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "verified_at": {
+                  "description": "RFC3339 verification timestamp. If verification is populated, all verification fields are required.",
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "verified_by": {
+                  "description": "Non-empty verifier identity. If verification is populated, all verification fields are required.",
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                }
+              },
+              "type": "object"
+            }
+          },
+          "required": [
+            "schema_version",
+            "project_id",
+            "environments",
+            "relations",
+            "verification"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "project_id",
+        "runtime",
+        "expected_index_revision"
+      ],
+      "type": "object"
+    },
+    "name": "memory_update_runtime",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "openWorldHint": false,
+      "title": "Edit memory sections"
+    },
+    "description": "Use this for ordered typed section edits across supported memory roles with resource CAS. H2 operations may replace, append, insert, or delete according to role; handoff also supports checklist_remove and checklist_set_checked using item_ref values returned by memory_read. Prefer memory_update_handoff for simple whole-section handoff replacement.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "client_idempotency_key": {
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "instance": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "instance",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "expected_resource_revision": {
+          "description": "SHA-256 revision returned by memory_read; mutation fails on mismatch.",
+          "type": "string"
+        },
+        "operations": {
+          "description": "Ordered typed section operations. Supported operations depend on role and may replace, append, insert, or delete H2 sections; handoff additionally supports checklist_remove and checklist_set_checked. Checklist operations cannot be mixed with H2 operations in one batch.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "checked": {
+                "description": "Target checked state; required only for checklist_set_checked.",
+                "type": [
+                  "null",
+                  "boolean"
+                ]
+              },
+              "content": {
+                "description": "Section body for replace, append, or insert. Do not provide for checklist operations.",
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
+              "heading": {
+                "description": "Target H2 heading. Checklist operations are restricted to 已知问题 / 待办.",
+                "type": "string"
+              },
+              "item_ref": {
+                "description": "Opaque checklist item_ref returned by memory_read; required only for checklist_remove and checklist_set_checked.",
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
+              "operation": {
+                "description": "Section operation. Supported H2 operations depend on role; handoff also supports checklist_remove and checklist_set_checked for top-level todo items.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation",
+              "heading"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "project_id": {
+          "description": "Target project id.",
+          "type": "string"
+        },
+        "role": {
+          "description": "One of handoff, rules, progress, or pitfalls.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "role",
+        "expected_resource_revision",
+        "operations"
+      ],
+      "type": "object"
+    },
+    "name": "memory_update_sections",
+    "outputSchema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  }
+]

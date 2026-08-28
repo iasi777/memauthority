@@ -27,10 +27,16 @@ import (
 )
 
 const implementationName = "V-Memory"
-const ImplementationVersion = "1.1.0"
+const ImplementationVersion = "1.2.0"
 
 // Keep Layer 0 discovery compact; contract tests enforce a 512-character ceiling.
-const serverInstructions = "V-Memory provides project-scoped long-term memory and cross-conversation continuity. Use it when prior project state is needed and is not already available in the current context. It can find and read durable memory, update validated Git-backed Authority, and store declarative runtime metadata. Runtime metadata describes stored state; it does not prove live runtime health. Authority writes must use V-Memory mutation tools, not machine or filesystem tools."
+func serverInstructions(runtimeEnabled bool) string {
+	base := "V-Memory provides project-scoped long-term memory and cross-conversation continuity. Use it when prior project state is needed and is not already available in the current context. It can find and read durable memory and update validated Git-backed Authority. Authority writes must use V-Memory mutation tools, not machine or filesystem tools."
+	if !runtimeEnabled {
+		return base
+	}
+	return base + " Optional declarative runtime metadata is enabled; it describes stored topology and does not prove live runtime health."
+}
 
 type OpenOptions struct {
 	OAuth          *oauthserver.Config
@@ -41,6 +47,7 @@ type OpenOptions struct {
 	LocalNodeID    string
 	AllowedHosts   []string
 	AllowedOrigins []string
+	RuntimeEnabled bool
 
 	// ManagedAdmission is used by the public serve entrypoint. It requires a
 	// structurally valid, clean committed Vault and an external state directory.
@@ -64,6 +71,7 @@ type App struct {
 	vaultRoot      string
 	workRoot       string
 	writeEnabled   bool
+	runtimeEnabled bool
 	allowedHosts   []string
 	allowedOrigins []string
 
@@ -81,7 +89,7 @@ func Open(vaultRoot, workRoot string) (*App, error) {
 
 func OpenWithOptions(vaultRoot, workRoot string, options OpenOptions) (*App, error) {
 	app := &App{
-		vaultRoot: vaultRoot, workRoot: workRoot, writeEnabled: options.WriteEnabled,
+		vaultRoot: vaultRoot, workRoot: workRoot, writeEnabled: options.WriteEnabled, runtimeEnabled: options.RuntimeEnabled,
 		allowedHosts: normalizePolicyValues(options.AllowedHosts, true), allowedOrigins: normalizePolicyValues(options.AllowedOrigins, false),
 		testBeforeViewPublish: options.TestBeforeViewPublish, testMutationCriticalSection: options.TestMutationCriticalSection,
 	}
@@ -150,6 +158,9 @@ func OpenWithOptions(vaultRoot, workRoot string, options OpenOptions) (*App, err
 			return nil, err
 		}
 		app.oauth = authServer
+	}
+	if !app.runtimeEnabled && app.hasRegisteredRuntime() {
+		app.runtimeEnabled = true
 	}
 	if options.ManagedAdmission {
 		status := app.managedStatus()
@@ -322,8 +333,8 @@ func runtimeUpdateInputSchema() *jsonschema.Schema {
 	setSchemaDescription(runtimeSchema, "verification", "Either empty/unverified, or complete with verified_at, verified_by, stale_after, and one or more memory:// Authority evidence URIs.")
 
 	env := mustSchemaItems(mustSchemaProperty(runtimeSchema, "environments"), "runtime.environments")
-	setSchemaDescription(env, "environment_id", "Stable environment id matching ^[a-z0-9][a-z0-9._-]{0,63}$; unique within the runtime manifest.")
-	setSchemaDescription(env, "host_id", "Execution host identity. Supported values: "+join(values.HostIDs)+".")
+	setSchemaDescription(env, "environment_id", "Optional for a single environment; omission is canonicalized to default. Multi-environment manifests must provide a unique stable id matching ^[a-z0-9][a-z0-9._-]{0,63}$.")
+	setSchemaDescription(env, "host_id", "Optional user-defined execution host identity matching ^[a-z0-9][a-z0-9._-]{0,63}$. Use it only when grouping multiple environments by machine or logical host is useful.")
 	setSchemaDescription(env, "kind", "Environment shape. Supported values: "+join(values.EnvironmentKinds)+".")
 	setSchemaDescription(env, "purpose", "Environment purpose. Supported values: "+join(values.Purposes)+".")
 	setSchemaDescription(env, "description", "Short non-empty single-line description, at most 500 characters.")
@@ -392,11 +403,25 @@ func titledAnnotations(title string, annotations *mcp.ToolAnnotations) *mcp.Tool
 
 func runtimeUpdateToolDescription() string {
 	values := runtimeview.ClosedValues()
-	return fmt.Sprintf("Use this to create or replace a project's validated declarative runtime Authority from reliable project or deployment facts. Runtime vocabulary includes hosts %s; environment kinds %s; supervisors %s; and checks %s. It uses runtime and INDEX revision/CAS safeguards, returns aggregated static validation findings, and does not execute deployments or live health checks.", strings.Join(values.HostIDs, "/"), strings.Join(values.EnvironmentKinds, "/"), strings.Join(values.SupervisorKinds, "/"), strings.Join(values.CheckKinds, "/"))
+	return fmt.Sprintf("Use this only when optional runtime metadata is enabled and deployment/work-environment topology is worth retaining. A single environment may omit environment_id (canonicalized to default), host_id is optional and user-defined, and environment kinds %s, supervisors %s, and checks %s remain validated vocabularies. It uses runtime and INDEX revision/CAS safeguards and does not execute deployments or live health checks.", strings.Join(values.EnvironmentKinds, "/"), strings.Join(values.SupervisorKinds, "/"), strings.Join(values.CheckKinds, "/"))
+}
+
+func (a *App) hasRegisteredRuntime() bool {
+	a.viewMu.RLock()
+	defer a.viewMu.RUnlock()
+	if a.vault == nil {
+		return false
+	}
+	for _, project := range a.vault.Projects() {
+		if project.RuntimeResource != nil && strings.TrimSpace(*project.RuntimeResource) != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func (a *App) newServer() *mcp.Server {
-	s := mcp.NewServer(&mcp.Implementation{Name: implementationName, Version: ImplementationVersion}, &mcp.ServerOptions{Instructions: serverInstructions})
+	s := mcp.NewServer(&mcp.Implementation{Name: implementationName, Version: ImplementationVersion}, &mcp.ServerOptions{Instructions: serverInstructions(a.runtimeEnabled)})
 	ro := &mcp.ToolAnnotations{ReadOnlyHint: true}
 
 	mcp.AddTool(s, &mcp.Tool{Name: "memory_route", Description: "Use this when the target V-Memory project id is uncertain and you have a project name, alias, or repository identity. It resolves exact NFC-normalized, Unicode-casefolded registered project ids or aliases; do not use it when the project id or resource URI is already known.", Annotations: titledAnnotations("Resolve memory project", ro)},
@@ -435,40 +460,44 @@ func (a *App) newServer() *mcp.Server {
 			}
 			return nil, a.vault.Search(in), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_project_runtime", Description: "Use this to read stored declarative runtime location, environment, repository, supervisor, check, and boundary metadata for a project. It does not execute checks, inspect the V-Memory service itself, or prove current live deployment health.", Annotations: titledAnnotations("Read declarative runtime", ro)},
-		func(_ context.Context, _ *mcp.CallToolRequest, in runtimeview.QueryArgs) (*mcp.CallToolResult, map[string]any, error) {
-			if in.ProjectID == "" {
-				return nil, nil, fmt.Errorf("project_id is required")
-			}
-			a.viewMu.RLock()
-			defer a.viewMu.RUnlock()
-			if a.runtime == nil {
-				return nil, nil, fmt.Errorf("runtime view unavailable until lifecycle migration")
-			}
-			return nil, a.runtime.ProjectRuntime(in), nil
-		})
+	if a.runtimeEnabled {
+		mcp.AddTool(s, &mcp.Tool{Name: "memory_project_runtime", Description: "Use this to read stored declarative runtime location, environment, repository, supervisor, check, and boundary metadata for a project. It does not execute checks, inspect the V-Memory service itself, or prove current live deployment health.", Annotations: titledAnnotations("Read declarative runtime", ro)},
+			func(_ context.Context, _ *mcp.CallToolRequest, in runtimeview.QueryArgs) (*mcp.CallToolResult, map[string]any, error) {
+				if in.ProjectID == "" {
+					return nil, nil, fmt.Errorf("project_id is required")
+				}
+				a.viewMu.RLock()
+				defer a.viewMu.RUnlock()
+				if a.runtime == nil {
+					return nil, nil, fmt.Errorf("runtime view unavailable until lifecycle migration")
+				}
+				return nil, a.runtime.ProjectRuntime(in), nil
+			})
+	}
 
 	a.addMutationTools(s)
 
-	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "memory://projects/{project_id}/runtime",
-		Name:        "memory_project_runtime_resource",
-		Description: "Validated raw runtime manifest resource; distinct from the four memory roles.",
-		MIMEType:    "application/yaml",
-	}, func(_ context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
-		uri := req.Params.URI
-		projectID, ok := runtimeProjectID(uri)
-		a.viewMu.RLock()
-		defer a.viewMu.RUnlock()
-		if !ok || a.runtime == nil {
-			return nil, mcp.ResourceNotFoundError(uri)
-		}
-		actualURI, content, err := a.runtime.ReadRawResource(projectID)
-		if err != nil {
-			return nil, mcp.ResourceNotFoundError(uri)
-		}
-		return &mcp.ReadResourceResult{Contents: []*mcp.ResourceContents{{URI: actualURI, MIMEType: "application/yaml", Text: content}}}, nil
-	})
+	if a.runtimeEnabled {
+		s.AddResourceTemplate(&mcp.ResourceTemplate{
+			URITemplate: "memory://projects/{project_id}/runtime",
+			Name:        "memory_project_runtime_resource",
+			Description: "Validated raw runtime manifest resource; distinct from the four memory roles.",
+			MIMEType:    "application/yaml",
+		}, func(_ context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+			uri := req.Params.URI
+			projectID, ok := runtimeProjectID(uri)
+			a.viewMu.RLock()
+			defer a.viewMu.RUnlock()
+			if !ok || a.runtime == nil {
+				return nil, mcp.ResourceNotFoundError(uri)
+			}
+			actualURI, content, err := a.runtime.ReadRawResource(projectID)
+			if err != nil {
+				return nil, mcp.ResourceNotFoundError(uri)
+			}
+			return &mcp.ReadResourceResult{Contents: []*mcp.ResourceContents{{URI: actualURI, MIMEType: "application/yaml", Text: content}}}, nil
+		})
+	}
 	return s
 }
 
@@ -509,14 +538,17 @@ func (a *App) addMutationTools(s *mcp.Server) {
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.MigrateLifecycleArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.MigrateLifecycle(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_update_runtime", Description: runtimeUpdateToolDescription(), InputSchema: runtimeUpdateInputSchema(), Annotations: titledAnnotations("Update declarative runtime", mutationAnnotations(false, true))},
-		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.UpdateRuntimeArgs) (*mcp.CallToolResult, map[string]any, error) {
-			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.UpdateRuntime(in) }), nil
-		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_record_runtime_observation", Description: "Idempotently record a typed runtime conflict or completed fallback as control evidence without mutating project Authority.", Annotations: titledAnnotations("Record runtime observation", mutationAnnotations(true, false))},
-		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.RecordRuntimeObservationArgs) (*mcp.CallToolResult, map[string]any, error) {
-			return nil, a.callControlMutation(func(w *vaultwrite.Service) map[string]any { return w.RecordRuntimeObservation(in) }), nil
-		})
+	if a.runtimeEnabled {
+		mcp.AddTool(s, &mcp.Tool{Name: "memory_update_runtime", Description: runtimeUpdateToolDescription(), InputSchema: runtimeUpdateInputSchema(), Annotations: titledAnnotations("Update declarative runtime", mutationAnnotations(false, true))},
+			func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.UpdateRuntimeArgs) (*mcp.CallToolResult, map[string]any, error) {
+				return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.UpdateRuntime(in) }), nil
+			})
+		mcp.AddTool(s, &mcp.Tool{Name: "memory_record_runtime_observation", Description: "Idempotently record a typed runtime conflict or completed fallback as control evidence without mutating project Authority.", Annotations: titledAnnotations("Record runtime observation", mutationAnnotations(true, false))},
+			func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.RecordRuntimeObservationArgs) (*mcp.CallToolResult, map[string]any, error) {
+				return nil, a.callControlMutation(func(w *vaultwrite.Service) map[string]any { return w.RecordRuntimeObservation(in) }), nil
+			})
+	}
+
 	mcp.AddTool(s, &mcp.Tool{Name: "memory_status", Description: "Use this to inspect the V-Memory service and Authority workspace itself: Git head, owned snapshot, projection, write gate, fencing, journal, and recovery state. It does not report a project's deployment location or live production service health.", Annotations: titledAnnotations("Inspect memory service status", statusAnnotations())},
 		func(_ context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, map[string]any, error) {
 			a.mutationMu.Lock()
@@ -629,6 +661,7 @@ func (a *App) managedStatus() map[string]any {
 	status["owned_head"] = owned
 	status["owned_index_head"] = ownedIndex
 	status["snapshot_state"] = state
+	status["runtime_tools_enabled"] = a.runtimeEnabled
 	status["snapshot_drift"] = drift
 	if viewErr == "" {
 		status["snapshot_error"] = nil

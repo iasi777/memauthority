@@ -273,7 +273,7 @@ Git 负责忠实记录 Authority 的完整演变历史，随时可以追溯记�
 V-Memory 依赖 Git，并要求 Go 1.26.5 或更高版本。安装当前稳定版本：
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/v-memory@v1.1.0
+go install github.com/iasi777/v-memory/cmd/v-memory@v1.2.0
 ```
 
 确认 Go 的二进制目录已经加入 `PATH`，然后验证安装：
@@ -285,7 +285,7 @@ v-memory version
 预期输出：
 
 ```text
-v-memory 1.1.0
+v-memory 1.2.0
 ```
 
 目前没有发布预编译二进制。如果需要从源码构建：
@@ -295,7 +295,7 @@ go build -trimpath -o ./v-memory ./cmd/v-memory
 ./v-memory version
 ```
 
-Release CI 会验证生产使用的 Linux/ARM64 构建。其他环境用于生产前，应从源码构建并运行项目测试。
+Release CI 会在 Linux、macOS、Windows 原生 runner 上运行测试、vet 和 CLI 构建；Linux CI 另外验证生产使用的 Linux/ARM64 目标。
 
 ---
 
@@ -326,7 +326,8 @@ v-memory serve \
 
 - 省略 `--write-enabled` 即以**只读模式**运行；
 - `state-dir` 必须存放在 Vault Authority 目录之外；
-- 请勿同时进行 Detached 模式（直接编辑文件）与 Managed 模式（服务运行中托管）
+- 请勿同时进行 Detached 模式（直接编辑文件）与 Managed 模式（服务运行中托管）；
+- 可选的 declarative runtime metadata 在 Vault 没有已登记 runtime 时**默认关闭**。绝大多数单机用户建议保持关闭。已有 `runtime_resource` 的 Vault 会自动继续暴露 runtime 工具；只有你明确需要开始记录工作环境/部署拓扑时，才添加 `--runtime-enabled`。
 
 本地接入最简单的方式是让 MCP 客户端通过 stdio 直接拉起上述命令
 
@@ -334,7 +335,7 @@ v-memory serve \
 
 [`AGENT-GUIDE.md`](docs/AGENT-GUIDE_ZH.md) 补充了跨工具维度的使用原则（如按需召回、保守记录、角色选择与旧库迁移等）
 
-如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.1 Transport / Auth 规范
+如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.2 Transport / Auth 规范
 
 ---
 
@@ -368,9 +369,9 @@ go build -trimpath -o ./v-memory ./cmd/v-memory
 
 ## 公共契约
 
-当前公共兼容性基线为 **v1.1.0**。
+当前公共兼容性基线为 **v1.2.0**。
 
-Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.1/`](docs/contract/v1.1/) 下。
+Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.2/`](docs/contract/v1.2/) 下。
 
 *本 README 与其他用户文档用于辅助理解；细节不一致时，以对应版本的公共契约为准。*
 
@@ -381,7 +382,7 @@ v-memory version
 v-memory --version
 ```
 
-在 v1.1.0 中，两种形式均输出 `v-memory 1.1.0`。
+在 v1.2.0 中，两种形式均输出 `v-memory 1.2.0`。
 
 ## Security
 
@@ -399,7 +400,7 @@ v-memory --version
 - [`docs/FAQ_ZH.md`](docs/FAQ_ZH.md) — 常见问题、设计边界与取舍考量
 - [`examples/README_ZH.md`](examples/README_ZH.md) — 可运行的示例 Vault 与首次本地 MCP 会话
 - [`SECURITY_ZH.md`](SECURITY_ZH.md) — 安全支持范围、部署边界与私密报告入口
-- [`docs/contract/v1.1/`](docs/contract/v1.1/) — v1.1 版本化公共契约
+- [`docs/contract/v1.2/`](docs/contract/v1.2/) — v1.2 版本化公共契约
 
 ## License
 

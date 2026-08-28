@@ -3,7 +3,7 @@
 [中文](ONBOARDING_ZH.md)
 
 > Purpose: first-time setup and migration guide for V-Memory users.
-> Exact APIs, schemas, and security behavior are defined by the versioned public contract under [`contract/v1.1/`](contract/v1.1/).
+> Exact APIs, schemas, and security behavior are defined by the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 This guide answers three questions:
 
@@ -255,6 +255,8 @@ Once connected, the agent automatically receives:
 
 These describe the fields, mechanical constraints, and current tool behavior exposed by the running service.
 
+During onboarding or legacy-memory import, do **not** create runtime/environment metadata merely because V-Memory can represent it. Runtime tools are hidden by default when no runtime is registered. Keep them off for ordinary single-machine projects; enable them only when durable multi-environment or deployment topology is genuinely useful.
+
 Normal Managed use does not require you to restate parameter rules every time, and the agent should not hard-code an old release's fields when the current tool schema is available.
 
 [`AGENT-GUIDE.md`](AGENT-GUIDE.md) adds the cross-tool principles that are most useful during:
@@ -269,7 +271,7 @@ Normal Managed use does not require you to restate parameter rules every time, a
 Before remote HTTP exposure, read:
 
 - [`../SECURITY.md`](../SECURITY.md)
-- [`contract/v1.1/transport-auth.md`](contract/v1.1/transport-auth.md)
+- [`contract/v1.2/transport-auth.md`](contract/v1.2/transport-auth.md)
 
 Do not turn a local stdio example into a public listener by simply changing the transport.
 

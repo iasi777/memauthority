@@ -148,9 +148,13 @@ func call(t *testing.T, session *mcp.ClientSession, name string, args map[string
 }
 
 func fixtureRepo(t *testing.T) string {
+	return fixtureRepoFrom(t, "runtime-read")
+}
+
+func fixtureRepoFrom(t *testing.T, fixture string) string {
 	t.Helper()
 	_, file, _, _ := runtime.Caller(0)
-	src := filepath.Join(filepath.Dir(file), "..", "..", "conformance", "fixtures", "runtime-read")
+	src := filepath.Join(filepath.Dir(file), "..", "..", "conformance", "fixtures", fixture)
 	dst := filepath.Join(t.TempDir(), "vault")
 	if err := copyTree(src, dst); err != nil {
 		t.Fatal(err)
@@ -202,6 +206,63 @@ func copyTree(src, dst string) error {
 		}
 		return xe
 	})
+}
+
+func TestRuntimeToolsDefaultOffWithoutRuntimeAndCanBeOptedIn(t *testing.T) {
+	root := fixtureRepoFrom(t, "route-read-revision")
+	app, err := Open(root, t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	session := inMemorySession(t, app)
+	listed, err := session.ListTools(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]bool{}
+	for _, tool := range listed.Tools {
+		got[tool.Name] = true
+	}
+	for _, name := range []string{"memory_project_runtime", "memory_update_runtime", "memory_record_runtime_observation"} {
+		if got[name] {
+			t.Fatalf("runtime tool %s exposed by default without runtime metadata", name)
+		}
+	}
+	if len(got) != 13 {
+		t.Fatalf("default tool count=%d want 13", len(got))
+	}
+	templates, err := session.ListResourceTemplates(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(templates.ResourceTemplates) != 0 {
+		t.Fatalf("runtime resource template exposed by default: %#v", templates.ResourceTemplates)
+	}
+	_ = session.Close()
+	_ = app.Close()
+
+	app, err = OpenWithOptions(root, t.TempDir(), OpenOptions{RuntimeEnabled: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer app.Close()
+	session = inMemorySession(t, app)
+	listed, err = session.ListTools(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got = map[string]bool{}
+	for _, tool := range listed.Tools {
+		got[tool.Name] = true
+	}
+	for _, name := range []string{"memory_project_runtime", "memory_update_runtime", "memory_record_runtime_observation"} {
+		if !got[name] {
+			t.Fatalf("runtime tool %s missing after opt-in", name)
+		}
+	}
+	if len(got) != 16 {
+		t.Fatalf("opt-in tool count=%d want 16", len(got))
+	}
 }
 
 func TestWriteEnabledHTTPRequiresOAuth(t *testing.T) {

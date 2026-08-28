@@ -4,7 +4,7 @@
 
 这份 FAQ 只回答使用时最容易反复遇到的问题。
 
-精确 API、schema、安全行为和版本兼容规则，以版本化公共契约 [`contract/v1.1/`](contract/v1.1/) 为准。
+精确 API、schema、安全行为和版本兼容规则，以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 ---
 
@@ -192,6 +192,10 @@ V-Memory 会拦截高置信度 secret 形态，但它不是通用隐私分类器
 家庭地址、私人经历、商业机密、未公开计划等内容是否应该长期保存，仍然需要用户和 Agent 判断。
 
 ---
+
+## 普通本地项目需要配置 runtime / environment ID 吗？
+
+通常不需要。Runtime metadata 是可选高级层；Vault 没有已登记 runtime 时，这组能力默认隐藏。普通单机项目应该先完全不配置它。以后确实需要长期记录部署/工作环境拓扑时，再用 `--runtime-enabled` 开启。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，V-Memory 会规范化为 `default`。
 
 ## V-Memory 是 RAG、知识库或者聊天归档吗？
 

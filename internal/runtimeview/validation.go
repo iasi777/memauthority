@@ -15,7 +15,6 @@ import (
 // RuntimeClosedValues exposes the validator's closed value sets without
 // duplicating them in MCP metadata or tests. Returned slices are sorted copies.
 type RuntimeClosedValues struct {
-	HostIDs          []string
 	EnvironmentKinds []string
 	Purposes         []string
 	Capabilities     []string
@@ -26,7 +25,6 @@ type RuntimeClosedValues struct {
 
 func ClosedValues() RuntimeClosedValues {
 	return RuntimeClosedValues{
-		HostIDs:          sortedSet(hostIDs),
 		EnvironmentKinds: sortedSet(environmentKinds),
 		Purposes:         sortedSet(purposes),
 		Capabilities:     sortedSet(capabilities),
@@ -86,6 +84,9 @@ func ValidateManifestDetailed(raw []byte, projectID string) ValidationReport {
 	declaredIDs := map[string]bool{}
 	if v, exists := top["environments"]; exists {
 		envs, ok := v.([]any)
+		if ok {
+			envs = normalizeEnvironmentIDs(envs)
+		}
 		if !ok || len(envs) < 1 || len(envs) > 64 {
 			addRuntimeFinding(&r, "runtime_environments", "environments", "environments", "environments must be a list containing 1 to 64 items")
 		} else {
@@ -134,8 +135,9 @@ func validateEnvironmentDetailed(value any, path string, r *ValidationReport) st
 		addRuntimeFinding(r, "runtime_environment_schema", path, "", "environment must be a mapping")
 		return ""
 	}
-	required := []string{"environment_id", "host_id", "kind", "purpose", "description", "workdir", "capabilities", "supervisor", "checks", "boundaries"}
-	reportObjectShape(r, m, path, "runtime_environment_schema", required, append(append([]string{}, required...), "repository"))
+	required := []string{"environment_id", "kind", "purpose", "description", "workdir", "capabilities", "supervisor", "checks", "boundaries"}
+	allowed := append(append([]string{}, required...), "host_id", "repository")
+	reportObjectShape(r, m, path, "runtime_environment_schema", required, allowed)
 
 	id := ""
 	if v, exists := m["environment_id"]; exists {
@@ -147,7 +149,10 @@ func validateEnvironmentDetailed(value any, path string, r *ValidationReport) st
 		}
 	}
 	if v, exists := m["host_id"]; exists {
-		validateClosedString(r, "runtime_host_id", path+".host_id", "host_id", v, hostIDs)
+		candidate, err := cleanString(v, 64)
+		if err != nil || !hostIDRE.MatchString(candidate) {
+			addRuntimeFinding(r, "runtime_host_id", path+".host_id", "host_id", "host_id must match ^[a-z0-9][a-z0-9._-]{0,63}$ when provided")
+		}
 	}
 	if v, exists := m["kind"]; exists {
 		validateClosedString(r, "runtime_kind", path+".kind", "kind", v, environmentKinds)

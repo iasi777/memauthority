@@ -94,7 +94,7 @@ func TestRuntimeUpdateSelectedToolContractUsesClosedValueTruth(t *testing.T) {
 		t.Fatal("memory_update_runtime is missing")
 	}
 	values := runtimeview.ClosedValues()
-	for _, value := range append(append(append([]string{}, values.HostIDs...), values.EnvironmentKinds...), values.CheckKinds...) {
+	for _, value := range append(append([]string{}, values.EnvironmentKinds...), values.CheckKinds...) {
 		if !strings.Contains(tool.Description, value) {
 			t.Errorf("runtime tool description lacks searchable closed value %q: %q", value, tool.Description)
 		}
@@ -112,7 +112,19 @@ func TestRuntimeUpdateSelectedToolContractUsesClosedValueTruth(t *testing.T) {
 	environments := mustObject(t, runtimeProps["environments"], "runtime.environments")
 	envItems := mustObject(t, environments["items"], "runtime.environments.items")
 	envProps := mustProperties(t, envItems, "runtime.environments.items")
-	assertDescriptionContainsValues(t, envProps["host_id"], "host_id", values.HostIDs)
+	required, _ := envItems["required"].([]any)
+	for _, field := range []string{"environment_id", "host_id"} {
+		for _, raw := range required {
+			if raw == field {
+				t.Fatalf("%s unexpectedly required in runtime environment input", field)
+			}
+		}
+	}
+	for _, term := range []string{"optional", "user-defined"} {
+		if !strings.Contains(strings.ToLower(descriptionOf(t, envProps["host_id"], "host_id")), term) {
+			t.Errorf("host_id description lacks %q", term)
+		}
+	}
 	assertDescriptionContainsValues(t, envProps["kind"], "environment kind", values.EnvironmentKinds)
 	assertDescriptionContainsValues(t, envProps["purpose"], "purpose", values.Purposes)
 	assertDescriptionContainsValues(t, envProps["capabilities"], "capabilities", values.Capabilities)

@@ -76,6 +76,38 @@ func TestRuntimeUpdateCreateReplaceAndCAS(t *testing.T) {
 	}
 }
 
+func TestRuntimeSingleEnvironmentShorthandCanonicalizesDefaultIDWithoutHost(t *testing.T) {
+	root := runtimeWriteFixtureRepo(t)
+	writer, err := New(root, Config{WorkRoot: t.TempDir(), WriteEnabled: true, WriteSource: "unit-runtime", Now: fixedRuntimeNow})
+	if err != nil {
+		t.Fatal(err)
+	}
+	indexRevision, err := writer.currentIndexRevision()
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime := testRuntimeManifest("other", "single", "directory_exists")
+	runtime.Environments = runtime.Environments[:1]
+	runtime.Environments[0].EnvironmentID = ""
+	runtime.Environments[0].HostID = ""
+	runtime.Relations = nil
+	result := writer.UpdateRuntime(UpdateRuntimeArgs{
+		ProjectID: "other", Runtime: runtime, ExpectedIndexRevision: indexRevision, ClientIdempotencyKey: "runtime-single-default",
+	})
+	if result["status"] != "committed" {
+		t.Fatalf("single environment shorthand: %#v", result)
+	}
+	head := result["new_commit"].(string)
+	raw := []byte(mustGit(t, root, "show", head+":projects/other/runtime.yaml"))
+	text := string(raw)
+	if !strings.Contains(text, "environment_id: default") {
+		t.Fatalf("default environment id not materialized: %s", text)
+	}
+	if strings.Contains(text, "host_id:") {
+		t.Fatalf("optional host_id was materialized unexpectedly: %s", text)
+	}
+}
+
 func TestRuntimeClosedCheckRejectsBeforeAuthorityMovement(t *testing.T) {
 	root := runtimeWriteFixtureRepo(t)
 	writer, err := New(root, Config{WorkRoot: t.TempDir(), WriteEnabled: true, WriteSource: "unit-runtime", Now: fixedRuntimeNow})
@@ -110,7 +142,7 @@ func TestRuntimeStaticValidationPrecedesIndexCASAndAggregates(t *testing.T) {
 	}
 	before := mustGit(t, root, "rev-parse", "HEAD")
 	bad := testRuntimeManifest("other", "bad", "directory_exists")
-	bad.Environments[0].HostID = "local-linux"
+	bad.Environments[0].HostID = "Local Linux"
 	bad.Environments[0].Kind = "virtual_machine"
 	bad.Environments[0].Capabilities = append(bad.Environments[0].Capabilities, "root")
 	staleIndex := "sha256:0000000000000000000000000000000000000000000000000000000000000000"

@@ -3,7 +3,7 @@
 [English](ONBOARDING.md)
 
 > 用途：V-Memory 用户接入指南。
-> 精确 API、schema 和安全行为以版本化公共契约 [`contract/v1.1/`](contract/v1.1/) 为准。
+> 精确 API、schema 和安全行为以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 这份文档只回答三个问题：
 
@@ -254,6 +254,8 @@ v-memory serve \
 
 这些已经包含当前服务实际暴露的字段、机械约束和使用提示。
 
+首次建库或旧记忆迁移时，**不要**因为 V-Memory 能表达 runtime/environment 就顺手创建这类元数据。没有已登记 runtime 时，这些工具默认隐藏。普通单机项目建议一直关闭；只有多环境或部署拓扑确实值得长期记住时再开启。
+
 普通 managed 使用不需要你每次重新解释参数，也不要脱离当前 tool schema 硬编码某个版本的字段。
 
 [`AGENT-GUIDE_ZH.md`](AGENT-GUIDE_ZH.md) 补充的是跨工具原则，尤其适合：
@@ -268,7 +270,7 @@ v-memory serve \
 HTTP 远程接入前，先阅读：
 
 - [`../SECURITY_ZH.md`](../SECURITY_ZH.md)
-- [`contract/v1.1/transport-auth.md`](contract/v1.1/transport-auth.md)
+- [`contract/v1.2/transport-auth.md`](contract/v1.2/transport-auth.md)
 
 不要把本地 stdio 示例直接改成公网监听。
 

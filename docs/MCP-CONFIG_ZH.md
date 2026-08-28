@@ -4,7 +4,7 @@
 
 这份文档说明稳定的接入原则，不尝试维护所有 MCP 客户端各自不断变化的配置 UI。
 
-精确 CLI 和 transport / auth 行为以版本化公共契约 [`contract/v1.1/`](contract/v1.1/) 为准。
+精确 CLI 和 transport / auth 行为以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 ---
 
@@ -67,6 +67,26 @@ v-memory serve \
 
 ---
 
+## 可选的 Runtime Metadata
+
+如果 Vault 里没有已登记的 `runtime_resource`，runtime metadata 会**默认关闭**。大多数只有一台电脑、一个工作副本的用户都不需要它。保持关闭可以缩小 MCP 工具面，也能避免 Agent 在首次建库或旧记忆迁移时凭空创造部署拓扑。
+
+只有当“项目在哪些工作/运行环境、如何部署”这类事实确实值得跨会话长期保留时，才显式开启：
+
+```sh
+v-memory serve \
+  --vault /absolute/path/to/vault \
+  --state-dir /absolute/path/to/state \
+  --write-enabled \
+  --runtime-enabled
+```
+
+兼容行为是保守的：如果 Vault 已经有已登记 runtime resource，即使没有这个 flag，V-Memory 也会自动继续暴露 runtime 工具。
+
+Runtime ID 不再绑定维护者自己的机器。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，V-Memory 会规范化为 `default`；有多个 environment 时再显式给每个环境稳定命名。普通单机用户不要因为看见 `host_id` 字段就强行填写。
+
+---
+
 ## Agent 连接后还需要额外塞一大段 V-Memory Prompt 吗？
 
 通常不需要。
@@ -104,7 +124,7 @@ frozen transport contract 的基本安全边界包括：
 生产暴露前请阅读：
 
 - [`../SECURITY_ZH.md`](../SECURITY_ZH.md)
-- [`contract/v1.1/transport-auth.md`](contract/v1.1/transport-auth.md)
+- [`contract/v1.2/transport-auth.md`](contract/v1.2/transport-auth.md)
 
 不要为了让部署“先跑起来”而绕过这些拒绝规则。
 
@@ -122,7 +142,7 @@ frozen transport contract 的基本安全边界包括：
 v-memory serve --help
 ```
 
-并对照当前的 [`contract/v1.1/managed-runtime.md`](contract/v1.1/managed-runtime.md)，或已安装版本对应的冻结契约。
+并对照当前的 [`contract/v1.2/managed-runtime.md`](contract/v1.2/managed-runtime.md)，或已安装版本对应的冻结契约。
 
 ---
 

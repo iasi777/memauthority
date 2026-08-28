@@ -4,7 +4,7 @@
 
 This guide documents stable connection principles rather than trying to track every MCP client's changing UI.
 
-For exact CLI and transport / authentication behavior, use the versioned public contract under [`contract/v1.1/`](contract/v1.1/).
+For exact CLI and transport / authentication behavior, use the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 ---
 
@@ -67,6 +67,26 @@ Use the current official documentation for your client to find its configuration
 
 ---
 
+## Optional Runtime Metadata
+
+Runtime metadata is intentionally **off by default** for a Vault that has no registered `runtime_resource`. Most users with one computer and one working copy do not need it. Leaving it off keeps the MCP surface smaller and avoids inventing deployment topology during onboarding or legacy-memory import.
+
+Enable it only when durable environment/deployment facts materially help future agents:
+
+```sh
+v-memory serve \
+  --vault /absolute/path/to/vault \
+  --state-dir /absolute/path/to/state \
+  --write-enabled \
+  --runtime-enabled
+```
+
+Compatibility behavior is conservative: if the Vault already contains a registered runtime resource, V-Memory automatically exposes the runtime tools even without the flag.
+
+Runtime identifiers are no longer tied to maintainer machines. `host_id` is optional and user-defined. For a single environment, `environment_id` may be omitted and is canonicalized to `default`; with multiple environments, give each one an explicit stable `environment_id`. A typical single-machine user should not add `host_id` merely because the field exists.
+
+---
+
 ## Do I Need to Add a Large V-Memory Prompt After Connecting?
 
 Usually not.
@@ -104,7 +124,7 @@ Core safety boundaries in the frozen transport contract include:
 Before exposing production HTTP, read:
 
 - [`../SECURITY.md`](../SECURITY.md)
-- [`contract/v1.1/transport-auth.md`](contract/v1.1/transport-auth.md)
+- [`contract/v1.2/transport-auth.md`](contract/v1.2/transport-auth.md)
 
 Do not bypass refusal rules merely to make a deployment “start working.”
 
@@ -122,7 +142,7 @@ Check the exact options for the installed release:
 v-memory serve --help
 ```
 
-Then compare them with the current [`contract/v1.1/managed-runtime.md`](contract/v1.1/managed-runtime.md) contract or the frozen contract for the installed release.
+Then compare them with the current [`contract/v1.2/managed-runtime.md`](contract/v1.2/managed-runtime.md) contract or the frozen contract for the installed release.
 
 ---
 

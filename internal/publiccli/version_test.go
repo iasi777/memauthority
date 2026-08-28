@@ -14,7 +14,7 @@ func TestVersionDiscovery(t *testing.T) {
 		if code := Run(args, &out, &errOut); code != 0 {
 			t.Fatalf("Run(%v) exit=%d stderr=%q", args, code, errOut.String())
 		}
-		if got := out.String(); got != "v-memory 1.1.0\n" {
+		if got := out.String(); got != "v-memory 1.2.0\n" {
 			t.Fatalf("Run(%v) stdout=%q", args, got)
 		}
 		if errOut.Len() != 0 {

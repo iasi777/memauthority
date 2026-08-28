@@ -3,7 +3,7 @@
 [English](AGENT-GUIDE.md)
 
 > 用途：V-Memory Agent 操作指南。
-> 精确 tool schema、Vault 格式和拒绝行为以版本化公共契约 [`contract/v1.1/`](contract/v1.1/) 为准。
+> 精确 tool schema、Vault 格式和拒绝行为以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 这份指南不重复全部 MCP schema。
 
@@ -334,6 +334,8 @@ Secret scanner 不是通用隐私分类器。
 > **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
 
 不要等待 V-Memory 提供某个平台的专用 importer。
+
+迁移时不要凭空创造 runtime 拓扑。Runtime metadata 是可选高级能力，在没有既有 runtime 时默认隐藏。只有工作/部署环境属于稳定事实、且确实会帮助未来任务时才迁移；否则保持关闭。
 
 你理解来源，并把语义转换成 V-Memory。
 

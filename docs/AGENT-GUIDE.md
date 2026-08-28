@@ -3,7 +3,7 @@
 [中文](AGENT-GUIDE_ZH.md)
 
 > Purpose: operating guidance for agents using V-Memory.
-> Exact tool schemas, Vault format, and refusal behavior are defined by the versioned public contract under [`contract/v1.1/`](contract/v1.1/).
+> Exact tool schemas, Vault format, and refusal behavior are defined by the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 This guide does not duplicate the full MCP schema. Once a Managed MCP connection is established, the agent already receives the current tool descriptions, input schemas, annotations, and resource metadata.
 
@@ -326,6 +326,8 @@ Legacy content can be anything you can actually access and understand:
 > **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
 
 Do not wait for V-Memory to ship a platform-specific importer. You understand the source and translate its semantics into V-Memory.
+
+Do not invent runtime topology during migration. Runtime metadata is an optional advanced capability, hidden by default when absent. Only migrate work/deployment environments when they are durable facts that materially help future work; otherwise leave runtime disabled.
 
 ### 11.3 Import Is Distillation
 

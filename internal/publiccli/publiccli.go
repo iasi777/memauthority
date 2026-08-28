@@ -300,6 +300,7 @@ func runServe(args []string, stdout, stderr io.Writer) int {
 	allowedHosts := fs.String("allowed-hosts", os.Getenv("VM_ALLOWED_HOSTS"), "comma-separated exact HTTP Host allowlist")
 	allowedOrigins := fs.String("allowed-origins", os.Getenv("VM_ALLOWED_ORIGINS"), "comma-separated exact HTTP Origin allowlist")
 	writeEnabled := fs.Bool("write-enabled", false, "enable Authority mutation tools; disabled by default")
+	runtimeEnabled := fs.Bool("runtime-enabled", os.Getenv("VM_RUNTIME_ENABLED") == "1", "expose optional declarative runtime tools; existing Vault runtime metadata enables them automatically")
 	writeSource := fs.String("write-source", os.Getenv("VM_WRITE_SOURCE"), "mutation source label recorded in structured results")
 	requirePrimary := fs.Bool("require-primary", os.Getenv("VM_REQUIRE_PRIMARY") == "1", "require Git-tracked PRIMARY node/epoch match before mutation")
 	primaryEpoch := fs.Int("primary-epoch", 0, "expected primary epoch when fencing is required")
@@ -350,7 +351,7 @@ func runServe(args []string, stdout, stderr io.Writer) int {
 		return code
 	}
 
-	options := mcpserver.OpenOptions{WriteEnabled: *writeEnabled, WriteSource: *writeSource, ManagedAdmission: true, AllowedHosts: splitCSV(*allowedHosts), AllowedOrigins: splitCSV(*allowedOrigins)}
+	options := mcpserver.OpenOptions{WriteEnabled: *writeEnabled, WriteSource: *writeSource, RuntimeEnabled: *runtimeEnabled, ManagedAdmission: true, AllowedHosts: splitCSV(*allowedHosts), AllowedOrigins: splitCSV(*allowedOrigins)}
 	if *requirePrimary {
 		if *primaryEpoch < 1 || strings.TrimSpace(*nodeIDFile) == "" {
 			fmt.Fprintln(stderr, "--require-primary requires --primary-epoch >= 1 and --node-id-file")

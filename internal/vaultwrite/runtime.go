@@ -46,8 +46,8 @@ type RuntimeBoundariesInput struct {
 }
 
 type RuntimeEnvironmentInput struct {
-	EnvironmentID string                  `json:"environment_id" yaml:"environment_id"`
-	HostID        string                  `json:"host_id" yaml:"host_id"`
+	EnvironmentID string                  `json:"environment_id,omitempty" yaml:"environment_id,omitempty"`
+	HostID        string                  `json:"host_id,omitempty" yaml:"host_id,omitempty"`
 	Kind          string                  `json:"kind" yaml:"kind"`
 	Purpose       string                  `json:"purpose" yaml:"purpose"`
 	Description   string                  `json:"description" yaml:"description"`
@@ -91,7 +91,7 @@ type UpdateRuntimeArgs struct {
 type RecordRuntimeObservationArgs struct {
 	ProjectID               string  `json:"project_id"`
 	Observation             string  `json:"observation"`
-	HostID                  string  `json:"host_id"`
+	HostID                  string  `json:"host_id,omitempty"`
 	EnvironmentID           *string `json:"environment_id,omitempty"`
 	RuntimeResourceRevision *string `json:"runtime_resource_revision,omitempty"`
 	ClientIdempotencyKey    string  `json:"client_idempotency_key"`
@@ -218,6 +218,9 @@ func (s *Service) UpdateRuntime(args UpdateRuntimeArgs) map[string]any {
 func normalizeRuntimeManifestInput(input RuntimeManifestInput) RuntimeManifestInput {
 	out := input
 	out.Environments = append([]RuntimeEnvironmentInput(nil), input.Environments...)
+	if len(out.Environments) == 1 && strings.TrimSpace(out.Environments[0].EnvironmentID) == "" {
+		out.Environments[0].EnvironmentID = "default"
+	}
 	for i := range out.Environments {
 		env := out.Environments[i]
 		env.Checks = append([]RuntimeCheckInput(nil), env.Checks...)
@@ -238,7 +241,7 @@ func (s *Service) RecordRuntimeObservation(args RecordRuntimeObservationArgs) ma
 	if preflight := s.writePreflight(); preflight != nil {
 		return runtimeObservationFromMutationError(preflight, args)
 	}
-	if invalidLifecycleProjectID(args.ProjectID) || (args.Observation != "runtime_conflict" && args.Observation != "fallback_to_handoff") || !runtimeHostID(args.HostID) || strings.TrimSpace(args.ClientIdempotencyKey) == "" {
+	if invalidLifecycleProjectID(args.ProjectID) || (args.Observation != "runtime_conflict" && args.Observation != "fallback_to_handoff") || !runtimeOptionalHostID(args.HostID) || strings.TrimSpace(args.ClientIdempotencyKey) == "" {
 		return runtimeObservationError("validation_failed", "arguments", "invalid runtime observation arguments", args, nil)
 	}
 	if args.EnvironmentID != nil && (strings.TrimSpace(*args.EnvironmentID) == "" || len(*args.EnvironmentID) > 64) {
@@ -344,7 +347,23 @@ func runtimeValidationMutationError(report runtimeview.ValidationReport) map[str
 	return result
 }
 
-func runtimeHostID(value string) bool { return value == "local" || value == "arm" || value == "amd" }
+func runtimeOptionalHostID(value string) bool {
+	value = strings.TrimSpace(value)
+	return value == "" || runtimeIdentifier(value)
+}
+
+func runtimeIdentifier(value string) bool {
+	if len(value) < 1 || len(value) > 64 {
+		return false
+	}
+	for i, r := range value {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || (i > 0 && (r == '.' || r == '_' || r == '-')) {
+			continue
+		}
+		return false
+	}
+	return true
+}
 
 func runtimeObservationBase(args RecordRuntimeObservationArgs) map[string]any {
 	var env, rev any
