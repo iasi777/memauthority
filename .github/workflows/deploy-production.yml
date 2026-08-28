@@ -1,0 +1,84 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Choose DEPLOY to deploy the selected main commit to ARM production'
+        required: true
+        type: choice
+        options:
+          - CANCEL
+          - DEPLOY
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v-memory-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Guard manual production deployment
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$CONFIRM" = 'DEPLOY'
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: go.sum
+      - name: Verify modules
+        run: go mod verify
+      - name: Test
+        run: go test ./...
+      - name: Vet
+        run: go vet ./...
+      - name: Build linux/arm64 production binary
+        run: |
+          mkdir -p dist
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -buildvcs=false -o dist/v-memory ./cmd/v-memory
+          echo "VM_SHA256=$(sha256sum dist/v-memory | awk '{print $1}')" >> "$GITHUB_ENV"
+      - name: Inspect production artifact and record provenance
+        run: |
+          file dist/v-memory | tee dist/file.txt
+          grep -Eq 'ELF 64-bit.*ARM aarch64|ELF 64-bit.*ARM64' dist/file.txt
+          go version -m dist/v-memory | tee dist/go-version-m.txt
+          printf '%s  %s\n' "$VM_SHA256" 'v-memory' > dist/SHA256SUMS
+          (cd dist && sha256sum -c SHA256SUMS)
+          python3 -c 'import json,sys; json.dump({"schema_version":1,"repository":sys.argv[1],"ref":sys.argv[2],"source_commit":sys.argv[3],"artifact":"v-memory","sha256":sys.argv[4]},sys.stdout,sort_keys=True,indent=2); print()' "$GITHUB_REPOSITORY" "$GITHUB_REF" "$GITHUB_SHA" "$VM_SHA256" > dist/provenance.json
+          cat dist/provenance.json
+      - name: Deploy through restricted ARM gateway
+        env:
+          ARM_DEPLOY_TOKEN: ${{ secrets.ARM_DEPLOY_TOKEN }}
+        run: |
+          test -n "$ARM_DEPLOY_TOKEN"
+          response=$(mktemp)
+          code=$(curl --silent --show-error \
+            --connect-timeout 10 --max-time 115 \
+            --output "$response" --write-out '%{http_code}' \
+            --request POST 'https://v-memory.iasi.pp.ua/_deploy/v1' \
+            --header "Authorization: Bearer $ARM_DEPLOY_TOKEN" \
+            --header 'Content-Type: application/octet-stream' \
+            --header "X-V-Memory-SHA256: $VM_SHA256" \
+            --header "X-V-Memory-Commit: $GITHUB_SHA" \
+            --header "X-V-Memory-Repository: $GITHUB_REPOSITORY" \
+            --header "X-V-Memory-Ref: $GITHUB_REF" \
+            --data-binary @dist/v-memory)
+          cat "$response"
+          test "$code" = '200'
+          python3 -c 'import json,sys; value=json.load(open(sys.argv[1],encoding="utf-8")); result=value.get("result",""); assert value.get("ok") is True; assert ("commit="+sys.argv[2]) in result; assert (("new_sha256="+sys.argv[3]) in result or ("sha256="+sys.argv[3]) in result)' "$response" "$GITHUB_SHA" "$VM_SHA256"
+      - name: Verify public health after deployment
+        run: |
+          curl --fail --silent --show-error --max-time 10 https://v-memory.iasi.pp.ua/.well-known/oauth-authorization-server > oauth-health.json
+          python3 -c 'import json; value=json.load(open("oauth-health.json",encoding="utf-8")); assert value.get("issuer")=="https://v-memory.iasi.pp.ua"'
