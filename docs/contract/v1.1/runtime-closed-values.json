@@ -1,0 +1,52 @@
+{
+  "capabilities": [
+    "build",
+    "deploy_source",
+    "deploy_target",
+    "edit",
+    "read_only",
+    "runtime_check",
+    "test"
+  ],
+  "check_kinds": [
+    "directory_exists",
+    "docker_compose_services",
+    "failed_units",
+    "file_exists",
+    "git_head",
+    "git_status",
+    "systemd_units"
+  ],
+  "environment_kinds": [
+    "archive",
+    "deployment",
+    "service",
+    "workspace"
+  ],
+  "host_ids": [
+    "amd",
+    "arm",
+    "local"
+  ],
+  "purposes": [
+    "backup",
+    "disabled_mirror",
+    "production",
+    "production_reader",
+    "source_development",
+    "staging",
+    "test"
+  ],
+  "relation_kinds": [
+    "deploys_to",
+    "mirrors"
+  ],
+  "supervisor_kinds": [
+    "docker",
+    "docker_compose",
+    "none",
+    "process",
+    "systemd_system",
+    "systemd_user"
+  ]
+}

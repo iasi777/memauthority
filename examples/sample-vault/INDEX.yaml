@@ -1,0 +1,11 @@
+schema_version: 4
+projects:
+  demo:
+    description: Sanitized V-Memory example project
+    lifecycle: active
+    aliases:
+      - sample-project
+    runtime_resource: null
+    local_path: null
+    last_updated: '2026-08-25'
+    last_verified: '2026-08-25'

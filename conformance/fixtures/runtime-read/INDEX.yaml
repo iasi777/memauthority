@@ -1,0 +1,19 @@
+schema_version: 4
+projects:
+  demo:
+    description: topic：sanitized baseline project
+    lifecycle: active
+    aliases:
+      - baseline-demo
+    runtime_resource: projects/demo/runtime.yaml
+    local_path: /workspace/demo
+    last_updated: '2026-08-11'
+    last_verified: '2026-08-11'
+  other:
+    description: topic：secondary sanitized project
+    lifecycle: active
+    aliases: []
+    runtime_resource: null
+    local_path: /workspace/other
+    last_updated: '2026-08-11'
+    last_verified: '2026-08-11'

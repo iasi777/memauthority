@@ -1,0 +1,11 @@
+schema_version: 4
+projects:
+  demo:
+    description: "topic: conformance fixture for route, bounded read, and revision behavior"
+    lifecycle: active
+    aliases:
+      - demo-alias
+    runtime_resource: null
+    local_path: /workspace/conformance-demo
+    last_updated: '2026-08-11'
+    last_verified: '2026-08-11'

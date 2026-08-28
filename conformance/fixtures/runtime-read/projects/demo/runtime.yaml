@@ -1,0 +1,64 @@
+schema_version: 1
+project_id: demo
+environments:
+- environment_id: local-workspace
+  host_id: local
+  kind: workspace
+  purpose: source_development
+  description: sanitized development workspace
+  workdir: /workspace/demo
+  repository:
+    path: /workspace/demo
+    branch: main
+    remote: origin
+  capabilities:
+  - edit
+  - test
+  - build
+  supervisor:
+    kind: none
+  checks:
+  - kind: git_status
+    target: repository
+  - kind: git_head
+    target: repository
+  boundaries:
+    production_writer: false
+    mutation_requires_explicit_authorization: true
+- environment_id: arm-production
+  host_id: arm
+  kind: deployment
+  purpose: production
+  description: sanitized production target
+  workdir: /srv/example
+  repository:
+    path: /srv/example
+    branch: main
+  capabilities:
+  - runtime_check
+  - deploy_target
+  supervisor:
+    kind: systemd_system
+    units:
+    - example.service
+  checks:
+  - kind: git_status
+    target: repository
+  - kind: systemd_units
+    scope: system
+    units:
+    - example.service
+  boundaries:
+    production_writer: true
+    single_writer: true
+    mutation_requires_explicit_authorization: true
+relations:
+- kind: deploys_to
+  from: local-workspace
+  to: arm-production
+verification:
+  verified_at: '2026-08-11T00:00:00Z'
+  verified_by: p0-baseline
+  stale_after: P99999D
+  evidence:
+  - memory://projects/demo/handoff

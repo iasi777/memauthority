@@ -1,0 +1,9 @@
+schema_version: 4
+projects:
+  alpha:
+    description: Search fixture
+    lifecycle: active
+    aliases: [alpha-alias]
+    runtime_resource: null
+    last_updated: '2026-08-11'
+    last_verified: '2026-08-11'
