@@ -851,16 +851,8 @@ func writeJSONDurable(path string, value any) error {
 	if err := os.Rename(tmp, path); err != nil {
 		return fmt.Errorf("install durable state file: %w", err)
 	}
-	dir, err := os.Open(filepath.Dir(path))
-	if err != nil {
-		return fmt.Errorf("open durable state directory: %w", err)
-	}
-	if err := dir.Sync(); err != nil {
-		_ = dir.Close()
-		return fmt.Errorf("fsync durable state directory: %w", err)
-	}
-	if err := dir.Close(); err != nil {
-		return fmt.Errorf("close durable state directory: %w", err)
+	if err := syncDurableDirectory(filepath.Dir(path)); err != nil {
+		return err
 	}
 	ok = true
 	return nil

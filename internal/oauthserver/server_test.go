@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -137,8 +138,10 @@ func TestScopeResourcePKCEAndRawTokenStorage(t *testing.T) {
 	if bytes.Contains(dbBytes, []byte(access)) || bytes.Contains(dbBytes, []byte(refresh)) {
 		t.Fatal("OAuth DB contains raw bearer token material")
 	}
-	if info, err := os.Stat(cfg.StateDB); err != nil || info.Mode().Perm()&0o077 != 0 {
-		t.Fatalf("OAuth state DB permissions are not private: info=%v err=%v", info, err)
+	if runtime.GOOS != "windows" {
+		if info, err := os.Stat(cfg.StateDB); err != nil || info.Mode().Perm()&0o077 != 0 {
+			t.Fatalf("OAuth state DB permissions are not private: info=%v err=%v", info, err)
+		}
 	}
 }
 
