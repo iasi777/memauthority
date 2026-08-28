@@ -19,6 +19,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/iasi777/v-memory/internal/gitview"
 	"github.com/iasi777/v-memory/internal/textcanon"
 	"github.com/iasi777/v-memory/internal/vaultread"
 	"github.com/iasi777/v-memory/internal/vaultvalidate"
@@ -242,13 +243,22 @@ func (s *Service) AppendProgress(args AppendProgressArgs) map[string]any {
 		return mutationError("validation_failed", "progress", err.Error())
 	}
 
-	raw, err := os.ReadFile(rolePath)
+	_, statErr := os.Stat(rolePath)
+	var raw []byte
 	previousRevision := ""
-	if os.IsNotExist(err) {
+	if os.IsNotExist(statErr) {
 		raw = renderDefaultRoleFile("进度", args.ProjectID, effectiveDate)
-	} else if err != nil {
-		return mutationError("mutation_failed", "progress", fmt.Sprintf("read progress resource: %v", err))
+	} else if statErr != nil {
+		return mutationError("mutation_failed", "progress", fmt.Sprintf("inspect progress resource: %v", statErr))
 	} else {
+		rel, relErr := filepath.Rel(s.root, rolePath)
+		if relErr != nil {
+			return mutationError("mutation_failed", "progress", fmt.Sprintf("resolve progress resource: %v", relErr))
+		}
+		raw, err = readAuthorityAtCommit(s.root, previousCommit, rel)
+		if err != nil {
+			return mutationError("mutation_failed", "progress", fmt.Sprintf("read progress resource at Authority commit: %v", err))
+		}
 		if !utf8.Valid(raw) {
 			return mutationError("validation_failed", "progress", "progress resource is not valid UTF-8")
 		}
@@ -323,7 +333,7 @@ func (s *Service) AppendProgress(args AppendProgressArgs) map[string]any {
 		return mutationError("mutation_failed", "journal", err.Error())
 	}
 	s.maybeCrash("ref_updated_before_materialize")
-	if err := gitResetHard(s.root, candidateCommit); err != nil {
+	if err := materializeCandidate(s.root, candidateCommit, changes); err != nil {
 		return mutationError("mutation_failed", "materialize", err.Error())
 	}
 	journal.State = "materialized"
@@ -440,11 +450,15 @@ func (s *Service) nowUTC() time.Time  { return s.now().UTC() }
 func (s *Service) todayLocal() string { return s.now().Format("2006-01-02") }
 
 func (s *Service) currentIndexRevision() (string, error) {
-	path := filepath.Join(s.root, "INDEX.yaml")
-	raw, err := os.ReadFile(path)
-	if err != nil && s.legacyIndex {
-		raw, err = os.ReadFile(filepath.Join(s.root, "INDEX.md"))
+	head, err := gitHead(s.root)
+	if err != nil {
+		return "", err
 	}
+	rel := "INDEX.yaml"
+	if s.legacyIndex {
+		rel = "INDEX.md"
+	}
+	raw, err := readAuthorityAtCommit(s.root, head, rel)
 	if err != nil {
 		return "", err
 	}
@@ -723,8 +737,29 @@ func gitCASHead(root, oldHead, newHead string) error {
 }
 
 func gitResetHard(root, commit string) error {
-	_, err := gitInput(root, nil, nil, "reset", "--hard", commit)
+	_, err := gitInput(root, nil, nil, "-c", "core.autocrlf=false", "-c", "core.eol=lf", "reset", "--hard", commit)
 	return err
+}
+
+func readAuthorityAtCommit(root, commit, relativePath string) ([]byte, error) {
+	return gitview.ReadFile(root, commit, filepath.ToSlash(relativePath))
+}
+
+func materializeCandidate(root, commit string, changes map[string]*[]byte) error {
+	if err := gitResetHard(root, commit); err != nil {
+		return err
+	}
+	if err := applyCandidateChanges(root, changes); err != nil {
+		return fmt.Errorf("write canonical candidate bytes: %w", err)
+	}
+	clean, dirty, err := gitWorktreeState(root)
+	if err != nil {
+		return fmt.Errorf("verify materialized worktree: %w", err)
+	}
+	if !clean {
+		return fmt.Errorf("materialized worktree differs from candidate commit: %s", strings.Join(dirty, ", "))
+	}
+	return nil
 }
 
 func gitHead(root string) (string, error) {

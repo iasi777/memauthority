@@ -185,7 +185,11 @@ func (s *Service) UpdateRuntime(args UpdateRuntimeArgs) map[string]any {
 		if *project.RuntimeResource != runtimePath {
 			return mutationError("validation_failed", "runtime_resource", "runtime resource path is invalid")
 		}
-		currentRaw, err := os.ReadFile(filepath.Join(s.root, filepath.FromSlash(runtimePath)))
+		head, headErr := gitHead(s.root)
+		if headErr != nil {
+			return mutationError("mutation_failed", "git", headErr.Error())
+		}
+		currentRaw, err := readAuthorityAtCommit(s.root, head, runtimePath)
 		if err != nil {
 			return mutationError("validation_failed", "runtime_resource", "registered runtime resource is missing")
 		}
@@ -283,8 +287,11 @@ func (s *Service) RecordRuntimeObservation(args RecordRuntimeObservationArgs) ma
 
 	var currentRevision *string
 	if project.RuntimeResource != nil {
-		runtimePath := filepath.Join(s.root, filepath.FromSlash(*project.RuntimeResource))
-		raw, err := os.ReadFile(runtimePath)
+		head, headErr := gitHead(s.root)
+		if headErr != nil {
+			return runtimeObservationError("mutation_failed", "git", headErr.Error(), args, nil)
+		}
+		raw, err := readAuthorityAtCommit(s.root, head, *project.RuntimeResource)
 		if err != nil {
 			return runtimeObservationError("validation_failed", "runtime_resource", "registered runtime resource is missing", args, nil)
 		}

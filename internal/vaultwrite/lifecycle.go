@@ -476,7 +476,7 @@ func (s *Service) commitLifecycleChanges(spec lifecycleResultSpec, payloadHash, 
 	if err := writeJSONDurable(journalPath, journal); err != nil {
 		return mutationError("mutation_failed", "journal", err.Error())
 	}
-	if err := gitResetHard(s.root, candidateCommit); err != nil {
+	if err := materializeCandidate(s.root, candidateCommit, changes); err != nil {
 		return mutationError("mutation_failed", "materialize", err.Error())
 	}
 	s.maybeCrash("materialized_before_index")
@@ -639,7 +639,11 @@ func safeAuthorityRelativePath(path string) bool {
 
 func (s *Service) readSchema4Index() ([]byte, lifecycleIndex, string, error) {
 	var doc lifecycleIndex
-	raw, err := os.ReadFile(filepath.Join(s.root, "INDEX.yaml"))
+	head, err := gitHead(s.root)
+	if err != nil {
+		return nil, doc, "", err
+	}
+	raw, err := readAuthorityAtCommit(s.root, head, "INDEX.yaml")
 	if err != nil {
 		return nil, doc, "", err
 	}

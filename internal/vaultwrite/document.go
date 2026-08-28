@@ -357,9 +357,13 @@ func (s *Service) commitDocumentMutation(spec documentMutationSpec, render docum
 			return mutationError("validation_failed", spec.Role, "missing role cannot be materialized")
 		}
 	} else {
-		raw, err = os.ReadFile(rolePath)
+		rel, relErr := filepath.Rel(s.root, rolePath)
+		if relErr != nil {
+			return mutationError("mutation_failed", spec.Role, fmt.Sprintf("resolve resource path: %v", relErr))
+		}
+		raw, err = readAuthorityAtCommit(s.root, previousCommit, rel)
 		if err != nil {
-			return mutationError("mutation_failed", spec.Role, fmt.Sprintf("read resource: %v", err))
+			return mutationError("mutation_failed", spec.Role, fmt.Sprintf("read resource at Authority commit: %v", err))
 		}
 		if !utf8.Valid(raw) {
 			return mutationError("validation_failed", spec.Role, "resource is not valid UTF-8")
@@ -434,7 +438,7 @@ func (s *Service) commitDocumentMutation(spec documentMutationSpec, render docum
 		return mutationError("mutation_failed", "journal", err.Error())
 	}
 	s.maybeCrash("ref_updated_before_materialize")
-	if err := gitResetHard(s.root, candidateCommit); err != nil {
+	if err := materializeCandidate(s.root, candidateCommit, changes); err != nil {
 		return mutationError("mutation_failed", "materialize", err.Error())
 	}
 	journal.State = "materialized"
