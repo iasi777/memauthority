@@ -1,0 +1,86 @@
+{
+  "change_rule": "Do not rewrite this released contract in place. Publish compatibility changes through a new versioned contract and release identity.",
+  "compatibility_policy": {
+    "backward_compatible_fix": "patch",
+    "backward_compatible_public_addition": "minor",
+    "breaking_change": "major",
+    "scheme": "Semantic Versioning"
+  },
+  "history_boundary": "The public repository keeps the frozen v1.1 contract intact. This v1.2 freeze binds the reviewed v1.2 source baseline and its progressive runtime capability surface.",
+  "kind": "v_memory_public_contract_freeze_manifest",
+  "normative_contract": {
+    "directory": "docs/contract/v1.2",
+    "files": [
+      {
+        "path": "docs/contract/v1.2/README.md",
+        "sha256": "4f2cdc6f9c7a05a792b9c9dceee03cc3ef56fc5e7f642131726b3603a3ba2264",
+        "size_bytes": 1491
+      },
+      {
+        "path": "docs/contract/v1.2/VERSION-DECISION.md",
+        "sha256": "525f20f0d64b4695cedde4c706bd24b048e1f1749228987ccb74b5f7820425e6",
+        "size_bytes": 919
+      },
+      {
+        "path": "docs/contract/v1.2/cli.md",
+        "sha256": "38c1380a685f81956db5978857cbe5b0a0bf406e4c508dc6978f4108b14f5631",
+        "size_bytes": 2772
+      },
+      {
+        "path": "docs/contract/v1.2/managed-runtime.md",
+        "sha256": "a55fe4fe79f0951f2cdcbe7f9448478d28b4d4d350f147bfd5e508f9572d4676",
+        "size_bytes": 2010
+      },
+      {
+        "path": "docs/contract/v1.2/mcp-resource-templates.json",
+        "sha256": "a42c2a5000c64e439595ecbf769ebad9bd876c8a28b1b42d51f56c074e1e84d4",
+        "size_bytes": 255
+      },
+      {
+        "path": "docs/contract/v1.2/mcp-tools.json",
+        "sha256": "c567fd7bc4fa9dbd08364cd2295734732c59557e133b659cdafc25f22d560c9d",
+        "size_bytes": 40143
+      },
+      {
+        "path": "docs/contract/v1.2/mcp.md",
+        "sha256": "f806e158aff0430c17cfb7f2c20d372190c274d34dc72da0a8c1a59b4f2b05ec",
+        "size_bytes": 3846
+      },
+      {
+        "path": "docs/contract/v1.2/runtime-closed-values.json",
+        "sha256": "02dca84aee6ac4ea002d07639c265d226a4ed7c7f32e1ffe51ef99c320f16341",
+        "size_bytes": 755
+      },
+      {
+        "path": "docs/contract/v1.2/structured-errors.md",
+        "sha256": "d94548a7bdb594c053af58c5a61099ca7e9c4ec0f7ca5533a05579335429da32",
+        "size_bytes": 2167
+      },
+      {
+        "path": "docs/contract/v1.2/transport-auth.md",
+        "sha256": "d41a408631d3a505ad943e36ebf9e4a68a845242e4e3d029db72d1c4aad03167",
+        "size_bytes": 1590
+      },
+      {
+        "path": "docs/contract/v1.2/vault-format.md",
+        "sha256": "3fbd9fead7ed7c5215f564ad1cb042bb9dab31c1ad6da2ff91800c659857ac68",
+        "size_bytes": 3893
+      }
+    ],
+    "identity_sha256": "eb4f28e75ee7231c4b7882a8e93adf20b2eda05b41f93978fcb9a3ae7007c566"
+  },
+  "release": {
+    "module_path": "github.com/iasi777/v-memory",
+    "product": "V-Memory",
+    "repository": "iasi777/v-memory",
+    "tag": "v1.2.0",
+    "version": "1.2.0"
+  },
+  "schema_version": 1,
+  "source_binding": {
+    "commit": "0b46dc0a15cf8c7981567586b5f8f3d0caf996bf",
+    "commit_subject": "release: prepare v1.2.0 runtime portability",
+    "tree": "76773d4597ec6573a4e0ff33e9fe13efa1587ae2"
+  },
+  "status": "PUBLIC_V1_2_FROZEN"
+}
