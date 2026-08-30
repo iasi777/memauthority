@@ -4,7 +4,7 @@
 
 ## Supported line
 
-The current release is `v1.2.0` on the v1 compatibility line. Security fixes that preserve the frozen surface are patch-version changes under the frozen SemVer policy; incompatible security changes require the frozen major-version path.
+The current release is `v1.3.1` on the v1 compatibility line. Security fixes that preserve the frozen surface are patch-version changes under the frozen SemVer policy; incompatible security changes require the frozen major-version path.
 
 ## Deployment safety
 
