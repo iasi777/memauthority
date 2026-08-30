@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/iasi777/memauthority/internal/textcanon"
+	"github.com/iasi777/v-memory/internal/textcanon"
 )
 
 func p5LegacyCleanText(value string) string {

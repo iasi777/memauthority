@@ -16,18 +16,18 @@ import (
 	"sync"
 
 	"github.com/google/jsonschema-go/jsonschema"
-	"github.com/iasi777/memauthority/internal/gitview"
-	"github.com/iasi777/memauthority/internal/oauthserver"
-	"github.com/iasi777/memauthority/internal/pathguard"
-	"github.com/iasi777/memauthority/internal/runtimeview"
-	"github.com/iasi777/memauthority/internal/vaultread"
-	"github.com/iasi777/memauthority/internal/vaultvalidate"
-	"github.com/iasi777/memauthority/internal/vaultwrite"
+	"github.com/iasi777/v-memory/internal/gitview"
+	"github.com/iasi777/v-memory/internal/oauthserver"
+	"github.com/iasi777/v-memory/internal/pathguard"
+	"github.com/iasi777/v-memory/internal/runtimeview"
+	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/vaultvalidate"
+	"github.com/iasi777/v-memory/internal/vaultwrite"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 const implementationName = "MemAuthority"
-const ImplementationVersion = "1.3.0-dev"
+const ImplementationVersion = "1.3.0"
 
 // Keep Layer 0 discovery compact; contract tests enforce a 512-character ceiling.
 func serverInstructions(runtimeEnabled bool) string {

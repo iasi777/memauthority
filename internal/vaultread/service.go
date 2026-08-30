@@ -18,9 +18,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/iasi777/memauthority/internal/checklist"
-	"github.com/iasi777/memauthority/internal/gitview"
-	"github.com/iasi777/memauthority/internal/textcanon"
+	"github.com/iasi777/v-memory/internal/checklist"
+	"github.com/iasi777/v-memory/internal/gitview"
+	"github.com/iasi777/v-memory/internal/textcanon"
 	"gopkg.in/yaml.v3"
 )
 

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/memauthority/internal/runtimeview"
+	"github.com/iasi777/v-memory/internal/runtimeview"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

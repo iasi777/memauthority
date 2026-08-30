@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/memauthority/internal/checklist"
-	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/checklist"
+	"github.com/iasi777/v-memory/internal/vaultread"
 )
 
 func TestUpdateSectionsChecklistMutationsUseReadItemRefs(t *testing.T) {

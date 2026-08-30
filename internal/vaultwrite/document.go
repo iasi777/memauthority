@@ -11,9 +11,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/iasi777/memauthority/internal/checklist"
-	"github.com/iasi777/memauthority/internal/vaultread"
-	"github.com/iasi777/memauthority/internal/vaultvalidate"
+	"github.com/iasi777/v-memory/internal/checklist"
+	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/vaultvalidate"
 )
 
 type EvidenceInput struct {

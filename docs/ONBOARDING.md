@@ -3,7 +3,7 @@
 [中文](ONBOARDING_ZH.md)
 
 > Purpose: first-time setup and migration guide for MemAuthority users.
-> Exact APIs, schemas, and security behavior are defined by the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
+> Exact APIs, schemas, and security behavior are defined by the versioned public contract under [`contract/v1.3/`](contract/v1.3/).
 
 This guide answers three questions:
 
@@ -271,7 +271,7 @@ Normal Managed use does not require you to restate parameter rules every time, a
 Before remote HTTP exposure, read:
 
 - [`../SECURITY.md`](../SECURITY.md)
-- [`contract/v1.2/transport-auth.md`](contract/v1.2/transport-auth.md)
+- [`contract/v1.3/transport-auth.md`](contract/v1.3/transport-auth.md)
 
 Do not turn a local stdio example into a public listener by simply changing the transport.
 

@@ -13,9 +13,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/iasi777/memauthority/internal/textcanon"
-	"github.com/iasi777/memauthority/internal/vaultread"
-	"github.com/iasi777/memauthority/internal/vaultvalidate"
+	"github.com/iasi777/v-memory/internal/textcanon"
+	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/vaultvalidate"
 	"gopkg.in/yaml.v3"
 )
 

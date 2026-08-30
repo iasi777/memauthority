@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iasi777/memauthority/internal/pathguard"
+	"github.com/iasi777/v-memory/internal/pathguard"
 	_ "modernc.org/sqlite"
 )
 

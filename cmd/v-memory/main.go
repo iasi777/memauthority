@@ -6,7 +6,7 @@ package main
 import (
 	"os"
 
-	"github.com/iasi777/memauthority/internal/publiccli"
+	"github.com/iasi777/v-memory/internal/publiccli"
 )
 
 func main() {

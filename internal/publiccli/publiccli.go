@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iasi777/memauthority/internal/mcpserver"
-	"github.com/iasi777/memauthority/internal/oauthserver"
-	"github.com/iasi777/memauthority/internal/pathguard"
-	"github.com/iasi777/memauthority/internal/vaultvalidate"
+	"github.com/iasi777/v-memory/internal/mcpserver"
+	"github.com/iasi777/v-memory/internal/oauthserver"
+	"github.com/iasi777/v-memory/internal/pathguard"
+	"github.com/iasi777/v-memory/internal/vaultvalidate"
 )
 
 const (

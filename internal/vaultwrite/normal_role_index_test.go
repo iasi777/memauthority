@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/vaultread"
 )
 
 func TestNormalRoleMutationsSynchronizeIndexAndSkipSameDayRewrite(t *testing.T) {

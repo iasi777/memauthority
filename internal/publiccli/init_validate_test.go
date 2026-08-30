@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/memauthority/internal/vaultvalidate"
+	"github.com/iasi777/v-memory/internal/vaultvalidate"
 )
 
 func TestInitCreatesMinimalVaultWithoutAmbientGitIdentity(t *testing.T) {

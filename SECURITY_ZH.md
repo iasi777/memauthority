@@ -8,7 +8,7 @@
 
 ## 部署安全
 
-请遵守当前冻结的 [Transport / Auth](docs/contract/v1.2/transport-auth.md)、[Managed Runtime](docs/contract/v1.2/managed-runtime.md) 和[结构化错误](docs/contract/v1.2/structured-errors.md)契约。不得为了绕过部署问题而削弱 loopback、认证、干净快照、fencing / CAS、状态目录隔离或 fail-closed 检查。
+请遵守当前冻结的 [Transport / Auth](docs/contract/v1.3/transport-auth.md)、[Managed Runtime](docs/contract/v1.3/managed-runtime.md) 和[结构化错误](docs/contract/v1.3/structured-errors.md)契约。不得为了绕过部署问题而削弱 loopback、认证、干净快照、fencing / CAS、状态目录隔离或 fail-closed 检查。
 
 ## 漏洞报告
 

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/memauthority/internal/oauthserver"
+	"github.com/iasi777/v-memory/internal/oauthserver"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

@@ -16,7 +16,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/iasi777/memauthority/internal/gitview"
+	"github.com/iasi777/v-memory/internal/gitview"
 	_ "modernc.org/sqlite"
 )
 

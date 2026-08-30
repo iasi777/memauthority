@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased — MemAuthority rename
+## v1.3.0
 
-- Renamed the project and canonical GitHub repository from **V-Memory** / `iasi777/v-memory` to **MemAuthority** / `iasi777/memauthority` for a unique, searchable project identity.
-- Added `memauthority` as the new primary CLI while retaining `v-memory` as a compatibility executable.
-- Moved the development Go module path to `github.com/iasi777/memauthority`; frozen v1.1/v1.2 contract snapshots intentionally retain their historical identifiers.
-- Added preferred `MEMAUTHORITY_*` environment variables while retaining legacy `VM_*` aliases.
+- Renamed the project and canonical GitHub repository from **V-Memory** / `iasi777/v-memory` to **MemAuthority** / `iasi777/memauthority` to establish a unique, directly searchable project identity.
+- Added `memauthority` as the primary CLI while retaining `v-memory` as a v1.x compatibility executable with the same command surface.
+- Kept the v1.x Go module identity at `github.com/iasi777/v-memory` so existing Go/module installation paths continue to work through the GitHub repository redirect.
+- Added preferred `MEMAUTHORITY_*` environment variables while retaining legacy `VM_*` aliases; the new name takes precedence when both are set.
+- Preserved durable Vault/Git compatibility identifiers such as `v-memory:` mechanical commit prefixes, `V-Memory MCP <v-memory@v-memory.invalid>`, and `<!-- v-memory-entry:... -->` markers rather than rewriting history-format identifiers for branding.
+- Published a new frozen public compatibility contract under `docs/contract/v1.3/`; v1.1 and v1.2 remain immutable historical snapshots.
 
 ## v1.2.0
 
@@ -15,7 +17,7 @@
 - Made single-environment runtime input ergonomic: omitted `environment_id` canonicalizes to `default`; multi-environment manifests still require explicit unique IDs.
 - Updated onboarding and migration guidance to recommend leaving runtime metadata disabled unless durable environment/deployment topology is actually useful.
 
-The current versioned public contract is maintained under `docs/contract/v1.2/`.
+The v1.2 public contract remains frozen under `docs/contract/v1.2/`.
 
 ## v1.1.0
 

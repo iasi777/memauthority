@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/v-memory/internal/vaultread"
 )
 
 func TestHeadingResolverPreservesLiteralSlashH2(t *testing.T) {
