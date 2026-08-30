@@ -1,4 +1,4 @@
-# V-Memory
+# V-Memory — 面向 AI Agent 的 Git 长期记忆系统
 
 [English](README.md)
 
@@ -6,7 +6,9 @@
 
 **轻松掌握 Agent 的记忆，整理维护留给 Agent**
 
-V-Memory 是一套专为 AI Agent 设计的长期记忆系统
+V-Memory 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆系统，并通过 MCP（Model Context Protocol）对外提供能力。
+
+搜索关键词：**AI Agent Memory**、**Long-Term Memory**、**MCP Memory Server**、**Git-backed Memory**、**Agent Memory Infrastructure**。
 
 它不追求巨细靡遗地记住所有事情，而是专注于沉淀：
 

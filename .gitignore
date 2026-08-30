@@ -4,3 +4,7 @@
 .DS_Store
 .vscode/
 .idea/
+# Local test/build artifacts
+coverage.out
+*.test
+

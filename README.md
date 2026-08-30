@@ -1,4 +1,4 @@
-# V-Memory
+# V-Memory — Git-Backed Long-Term Memory for AI Agents
 
 [中文](README_ZH.md)
 
@@ -6,7 +6,9 @@ English is the primary documentation language. User-facing guides provide Chines
 
 **Effortless control over agent memory — leave the maintenance to the agent.**
 
-V-Memory is a long-term memory system purpose-built for AI agents.
+V-Memory is a Git-backed, conflict-safe long-term memory system for AI agents, exposed through MCP (Model Context Protocol).
+
+Keywords: **AI agent memory**, **long-term memory**, **MCP memory server**, **Git-backed memory**, **agent memory infrastructure**.
 
 Rather than attempting to record every single detail, it focuses on distilling:
 
