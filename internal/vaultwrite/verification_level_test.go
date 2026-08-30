@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/vaultread"
 )
 
 func TestMarkVerifiedAcceptsDocumentedVerificationLevels(t *testing.T) {

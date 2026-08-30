@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/iasi777/v-memory/internal/vaultvalidate"
+	"github.com/iasi777/memauthority/internal/vaultvalidate"
 )
 
 func TestCreateProjectNeedsNoVaultTemplate(t *testing.T) {

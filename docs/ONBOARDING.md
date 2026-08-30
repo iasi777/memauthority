@@ -1,8 +1,8 @@
-# V-Memory Onboarding
+# MemAuthority Onboarding
 
 [中文](ONBOARDING_ZH.md)
 
-> Purpose: first-time setup and migration guide for V-Memory users.
+> Purpose: first-time setup and migration guide for MemAuthority users.
 > Exact APIs, schemas, and security behavior are defined by the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 This guide answers three questions:
@@ -17,11 +17,11 @@ This guide answers three questions:
 
 - **You decide what deserves long-term retention.**
 - **The agent interprets, organizes, migrates, and maintains it.**
-- **V-Memory provides reliable reads and reliable writes.**
+- **MemAuthority provides reliable reads and reliable writes.**
 
 > **You decide what to remember; let the agent handle the maintenance.**
 
-V-Memory is not an automatic chat collector, and you do not need to learn the entire Markdown schema by hand before using it.
+MemAuthority is not an automatic chat collector, and you do not need to learn the entire Markdown schema by hand before using it.
 
 ---
 
@@ -44,7 +44,7 @@ Use this when you already have material such as:
 - chat summaries;
 - multiple conflicting historical memory sources.
 
-For many V-Memory users, migration is the main reason to adopt it.
+For many MemAuthority users, migration is the main reason to adopt it.
 
 ---
 
@@ -53,7 +53,7 @@ For many V-Memory users, migration is the main reason to adopt it.
 ### 3.1 Create an Empty Vault
 
 ```sh
-v-memory init ./vault
+memauthority init ./vault
 ```
 
 This creates an empty Git-backed Vault and its initial commit.
@@ -79,7 +79,7 @@ Do not prefill every role simply to make the Vault look complete.
 ### 3.3 Validate
 
 ```sh
-v-memory validate --json ./vault
+memauthority validate --json ./vault
 ```
 
 Validation checks:
@@ -100,7 +100,7 @@ Even after structural validation passes, review active memory when appropriate.
 After reviewing the result, commit it to Git and start:
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -119,7 +119,7 @@ Remember:
 
 The migration approach is deliberate:
 
-> **The agent performs semantic migration; V-Memory does not need a custom importer for every legacy format.**
+> **The agent performs semantic migration; MemAuthority does not need a custom importer for every legacy format.**
 
 ### 4.1 Why the Agent Handles Import
 
@@ -138,7 +138,7 @@ Those decisions belong with an agent that understands both the task and the user
 
 ### 4.2 Correct Order of Operations
 
-The agent should understand V-Memory before reading the legacy store:
+The agent should understand MemAuthority before reading the legacy store:
 
 1. read [`AGENT-GUIDE.md`](AGENT-GUIDE.md);
 2. understand Context / Memory / TODO / Forget;
@@ -146,9 +146,9 @@ The agent should understand V-Memory before reading the legacy store:
 4. understand that active memory should converge toward current truth rather than preserve full correction history;
 5. only then read the legacy material;
 6. deduplicate, merge, update, classify, and retire content;
-7. produce a valid V-Memory structure.
+7. produce a valid MemAuthority structure.
 
-> **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
+> **Format-agnostic at the Agent layer; deterministic at the MemAuthority layer.**
 
 ### 4.3 Import Is Distillation, Not Copying
 
@@ -168,7 +168,7 @@ Reducing a 5,000-line legacy store to 500 high-signal lines can be a better migr
 ### 4.4 Recommended User Instruction
 
 ```text
-Read V-Memory's memory rules first, then inspect this legacy memory store.
+Read MemAuthority's memory rules first, then inspect this legacy memory store.
 Deduplicate, merge, update, and reorganize everything still worth keeping long-term.
 Do not import material that is obsolete, repetitive, purely historical, temporary,
 or unsuitable for long-term retention.
@@ -179,14 +179,14 @@ If the source and agent are already trusted, the user can explicitly authorize d
 
 Candidate review is a recommended workflow, not a server-enforced step.
 
-### 4.5 Common Legacy-to-V-Memory Mapping
+### 4.5 Common Legacy-to-MemAuthority Mapping
 
 - current takeover state -> `handoff`
 - durable decisions and constraints -> `rules`
 - milestone progress that still explains the current state -> `progress`
 - recurring failure modes -> `pitfalls`
 - unfinished intent worth resuming later -> handoff TODO
-- complete design docs and reference material -> keep in their canonical location, with only concise conclusions or pointers in V-Memory when useful
+- complete design docs and reference material -> keep in their canonical location, with only concise conclusions or pointers in MemAuthority when useful
 - obsolete, duplicate, temporary, private, or purely historical material -> do not place in active memory
 
 This is guidance, not automatic server classification.
@@ -194,12 +194,12 @@ This is guidance, not automatic server classification.
 ### 4.6 Large-Scale v1 Migration
 
 ```text
-v-memory init
+memauthority init
   -> stop or do not start managed ownership
-  -> Agent reads V-Memory guidance
+  -> Agent reads MemAuthority guidance
   -> Agent reads and distills the legacy store
   -> detached authoring builds the canonical Vault
-  -> v-memory validate --json
+  -> memauthority validate --json
   -> user reviews as needed
   -> Git commit
   -> managed serve
@@ -226,14 +226,14 @@ Do not modify files or Git directly while Managed ownership is active.
 
 ---
 
-## 5. Connect V-Memory to an Agent
+## 5. Connect MemAuthority to an Agent
 
 Normal Managed use is exposed through MCP.
 
 For local use, stdio is the simplest option and the MCP client can launch the process directly:
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -241,7 +241,7 @@ v-memory serve \
 
 Different agents and clients use different configuration formats, but the essential information is the same:
 
-- command: `v-memory`
+- command: `memauthority`
 - arguments: `serve` plus the required options
 
 See [`MCP-CONFIG.md`](MCP-CONFIG.md) for the stable connection model.
@@ -255,7 +255,7 @@ Once connected, the agent automatically receives:
 
 These describe the fields, mechanical constraints, and current tool behavior exposed by the running service.
 
-During onboarding or legacy-memory import, do **not** create runtime/environment metadata merely because V-Memory can represent it. Runtime tools are hidden by default when no runtime is registered. Keep them off for ordinary single-machine projects; enable them only when durable multi-environment or deployment topology is genuinely useful.
+During onboarding or legacy-memory import, do **not** create runtime/environment metadata merely because MemAuthority can represent it. Runtime tools are hidden by default when no runtime is registered. Keep them off for ordinary single-machine projects; enable them only when durable multi-environment or deployment topology is genuinely useful.
 
 Normal Managed use does not require you to restate parameter rules every time, and the agent should not hard-code an old release's fields when the current tool schema is available.
 
@@ -284,7 +284,7 @@ Do not turn a local stdio example into a public listener by simply changing the 
 Use this only when the current session genuinely lacks project context:
 
 ```text
-Check this project's V-Memory and read only what you actually need.
+Check this project's MemAuthority and read only what you actually need.
 ```
 
 The agent should:
@@ -312,7 +312,7 @@ The default should be conservative `progress`, not chat duplication or automatic
 ### 6.4 Maintain Existing Memory
 
 ```text
-Review and improve the V-Memory entries we actually used during this task, and clean up anything obsolete.
+Review and improve the MemAuthority entries we actually used during this task, and clean up anything obsolete.
 ```
 
 By default, maintain only memory that was genuinely used during the task.
@@ -320,7 +320,7 @@ By default, maintain only memory that was genuinely used during the task.
 ### 6.5 TODO
 
 ```text
-This direction is worth revisiting later. Put it in V-Memory TODO so it does not occupy the current context.
+This direction is worth revisiting later. Put it in MemAuthority TODO so it does not occupy the current context.
 ```
 
 After completion, the TODO should usually be removed. Any durable conclusion can be stored separately as Memory.
@@ -329,9 +329,9 @@ After completion, the TODO should usually be removed. Any durable conclusion can
 
 ## 7. First-Use Checklist
 
-- [ ] Vault was created with `v-memory init`;
+- [ ] Vault was created with `memauthority init`;
 - [ ] first full setup or legacy migration happened during detached authoring;
-- [ ] `v-memory validate --json` passes;
+- [ ] `memauthority validate --json` passes;
 - [ ] active memory was reviewed as needed, not merely assumed correct because validation passed;
 - [ ] Vault is committed and the worktree is clean;
 - [ ] `state-dir` is outside the Vault;
@@ -344,7 +344,7 @@ After completion, the TODO should usually be removed. Any durable conclusion can
 
 ## 8. Avoid These Patterns
 
-- Do not bulk-copy complete chat history into V-Memory;
+- Do not bulk-copy complete chat history into MemAuthority;
 - do not make the user manually translate a legacy store into four roles;
 - do not treat validation as proof of semantic quality;
 - do not edit the Vault directly while Managed ownership is active;

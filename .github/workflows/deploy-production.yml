@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: v-memory-production-deploy
+  group: memauthority-production-deploy
   cancel-in-progress: false
 
 jobs:
@@ -47,16 +47,16 @@ jobs:
       - name: Build linux/arm64 production binary
         run: |
           mkdir -p dist
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -buildvcs=false -o dist/v-memory ./cmd/v-memory
-          echo "VM_SHA256=$(sha256sum dist/v-memory | awk '{print $1}')" >> "$GITHUB_ENV"
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -buildvcs=false -o dist/memauthority ./cmd/memauthority
+          echo "MEMAUTHORITY_SHA256=$(sha256sum dist/memauthority | awk '{print $1}')" >> "$GITHUB_ENV"
       - name: Inspect production artifact and record provenance
         run: |
-          file dist/v-memory | tee dist/file.txt
+          file dist/memauthority | tee dist/file.txt
           grep -Eq 'ELF 64-bit.*ARM aarch64|ELF 64-bit.*ARM64' dist/file.txt
-          go version -m dist/v-memory | tee dist/go-version-m.txt
-          printf '%s  %s\n' "$VM_SHA256" 'v-memory' > dist/SHA256SUMS
+          go version -m dist/memauthority | tee dist/go-version-m.txt
+          printf '%s  %s\n' "$MEMAUTHORITY_SHA256" 'memauthority' > dist/SHA256SUMS
           (cd dist && sha256sum -c SHA256SUMS)
-          python3 -c 'import json,sys; json.dump({"schema_version":1,"repository":sys.argv[1],"ref":sys.argv[2],"source_commit":sys.argv[3],"artifact":"v-memory","sha256":sys.argv[4]},sys.stdout,sort_keys=True,indent=2); print()' "$GITHUB_REPOSITORY" "$GITHUB_REF" "$GITHUB_SHA" "$VM_SHA256" > dist/provenance.json
+          python3 -c 'import json,sys; json.dump({"schema_version":1,"repository":sys.argv[1],"ref":sys.argv[2],"source_commit":sys.argv[3],"artifact":"memauthority","sha256":sys.argv[4]},sys.stdout,sort_keys=True,indent=2); print()' "$GITHUB_REPOSITORY" "$GITHUB_REF" "$GITHUB_SHA" "$MEMAUTHORITY_SHA256" > dist/provenance.json
           cat dist/provenance.json
       - name: Deploy through restricted ARM gateway
         env:
@@ -70,14 +70,14 @@ jobs:
             --request POST 'https://v-memory.iasi.pp.ua/_deploy/v1' \
             --header "Authorization: Bearer $ARM_DEPLOY_TOKEN" \
             --header 'Content-Type: application/octet-stream' \
-            --header "X-V-Memory-SHA256: $VM_SHA256" \
+            --header "X-V-Memory-SHA256: $MEMAUTHORITY_SHA256" \
             --header "X-V-Memory-Commit: $GITHUB_SHA" \
             --header "X-V-Memory-Repository: $GITHUB_REPOSITORY" \
             --header "X-V-Memory-Ref: $GITHUB_REF" \
-            --data-binary @dist/v-memory)
+            --data-binary @dist/memauthority)
           cat "$response"
           test "$code" = '200'
-          python3 -c 'import json,sys; value=json.load(open(sys.argv[1],encoding="utf-8")); result=value.get("result",""); assert value.get("ok") is True; assert ("commit="+sys.argv[2]) in result; assert (("new_sha256="+sys.argv[3]) in result or ("sha256="+sys.argv[3]) in result)' "$response" "$GITHUB_SHA" "$VM_SHA256"
+          python3 -c 'import json,sys; value=json.load(open(sys.argv[1],encoding="utf-8")); result=value.get("result",""); assert value.get("ok") is True; assert ("commit="+sys.argv[2]) in result; assert (("new_sha256="+sys.argv[3]) in result or ("sha256="+sys.argv[3]) in result)' "$response" "$GITHUB_SHA" "$MEMAUTHORITY_SHA256"
       - name: Verify public health after deployment
         run: |
           curl --fail --silent --show-error --max-time 10 https://v-memory.iasi.pp.ua/.well-known/oauth-authorization-server > oauth-health.json

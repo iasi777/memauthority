@@ -1,6 +1,6 @@
 # Contributing
 
-V-Memory accepts changes that preserve the documented compatibility contract for the affected release line.
+MemAuthority accepts changes that preserve the documented compatibility contract for the affected release line.
 
 Before submitting code changes, run:
 

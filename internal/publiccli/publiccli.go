@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iasi777/v-memory/internal/mcpserver"
-	"github.com/iasi777/v-memory/internal/oauthserver"
-	"github.com/iasi777/v-memory/internal/pathguard"
-	"github.com/iasi777/v-memory/internal/vaultvalidate"
+	"github.com/iasi777/memauthority/internal/mcpserver"
+	"github.com/iasi777/memauthority/internal/oauthserver"
+	"github.com/iasi777/memauthority/internal/pathguard"
+	"github.com/iasi777/memauthority/internal/vaultvalidate"
 )
 
 const (
@@ -36,64 +36,84 @@ var (
 	initialAttributes = []byte("*.md text eol=lf\n*.yaml text eol=lf\n")
 )
 
-// Run executes the public v-memory CLI and returns a process-style exit code.
+// Run executes the legacy v-memory CLI and returns a process-style exit code.
 func Run(args []string, stdout, stderr io.Writer) int {
+	return RunAs("v-memory", args, stdout, stderr)
+}
+
+// RunAs executes the public CLI under the requested compatible executable name.
+func RunAs(program string, args []string, stdout, stderr io.Writer) int {
+	program = normalizeProgramName(program)
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		printRootHelp(stdout)
+		printRootHelp(program, stdout)
 		return 0
 	}
 	if args[0] == "--version" {
 		if len(args) != 1 {
-			fmt.Fprintln(stderr, "Usage: v-memory --version")
+			fmt.Fprintf(stderr, "Usage: %s --version\n", program)
 			return 2
 		}
-		printVersion(stdout)
+		printVersion(program, stdout)
 		return 0
 	}
 	switch args[0] {
 	case "init":
-		return runInit(args[1:], stdout, stderr)
+		return runInit(program, args[1:], stdout, stderr)
 	case "validate":
-		return runValidate(args[1:], stdout, stderr)
+		return runValidate(program, args[1:], stdout, stderr)
 	case "serve":
-		return runServe(args[1:], stdout, stderr)
+		return runServe(program, args[1:], stdout, stderr)
 	case "version":
-		return runVersion(args[1:], stdout, stderr)
+		return runVersion(program, args[1:], stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", args[0])
-		printRootHelp(stderr)
+		printRootHelp(program, stderr)
 		return 2
 	}
 }
 
-func printRootHelp(w io.Writer) {
+func normalizeProgramName(program string) string {
+	if program == "memauthority" {
+		return program
+	}
+	return "v-memory"
+}
+
+func displayBrand(program string) string {
+	if program == "memauthority" {
+		return "MemAuthority"
+	}
+	return "V-Memory"
+}
+
+func printRootHelp(program string, w io.Writer) {
 	fmt.Fprintln(w, "Usage:")
-	fmt.Fprintln(w, "  v-memory init <path>")
-	fmt.Fprintln(w, "  v-memory validate [--json] [path]")
-	fmt.Fprintln(w, "  v-memory serve --vault <path> --state-dir <path> [options]")
-	fmt.Fprintln(w, "  v-memory version")
+	fmt.Fprintf(w, "  %s init <path>\n", program)
+	fmt.Fprintf(w, "  %s validate [--json] [path]\n", program)
+	fmt.Fprintf(w, "  %s serve --vault <path> --state-dir <path> [options]\n", program)
+	fmt.Fprintf(w, "  %s version\n", program)
 }
 
-func printVersion(w io.Writer) {
-	fmt.Fprintf(w, "v-memory %s\n", mcpserver.ImplementationVersion)
+func printVersion(program string, w io.Writer) {
+	fmt.Fprintf(w, "%s %s\n", program, mcpserver.ImplementationVersion)
 }
 
-func runVersion(args []string, stdout, stderr io.Writer) int {
+func runVersion(program string, args []string, stdout, stderr io.Writer) int {
 	if len(args) != 0 {
-		fmt.Fprintln(stderr, "Usage: v-memory version")
+		fmt.Fprintf(stderr, "Usage: %s version\n", program)
 		return 2
 	}
-	printVersion(stdout)
+	printVersion(program, stdout)
 	return 0
 }
 
-func runInit(args []string, stdout, stderr io.Writer) int {
+func runInit(program string, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 1 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Fprintln(stdout, "Usage: v-memory init <path>")
+		fmt.Fprintf(stdout, "Usage: %s init <path>\n", program)
 		return 0
 	}
 	if len(args) != 1 || strings.HasPrefix(args[0], "-") {
-		fmt.Fprintln(stderr, "Usage: v-memory init <path>")
+		fmt.Fprintf(stderr, "Usage: %s init <path>\n", program)
 		return 2
 	}
 	if _, err := exec.LookPath("git"); err != nil {
@@ -113,7 +133,7 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 			return 1
 		}
 		if initializedVault(target) {
-			fmt.Fprintln(stdout, "V-Memory Vault already initialized")
+			fmt.Fprintf(stdout, "%s Vault already initialized\n", displayBrand(program))
 			return 0
 		}
 		entries, readErr := os.ReadDir(target)
@@ -206,18 +226,18 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	success = true
-	fmt.Fprintln(stdout, "Initialized empty V-Memory Vault")
+	fmt.Fprintf(stdout, "Initialized empty %s Vault\n", displayBrand(program))
 	return 0
 }
 
-func runValidate(args []string, stdout, stderr io.Writer) int {
+func runValidate(program string, args []string, stdout, stderr io.Writer) int {
 	jsonOutput := false
 	target := "."
 	positional := 0
 	for _, arg := range args {
 		switch arg {
 		case "-h", "--help":
-			fmt.Fprintln(stdout, "Usage: v-memory validate [--json] [path]")
+			fmt.Fprintf(stdout, "Usage: %s validate [--json] [path]\n", program)
 			return 0
 		case "--json":
 			jsonOutput = true
@@ -228,7 +248,7 @@ func runValidate(args []string, stdout, stderr io.Writer) int {
 			}
 			positional++
 			if positional > 1 {
-				fmt.Fprintln(stderr, "Usage: v-memory validate [--json] [path]")
+				fmt.Fprintf(stderr, "Usage: %s validate [--json] [path]\n", program)
 				return 2
 			}
 			target = arg
@@ -281,7 +301,7 @@ func runValidate(args []string, stdout, stderr io.Writer) int {
 	return 1
 }
 
-func runServe(args []string, stdout, stderr io.Writer) int {
+func runServe(program string, args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("serve", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	vault := fs.String("vault", "", "Vault Git root")
@@ -289,27 +309,27 @@ func runServe(args []string, stdout, stderr io.Writer) int {
 	transport := fs.String("transport", "stdio", "stdio or http")
 	listen := fs.String("listen", "127.0.0.1:8000", "HTTP listen address")
 	oauthEnabled := fs.Bool("oauth-enabled", true, "protect HTTP transport with embedded OAuth; ignored by stdio")
-	publicBase := fs.String("public-base-url", os.Getenv("VM_OAUTH_ISSUER_URL"), "public OAuth issuer origin for HTTP mode")
-	oauthClientID := fs.String("oauth-client-id", os.Getenv("VM_OAUTH_CLIENT_ID"), "pre-registered OAuth client id")
-	oauthClientSecretFile := fs.String("oauth-client-secret-file", os.Getenv("VM_OAUTH_CLIENT_SECRET_FILE"), "optional OAuth confidential-client secret file")
-	oauthRedirectURIs := fs.String("oauth-redirect-uris", os.Getenv("VM_OAUTH_REDIRECT_URIS"), "comma-separated exact redirect URIs")
-	oauthUsername := fs.String("oauth-username", os.Getenv("VM_OAUTH_USERNAME"), "local OAuth login username")
-	oauthPasswordFile := fs.String("oauth-password-file", os.Getenv("VM_OAUTH_PASSWORD_FILE"), "local OAuth login password file")
-	oauthStateDB := fs.String("oauth-state-db", os.Getenv("VM_OAUTH_STATE_DB"), "OAuth state SQLite path outside Vault")
-	staticTokenFile := fs.String("auth-token-file", os.Getenv("VM_AUTH_TOKEN_FILE"), "optional deployment Bearer token file accepted by protected MCP")
-	allowedHosts := fs.String("allowed-hosts", os.Getenv("VM_ALLOWED_HOSTS"), "comma-separated exact HTTP Host allowlist")
-	allowedOrigins := fs.String("allowed-origins", os.Getenv("VM_ALLOWED_ORIGINS"), "comma-separated exact HTTP Origin allowlist")
+	publicBase := fs.String("public-base-url", compatEnv("MEMAUTHORITY_OAUTH_ISSUER_URL", "VM_OAUTH_ISSUER_URL"), "public OAuth issuer origin for HTTP mode")
+	oauthClientID := fs.String("oauth-client-id", compatEnv("MEMAUTHORITY_OAUTH_CLIENT_ID", "VM_OAUTH_CLIENT_ID"), "pre-registered OAuth client id")
+	oauthClientSecretFile := fs.String("oauth-client-secret-file", compatEnv("MEMAUTHORITY_OAUTH_CLIENT_SECRET_FILE", "VM_OAUTH_CLIENT_SECRET_FILE"), "optional OAuth confidential-client secret file")
+	oauthRedirectURIs := fs.String("oauth-redirect-uris", compatEnv("MEMAUTHORITY_OAUTH_REDIRECT_URIS", "VM_OAUTH_REDIRECT_URIS"), "comma-separated exact redirect URIs")
+	oauthUsername := fs.String("oauth-username", compatEnv("MEMAUTHORITY_OAUTH_USERNAME", "VM_OAUTH_USERNAME"), "local OAuth login username")
+	oauthPasswordFile := fs.String("oauth-password-file", compatEnv("MEMAUTHORITY_OAUTH_PASSWORD_FILE", "VM_OAUTH_PASSWORD_FILE"), "local OAuth login password file")
+	oauthStateDB := fs.String("oauth-state-db", compatEnv("MEMAUTHORITY_OAUTH_STATE_DB", "VM_OAUTH_STATE_DB"), "OAuth state SQLite path outside Vault")
+	staticTokenFile := fs.String("auth-token-file", compatEnv("MEMAUTHORITY_AUTH_TOKEN_FILE", "VM_AUTH_TOKEN_FILE"), "optional deployment Bearer token file accepted by protected MCP")
+	allowedHosts := fs.String("allowed-hosts", compatEnv("MEMAUTHORITY_ALLOWED_HOSTS", "VM_ALLOWED_HOSTS"), "comma-separated exact HTTP Host allowlist")
+	allowedOrigins := fs.String("allowed-origins", compatEnv("MEMAUTHORITY_ALLOWED_ORIGINS", "VM_ALLOWED_ORIGINS"), "comma-separated exact HTTP Origin allowlist")
 	writeEnabled := fs.Bool("write-enabled", false, "enable Authority mutation tools; disabled by default")
-	runtimeEnabled := fs.Bool("runtime-enabled", os.Getenv("VM_RUNTIME_ENABLED") == "1", "expose optional declarative runtime tools; existing Vault runtime metadata enables them automatically")
-	writeSource := fs.String("write-source", os.Getenv("VM_WRITE_SOURCE"), "mutation source label recorded in structured results")
-	requirePrimary := fs.Bool("require-primary", os.Getenv("VM_REQUIRE_PRIMARY") == "1", "require Git-tracked PRIMARY node/epoch match before mutation")
+	runtimeEnabled := fs.Bool("runtime-enabled", envEnabled("MEMAUTHORITY_RUNTIME_ENABLED", "VM_RUNTIME_ENABLED"), "expose optional declarative runtime tools; existing Vault runtime metadata enables them automatically")
+	writeSource := fs.String("write-source", compatEnv("MEMAUTHORITY_WRITE_SOURCE", "VM_WRITE_SOURCE"), "mutation source label recorded in structured results")
+	requirePrimary := fs.Bool("require-primary", envEnabled("MEMAUTHORITY_REQUIRE_PRIMARY", "VM_REQUIRE_PRIMARY"), "require Git-tracked PRIMARY node/epoch match before mutation")
 	primaryEpoch := fs.Int("primary-epoch", 0, "expected primary epoch when fencing is required")
-	nodeIDFile := fs.String("node-id-file", os.Getenv("VM_NODE_ID_FILE"), "external local node-id file used for primary fencing")
+	nodeIDFile := fs.String("node-id-file", compatEnv("MEMAUTHORITY_NODE_ID_FILE", "VM_NODE_ID_FILE"), "external local node-id file used for primary fencing")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
 	if fs.NArg() != 0 || strings.TrimSpace(*vault) == "" || strings.TrimSpace(*stateDir) == "" {
-		fmt.Fprintln(stderr, "Usage: v-memory serve --vault <path> --state-dir <path> [options]")
+		fmt.Fprintf(stderr, "Usage: %s serve --vault <path> --state-dir <path> [options]\n", program)
 		return 2
 	}
 	if *transport != "stdio" && *transport != "http" {
@@ -455,6 +475,17 @@ func newHTTPServer(listen string, handler http.Handler) *http.Server {
 		IdleTimeout:       60 * time.Second,
 		MaxHeaderBytes:    1 << 20,
 	}
+}
+
+func compatEnv(primary, legacy string) string {
+	if value, ok := os.LookupEnv(primary); ok {
+		return value
+	}
+	return os.Getenv(legacy)
+}
+
+func envEnabled(primary, legacy string) bool {
+	return compatEnv(primary, legacy) == "1"
 }
 
 func splitCSV(value string) []string {

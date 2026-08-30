@@ -1,4 +1,4 @@
-# V-Memory MCP 接入
+# MemAuthority MCP 接入
 
 [English](MCP-CONFIG.md)
 
@@ -10,12 +10,12 @@
 
 ## 最简单的方式：本地 stdio
 
-V-Memory `serve` 默认使用 stdio。
+MemAuthority `serve` 默认使用 stdio。
 
 只读：
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state
 ```
@@ -23,7 +23,7 @@ v-memory serve \
 可写：
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -43,7 +43,7 @@ v-memory serve \
 
 不同客户端的字段名字不同，但本质只是告诉客户端：
 
-- command：`v-memory`
+- command：`memauthority`
 - args：`serve`、`--vault`、Vault 路径、`--state-dir`、state 路径；
 - 如果需要写入，再加 `--write-enabled`。
 
@@ -51,7 +51,7 @@ v-memory serve \
 
 ```json
 {
-  "command": "v-memory",
+  "command": "memauthority",
   "args": [
     "serve",
     "--vault", "/absolute/path/to/vault",
@@ -74,20 +74,20 @@ v-memory serve \
 只有当“项目在哪些工作/运行环境、如何部署”这类事实确实值得跨会话长期保留时，才显式开启：
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled \
   --runtime-enabled
 ```
 
-兼容行为是保守的：如果 Vault 已经有已登记 runtime resource，即使没有这个 flag，V-Memory 也会自动继续暴露 runtime 工具。
+兼容行为是保守的：如果 Vault 已经有已登记 runtime resource，即使没有这个 flag，MemAuthority 也会自动继续暴露 runtime 工具。
 
-Runtime ID 不再绑定维护者自己的机器。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，V-Memory 会规范化为 `default`；有多个 environment 时再显式给每个环境稳定命名。普通单机用户不要因为看见 `host_id` 字段就强行填写。
+Runtime ID 不再绑定维护者自己的机器。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，MemAuthority 会规范化为 `default`；有多个 environment 时再显式给每个环境稳定命名。普通单机用户不要因为看见 `host_id` 字段就强行填写。
 
 ---
 
-## Agent 连接后还需要额外塞一大段 V-Memory Prompt 吗？
+## Agent 连接后还需要额外塞一大段 MemAuthority Prompt 吗？
 
 通常不需要。
 
@@ -139,7 +139,7 @@ frozen transport contract 的基本安全边界包括：
 精确选项请查看当前 release 的：
 
 ```sh
-v-memory serve --help
+memauthority serve --help
 ```
 
 并对照当前的 [`contract/v1.2/managed-runtime.md`](contract/v1.2/managed-runtime.md)，或已安装版本对应的冻结契约。
@@ -153,7 +153,7 @@ v-memory serve --help
 仅在当前会话确实缺少这个项目的背景时，可以直接对 Agent 说：
 
 ```text
-先看看这个项目的 V-Memory，需要什么再读什么。
+先看看这个项目的 MemAuthority，需要什么再读什么。
 ```
 
-理想行为不是固定 `route → handoff`：当前 Context 已经足够时不需要调用 V-Memory；项目不确定时 route，已知 URI 时直接 read，已知项目但不知道位置时 search，需要恢复整体项目状态时再优先考虑 handoff。
+理想行为不是固定 `route → handoff`：当前 Context 已经足够时不需要调用 MemAuthority；项目不确定时 route，已知 URI 时直接 read，已知项目但不知道位置时 search，需要恢复整体项目状态时再优先考虑 handoff。

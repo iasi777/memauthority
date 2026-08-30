@@ -1,4 +1,4 @@
-# V-Memory — Git-Backed Long-Term Memory for AI Agents
+# MemAuthority — Git-Backed Long-Term Memory for AI Agents
 
 [中文](README_ZH.md)
 
@@ -6,7 +6,7 @@ English is the primary documentation language. User-facing guides provide Chines
 
 **Effortless control over agent memory — leave the maintenance to the agent.**
 
-V-Memory is a Git-backed, conflict-safe long-term memory system for AI agents, exposed through MCP (Model Context Protocol).
+MemAuthority is a Git-backed, conflict-safe long-term memory system for AI agents, exposed through MCP (Model Context Protocol). **Formerly V-Memory**; the project was renamed to give it a unique, searchable identity.
 
 Keywords: **AI agent memory**, **long-term memory**, **MCP memory server**, **Git-backed memory**, **agent memory infrastructure**.
 
@@ -17,13 +17,13 @@ Rather than attempting to record every single detail, it focuses on distilling:
 A clear division of responsibility:
 - **You** act as the gatekeeper: deciding what is truly worth keeping for the long haul;
 - **The Agent** handles execution: comprehending, summarizing, retrieving, updating, and pruning memories;
-- **V-Memory** provides the safety net: guaranteeing reliable storage and on-demand retrieval, while delivering deterministic system protection against version conflicts, retry duplicates, and unexpected interruptions.
+- **MemAuthority** provides the safety net: guaranteeing reliable storage and on-demand retrieval, while delivering deterministic system protection against version conflicts, retry duplicates, and unexpected interruptions.
 
 ---
 
 ## Who Is This For?
 
-V-Memory is designed for users who prioritize the **quality** of long-term memory.
+MemAuthority is designed for users who prioritize the **quality** of long-term memory.
 
 You may have experienced the lack of control with built-in platform memories:
 - Unclear *why* something was remembered;
@@ -33,7 +33,7 @@ You may have experienced the lack of control with built-in platform memories:
 
 Or perhaps you have tried maintaining a `MEMORY.md` file, only to watch it grow bloated and messy over time — eventually confusing the agent rather than helping it.
 
-V-Memory shines in scenarios where you:
+MemAuthority shines in scenarios where you:
 
 > **Want to invest minimal effort curating memory quality, while delegating all routine organization to the agent.**
 
@@ -51,7 +51,7 @@ All mechanical heavy lifting — formatting, categorizing, archiving, and target
 
 If your project's memory is small, rarely changes, or you simply do not want to spend any attention on memory maintenance, sticking with a plain `MEMORY.md` is the easiest choice.
 
-V-Memory addresses a higher-order need:
+MemAuthority addresses a higher-order need:
 
 > **Turning long-term memory maintenance into a reliable, controllable, and engineered workflow.**
 
@@ -65,17 +65,17 @@ It provides far more than just "letting an agent edit Markdown." It delivers a r
 
 In short:
 
-> **`MEMORY.md` optimizes for "giving anyone a zero-barrier memory file"; V-Memory optimizes for "enabling quality-conscious users to sustainably maintain high-grade memory over the long haul."**
+> **`MEMORY.md` optimizes for "giving anyone a zero-barrier memory file"; MemAuthority optimizes for "enabling quality-conscious users to sustainably maintain high-grade memory over the long haul."**
 
 ---
 
 ## Everyday Workflow
 
-In an ideal workflow, V-Memory stays quietly behind the scenes. You interact with the agent using natural, concise instructions:
+In an ideal workflow, MemAuthority stays quietly behind the scenes. You interact with the agent using natural, concise instructions:
 
 ### 1. Retrieve on Demand at Task Start
 *Use only when the current session genuinely lacks project context:*
-> **"Check the V-Memory for this project first — pull in only what you need."**
+> **"Check the MemAuthority for this project first — pull in only what you need."**
 
 The agent reads the current handoff state (`handoff`) first, then retrieves specific sections only as the task requires. Never dump the entire vault into the context by default.
 
@@ -95,7 +95,7 @@ A common, low-effort command. By default, the agent adopts a conservative strate
 The agent targets only the memories loaded and referenced during the current task, avoiding unnecessary full-vault scans.
 
 ### 5. Park Ideas for Later to Free Up Context
-> **"This direction is worth exploring later — drop it in V-Memory TODO so it doesn't clutter our current context."**
+> **"This direction is worth exploring later — drop it in MemAuthority TODO so it doesn't clutter our current context."**
 
 Here, a TODO is not a project management issue tracker, but rather:
 > **A staging ground for ideas worth revisiting later, without consuming cognitive bandwidth today.**
@@ -106,7 +106,7 @@ Once acted upon, the TODO item should be deleted, and any durable conclusions th
 
 ## "Record this task" — How to Avoid Memory Bloat?
 
-V-Memory does not require you to deliberate over "should this go into rules or progress" every time you want to record something.
+MemAuthority does not require you to deliberate over "should this go into rules or progress" every time you want to record something.
 
 When you give an open-ended command like *"Record this task"*, the agent's default behavior is:
 - **Default to `progress`**;
@@ -123,7 +123,7 @@ When you give an open-ended command like *"Record this task"*, the agent's defau
 
 Furthermore, an agent must never elevate something to a long-term `rules` entry simply because it "sounds important." Durable rules, handoff states, and pitfall lessons should be distilled progressively through real-world work.
 
-**System-level guardrails provided by V-Memory:**
+**System-level guardrails provided by MemAuthority:**
 - Enforces a standard schema for all written content;
 - Restricts mutations based on memory roles (Role-based access);
 - Automatically scans and blocks high-confidence secrets and credentials;
@@ -134,11 +134,11 @@ Furthermore, an agent must never elevate something to a long-term `rules` entry 
 
 The system's promise is not that "a low-quality note will never be written," but rather:
 
-> **The agent records conservatively, V-Memory guarantees underlying state integrity, and ongoing real-world work continuously refines and prunes the memory.**
+> **The agent records conservatively, MemAuthority guarantees underlying state integrity, and ongoing real-world work continuously refines and prunes the memory.**
 
 Consistency operates on two distinct layers:
 - **Semantic Consistency**: Maintained by the agent, reconciling new task outcomes with existing knowledge;
-- **State Consistency**: Enforced by V-Memory, backed by Git Authority, revision CAS, idempotency, and transactional journaling.
+- **State Consistency**: Enforced by MemAuthority, backed by Git Authority, revision CAS, idempotency, and transactional journaling.
 
 Remember: `progress` is a low-friction entry point for milestone logging, not an immutable, append-only archive.
 
@@ -148,9 +148,9 @@ Remember: `progress` is a low-friction entry point for milestone logging, not an
 
 No need to rewrite everything by hand.
 
-For legacy migration, V-Memory takes a principled approach:
+For legacy migration, MemAuthority takes a principled approach:
 
-> **Let the agent perform semantic migration, rather than building custom importers for every legacy format into V-Memory.**
+> **Let the agent perform semantic migration, rather than building custom importers for every legacy format into MemAuthority.**
 
 As long as the agent can read and understand your legacy material, it can migrate from any source:
 - Existing `MEMORY.md` files;
@@ -162,15 +162,15 @@ As long as the agent can read and understand your legacy material, it can migrat
 - Any other text format an LLM can parse.
 
 **Standard Migration Flow:**
-1. The agent learns V-Memory's structural specifications and memory standards;
+1. The agent learns MemAuthority's structural specifications and memory standards;
 2. The agent reads the legacy notes;
 3. It deduplicates, merges, updates, and categorizes information;
 4. It strips out obsolete facts, redundant entries, raw logs, ephemeral notes, and unsuitable content;
-5. It exports the curated output into the standard V-Memory vault structure.
+5. It exports the curated output into the standard MemAuthority vault structure.
 
 You can simply instruct your agent:
 
-> **"Read V-Memory's memory specification first, then inspect this legacy memory file. Deduplicate, merge, update, and restructure anything worth keeping long-term. Remove anything outdated, repetitive, raw logs, ephemeral notes, or unfit for long-term storage. Propose a migration draft for my review before writing."**
+> **"Read MemAuthority's memory specification first, then inspect this legacy memory file. Deduplicate, merge, update, and restructure anything worth keeping long-term. Remove anything outdated, repetitive, raw logs, ephemeral notes, or unfit for long-term storage. Propose a migration draft for my review before writing."**
 
 Migration is fundamentally **a curation decision**, not a mechanical copy-paste.
 
@@ -191,9 +191,9 @@ For the complete guide, see [`docs/ONBOARDING.md`](docs/ONBOARDING.md).
 
 ---
 
-## What Goes into V-Memory?
+## What Goes into MemAuthority?
 
-Long-term memories in V-Memory are strictly divided into four roles:
+Long-term memories in MemAuthority are strictly divided into four roles:
 
 ### `handoff` (Handoff State)
 The **minimal essential context** required for an agent to immediately take over the project.
@@ -223,8 +223,8 @@ If not, it probably does not belong in long-term memory.
 
 Because **remembering more does not mean reasoning better.**
 
-V-Memory uses a **Progressive Recall** pattern:
-1. If the current conversation already has sufficient context, skip calling V-Memory entirely;
+MemAuthority uses a **Progressive Recall** pattern:
+1. If the current conversation already has sufficient context, skip calling MemAuthority entirely;
 2. If the target project is ambiguous, locate and confirm the project first;
 3. If an exact URI or section is known, perform a direct, targeted read;
 4. If the project is known but the exact section is not, search within that project's scope;
@@ -239,17 +239,17 @@ This progressive approach not only slashes token overhead, but more crucially sh
 
 ## Won't Multiple Agents Cause Conflicts?
 
-V-Memory v1 is built around a core principle:
+MemAuthority v1 is built around a core principle:
 
 > **Multi-Agent, Single Authority.**
 
 Multiple agents can read from and write to the same memory vault, but the Authority maintains a single, linear, deterministic version history.
 
-If Agent A updates the memory while Agent B attempts a mutation based on a stale revision, V-Memory rejects the write with an explicit conflict error, preventing silent overwrites.
+If Agent A updates the memory while Agent B attempts a mutation based on a stale revision, MemAuthority rejects the write with an explicit conflict error, preventing silent overwrites.
 
 Agent B must then re-fetch the latest state and decide whether to merge, overwrite, abort, or prompt the user for clarification.
 
-V-Memory does not arbitrate subjective opinions; its responsibility is clear:
+MemAuthority does not arbitrate subjective opinions; its responsibility is clear:
 
 > **Surface concurrency conflicts explicitly, ensuring divergent edits never silently corrupt the vault.**
 
@@ -271,29 +271,31 @@ Pruning an item from active memory does not erase it from Git history. However, 
 
 ## Installation
 
-V-Memory requires Git and Go 1.26.5 or later. Install the current stable release with:
+MemAuthority requires Git and Go 1.26.5 or later. The renamed CLI is currently available from `main`:
+
+```sh
+go install github.com/iasi777/memauthority/cmd/memauthority@main
+```
+
+Verify:
+
+```sh
+memauthority version
+```
+
+Until the first MemAuthority release tag is published, the last tagged stable release remains **V-Memory v1.2.0** and stays installable through the legacy module path:
 
 ```sh
 go install github.com/iasi777/v-memory/cmd/v-memory@v1.2.0
 ```
 
-Make sure your Go binary directory is on `PATH`, then verify the installation:
-
-```sh
-v-memory version
-```
-
-Expected output:
-
-```text
-v-memory 1.2.0
-```
+GitHub redirects the former repository URL to `iasi777/memauthority`. The frozen v1.1/v1.2 contracts and the legacy `v-memory` executable remain compatibility surfaces.
 
 No prebuilt release binaries are currently published. To build from a source checkout instead:
 
 ```sh
-go build -trimpath -o ./v-memory ./cmd/v-memory
-./v-memory version
+go build -trimpath -o ./memauthority ./cmd/memauthority
+./memauthority version
 ```
 
 Release CI runs the test suite, vet, and native CLI build on Linux, macOS, and Windows; Linux CI also verifies the production Linux/ARM64 target.
@@ -304,7 +306,7 @@ Release CI runs the test suite, vet, and native CLI build on Linux, macOS, and W
 
 ### 1. Initialize an Empty Vault
 ```sh
-v-memory init ./vault
+memauthority init ./vault
 ```
 
 ### 2. Onboarding & Curation
@@ -313,13 +315,13 @@ When bootstrapping a new vault or migrating a large legacy corpus, have an agent
 
 Once curated, validate the vault:
 ```sh
-v-memory validate ./vault
+memauthority validate ./vault
 ```
 
 ### 3. Commit & Launch Service
 Review changes, commit them to Git, and launch the Managed MCP Service:
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -332,7 +334,7 @@ v-memory serve \
 
 For local setups, the simplest approach is having your MCP client spawn the command directly over stdio.
 
-Once connected, V-Memory automatically provides tool definitions, input schemas, annotations, and resource metadata to the agent. During day-to-day managed operation, you do not need to re-explain parameter schemas to your agent.
+Once connected, MemAuthority automatically provides tool definitions, input schemas, annotations, and resource metadata to the agent. During day-to-day managed operation, you do not need to re-explain parameter schemas to your agent.
 
 See [`AGENT-GUIDE.md`](docs/AGENT-GUIDE.md) for cross-cutting usage guidelines (on-demand recall, conservative recording, role selection, and legacy migrations).
 
@@ -340,7 +342,7 @@ If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) a
 
 ---
 
-## What V-Memory Is Not
+## What MemAuthority Is Not
 
 If your primary need falls into one of these categories, dedicated alternatives are a better fit:
 - **Fully automatic personal preference tracking**: Better served by built-in model/platform memory;
@@ -349,7 +351,7 @@ If your primary need falls into one of these categories, dedicated alternatives 
 - **Human-facing project documentation**: Dedicated READMEs, wikis, ADRs, or docs folders;
 - **Tracking schedules, assignees, deadlines, and dependencies**: Project management tools like Jira or Linear.
 
-V-Memory is not a chat archiver, not an exhaustive knowledge base, and not a task tracker.
+MemAuthority is not a chat archiver, not an exhaustive knowledge base, and not a task tracker.
 
 Its single focus is preserving:
 
@@ -363,14 +365,14 @@ Its single focus is preserving:
 go test ./...
 go vet ./...
 go mod verify
-go build -trimpath -o ./v-memory ./cmd/v-memory
+go build -trimpath -o ./memauthority ./cmd/memauthority
 ```
 
 ---
 
 ## Public Contract
 
-The current public compatibility baseline is **v1.2.0**.
+The last tagged public compatibility baseline is **v1.2.0**, published under the former V-Memory name. The MemAuthority rename on `main` is currently unreleased; the frozen v1.1/v1.2 snapshots remain unchanged historical contracts.
 
 Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.2/`](docs/contract/v1.2/).
 
@@ -379,11 +381,11 @@ Authoritative definitions of Vault storage formats, MCP tools, Managed runtime b
 ## Version
 
 ```sh
-v-memory version
-v-memory --version
+memauthority version
+memauthority --version
 ```
 
-For v1.2.0, both forms print `v-memory 1.2.0`.
+On renamed `main`, `memauthority` reports `1.3.0-dev`. The frozen v1.2.0 legacy executable continues to report `v-memory 1.2.0`.
 
 ## Security
 
@@ -391,7 +393,7 @@ Before exposing the service over HTTP transport, make sure to read [`SECURITY.md
 
 - Write access is disabled by default; enable it explicitly with `--write-enabled`;
 - HTTP mutations must strictly adhere to the OAuth and security requirements in the frozen v1 spec;
-- V-Memory includes built-in high-confidence secret scanning, but this does not replace full-fledged secret detection tooling.
+- MemAuthority includes built-in high-confidence secret scanning, but this does not replace full-fledged secret detection tooling.
 
 ## Related Documentation
 

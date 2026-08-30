@@ -1,4 +1,4 @@
-# V-Memory MCP Connection Guide
+# MemAuthority MCP Connection Guide
 
 [中文](MCP-CONFIG_ZH.md)
 
@@ -10,12 +10,12 @@ For exact CLI and transport / authentication behavior, use the versioned public 
 
 ## Simplest Setup: Local stdio
 
-`v-memory serve` uses stdio by default.
+`memauthority serve` uses stdio by default.
 
 Read-only:
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state
 ```
@@ -23,7 +23,7 @@ v-memory serve \
 Read-write:
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -43,7 +43,7 @@ Important:
 
 Client field names vary, but the essential configuration is only:
 
-- command: `v-memory`;
+- command: `memauthority`;
 - arguments: `serve`, `--vault`, the Vault path, `--state-dir`, and the state path;
 - add `--write-enabled` only when writes are required.
 
@@ -51,7 +51,7 @@ Many clients use a structure conceptually similar to:
 
 ```json
 {
-  "command": "v-memory",
+  "command": "memauthority",
   "args": [
     "serve",
     "--vault", "/absolute/path/to/vault",
@@ -74,20 +74,20 @@ Runtime metadata is intentionally **off by default** for a Vault that has no reg
 Enable it only when durable environment/deployment facts materially help future agents:
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled \
   --runtime-enabled
 ```
 
-Compatibility behavior is conservative: if the Vault already contains a registered runtime resource, V-Memory automatically exposes the runtime tools even without the flag.
+Compatibility behavior is conservative: if the Vault already contains a registered runtime resource, MemAuthority automatically exposes the runtime tools even without the flag.
 
 Runtime identifiers are no longer tied to maintainer machines. `host_id` is optional and user-defined. For a single environment, `environment_id` may be omitted and is canonicalized to `default`; with multiple environments, give each one an explicit stable `environment_id`. A typical single-machine user should not add `host_id` merely because the field exists.
 
 ---
 
-## Do I Need to Add a Large V-Memory Prompt After Connecting?
+## Do I Need to Add a Large MemAuthority Prompt After Connecting?
 
 Usually not.
 
@@ -139,7 +139,7 @@ When a deployment requires single-primary fencing, `serve` exposes the correspon
 Check the exact options for the installed release:
 
 ```sh
-v-memory serve --help
+memauthority serve --help
 ```
 
 Then compare them with the current [`contract/v1.2/managed-runtime.md`](contract/v1.2/managed-runtime.md) contract or the frozen contract for the installed release.
@@ -153,7 +153,7 @@ Do not begin by reading the entire Vault.
 Only when the current session genuinely lacks project context, you can tell the agent:
 
 ```text
-Check this project's V-Memory and read only what you actually need.
+Check this project's MemAuthority and read only what you actually need.
 ```
 
-The ideal behavior is not a fixed `route -> handoff` ritual. If current context is enough, no V-Memory call is needed. Route when the project is uncertain, read directly when the URI is known, search when the project is known but the location is not, and prefer handoff when the task needs an overall project-state recovery.
+The ideal behavior is not a fixed `route -> handoff` ritual. If current context is enough, no MemAuthority call is needed. Route when the project is uncertain, read directly when the URI is known, search when the project is known but the location is not, and prefer handoff when the task needs an overall project-state recovery.

@@ -16,22 +16,22 @@ import (
 	"sync"
 
 	"github.com/google/jsonschema-go/jsonschema"
-	"github.com/iasi777/v-memory/internal/gitview"
-	"github.com/iasi777/v-memory/internal/oauthserver"
-	"github.com/iasi777/v-memory/internal/pathguard"
-	"github.com/iasi777/v-memory/internal/runtimeview"
-	"github.com/iasi777/v-memory/internal/vaultread"
-	"github.com/iasi777/v-memory/internal/vaultvalidate"
-	"github.com/iasi777/v-memory/internal/vaultwrite"
+	"github.com/iasi777/memauthority/internal/gitview"
+	"github.com/iasi777/memauthority/internal/oauthserver"
+	"github.com/iasi777/memauthority/internal/pathguard"
+	"github.com/iasi777/memauthority/internal/runtimeview"
+	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/vaultvalidate"
+	"github.com/iasi777/memauthority/internal/vaultwrite"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const implementationName = "V-Memory"
-const ImplementationVersion = "1.2.0"
+const implementationName = "MemAuthority"
+const ImplementationVersion = "1.3.0-dev"
 
 // Keep Layer 0 discovery compact; contract tests enforce a 512-character ceiling.
 func serverInstructions(runtimeEnabled bool) string {
-	base := "V-Memory provides project-scoped long-term memory and cross-conversation continuity. Use it when prior project state is needed and is not already available in the current context. It can find and read durable memory and update validated Git-backed Authority. Authority writes must use V-Memory mutation tools, not machine or filesystem tools."
+	base := "MemAuthority provides project-scoped long-term memory and cross-conversation continuity. Use it when prior project state is needed and is not already available in the current context. It can find and read durable memory and update validated Git-backed Authority. Authority writes must use MemAuthority mutation tools, not machine or filesystem tools."
 	if !runtimeEnabled {
 		return base
 	}
@@ -320,7 +320,7 @@ func runtimeUpdateInputSchema() *jsonschema.Schema {
 	values := runtimeview.ClosedValues()
 	join := func(xs []string) string { return strings.Join(xs, ", ") }
 
-	setSchemaDescription(schema, "project_id", "Registered active V-Memory project id. runtime.project_id must match this value.")
+	setSchemaDescription(schema, "project_id", "Registered active MemAuthority project id. runtime.project_id must match this value.")
 	setSchemaDescription(schema, "expected_index_revision", "Required INDEX CAS revision in sha256:<64 hex> form. Stale values return conflict after static runtime validation passes.")
 	setSchemaDescription(schema, "expected_resource_revision", "Runtime resource CAS revision in sha256:<64 hex> form when replacing an existing runtime. Omit only when creating the project's first registered runtime.")
 	setSchemaDescription(schema, "client_idempotency_key", "Optional caller idempotency key. Reusing the same key with the same payload replays the committed result; reusing it for a different payload conflicts.")
@@ -424,7 +424,7 @@ func (a *App) newServer() *mcp.Server {
 	s := mcp.NewServer(&mcp.Implementation{Name: implementationName, Version: ImplementationVersion}, &mcp.ServerOptions{Instructions: serverInstructions(a.runtimeEnabled)})
 	ro := &mcp.ToolAnnotations{ReadOnlyHint: true}
 
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_route", Description: "Use this when the target V-Memory project id is uncertain and you have a project name, alias, or repository identity. It resolves exact NFC-normalized, Unicode-casefolded registered project ids or aliases; do not use it when the project id or resource URI is already known.", Annotations: titledAnnotations("Resolve memory project", ro)},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_route", Description: "Use this when the target MemAuthority project id is uncertain and you have a project name, alias, or repository identity. It resolves exact NFC-normalized, Unicode-casefolded registered project ids or aliases; do not use it when the project id or resource URI is already known.", Annotations: titledAnnotations("Resolve memory project", ro)},
 		func(_ context.Context, _ *mcp.CallToolRequest, in RouteArgs) (*mcp.CallToolResult, map[string]any, error) {
 			if in.Query == "" {
 				return nil, nil, fmt.Errorf("query is required")
@@ -461,7 +461,7 @@ func (a *App) newServer() *mcp.Server {
 			return nil, a.vault.Search(in), nil
 		})
 	if a.runtimeEnabled {
-		mcp.AddTool(s, &mcp.Tool{Name: "memory_project_runtime", Description: "Use this to read stored declarative runtime location, environment, repository, supervisor, check, and boundary metadata for a project. It does not execute checks, inspect the V-Memory service itself, or prove current live deployment health.", Annotations: titledAnnotations("Read declarative runtime", ro)},
+		mcp.AddTool(s, &mcp.Tool{Name: "memory_project_runtime", Description: "Use this to read stored declarative runtime location, environment, repository, supervisor, check, and boundary metadata for a project. It does not execute checks, inspect the MemAuthority service itself, or prove current live deployment health.", Annotations: titledAnnotations("Read declarative runtime", ro)},
 			func(_ context.Context, _ *mcp.CallToolRequest, in runtimeview.QueryArgs) (*mcp.CallToolResult, map[string]any, error) {
 				if in.ProjectID == "" {
 					return nil, nil, fmt.Errorf("project_id is required")
@@ -522,19 +522,19 @@ func (a *App) addMutationTools(s *mcp.Server) {
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.RecordPitfallArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.RecordPitfall(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_create_project", Description: "Create a new active V-Memory project with a program-owned canonical handoff scaffold; no Vault template file is required.", Annotations: titledAnnotations("Create memory project", mutationAnnotations(false, false))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_create_project", Description: "Create a new active MemAuthority project with a program-owned canonical handoff scaffold; no Vault template file is required.", Annotations: titledAnnotations("Create memory project", mutationAnnotations(false, false))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.CreateProjectArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.CreateProject(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_archive_project", Description: "Archive one V-Memory project in current-HEAD lifecycle metadata while preserving its Authority history.", Annotations: titledAnnotations("Archive memory project", mutationAnnotations(true, true))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_archive_project", Description: "Archive one MemAuthority project in current-HEAD lifecycle metadata while preserving its Authority history.", Annotations: titledAnnotations("Archive memory project", mutationAnnotations(true, true))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.ArchiveProjectArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.ArchiveProject(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_restore_project", Description: "Restore one archived V-Memory project to active lifecycle state through the controlled mutation path.", Annotations: titledAnnotations("Restore memory project", mutationAnnotations(true, true))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_restore_project", Description: "Restore one archived MemAuthority project to active lifecycle state through the controlled mutation path.", Annotations: titledAnnotations("Restore memory project", mutationAnnotations(true, true))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.RestoreProjectArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.RestoreProject(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_migrate_lifecycle", Description: "Perform the one-time legacy V-Memory lifecycle migration through the transaction kernel; this is a migration operation, not normal project editing.", Annotations: titledAnnotations("Migrate memory lifecycle", mutationAnnotations(false, true))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_migrate_lifecycle", Description: "Perform the one-time legacy MemAuthority lifecycle migration through the transaction kernel; this is a migration operation, not normal project editing.", Annotations: titledAnnotations("Migrate memory lifecycle", mutationAnnotations(false, true))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.MigrateLifecycleArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.MigrateLifecycle(in) }), nil
 		})
@@ -549,7 +549,7 @@ func (a *App) addMutationTools(s *mcp.Server) {
 			})
 	}
 
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_status", Description: "Use this to inspect the V-Memory service and Authority workspace itself: Git head, owned snapshot, projection, write gate, fencing, journal, and recovery state. It does not report a project's deployment location or live production service health.", Annotations: titledAnnotations("Inspect memory service status", statusAnnotations())},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_status", Description: "Use this to inspect the MemAuthority service and Authority workspace itself: Git head, owned snapshot, projection, write gate, fencing, journal, and recovery state. It does not report a project's deployment location or live production service health.", Annotations: titledAnnotations("Inspect memory service status", statusAnnotations())},
 		func(_ context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, map[string]any, error) {
 			a.mutationMu.Lock()
 			defer a.mutationMu.Unlock()

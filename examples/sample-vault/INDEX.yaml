@@ -1,7 +1,7 @@
 schema_version: 4
 projects:
   demo:
-    description: Sanitized V-Memory example project
+    description: Sanitized MemAuthority example project
     lifecycle: active
     aliases:
       - sample-project

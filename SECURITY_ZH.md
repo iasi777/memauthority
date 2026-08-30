@@ -14,6 +14,6 @@
 
 如怀疑存在安全漏洞，请勿创建公开 Issue。请使用 GitHub 的私密漏洞报告入口：
 
-- [私密报告安全漏洞](https://github.com/iasi777/v-memory/security/advisories/new)
+- [私密报告安全漏洞](https://github.com/iasi777/memauthority/security/advisories/new)
 
 报告中应包含受影响版本、影响范围、复现方法和建议缓解措施。请勿在报告中附带真实凭据、私有 Vault 内容或生产 Secret。

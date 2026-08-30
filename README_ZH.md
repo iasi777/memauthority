@@ -1,4 +1,4 @@
-# V-Memory — 面向 AI Agent 的 Git 长期记忆系统
+# MemAuthority — 面向 AI Agent 的 Git 长期记忆系统
 
 [English](README.md)
 
@@ -6,7 +6,7 @@
 
 **轻松掌握 Agent 的记忆，整理维护留给 Agent**
 
-V-Memory 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆系统，并通过 MCP（Model Context Protocol）对外提供能力。
+MemAuthority 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆系统，并通过 MCP（Model Context Protocol）对外提供能力。**项目原名 V-Memory**；此次更名的核心目的，是获得唯一且可稳定搜索的项目身份。
 
 搜索关键词：**AI Agent Memory**、**Long-Term Memory**、**MCP Memory Server**、**Git-backed Memory**、**Agent Memory Infrastructure**。
 
@@ -17,13 +17,13 @@ V-Memory 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆系�
 清晰的分工：
 - **你**负责把关：判断哪些信息真正值得长期留下；
 - **Agent** 负责执行：理解、归纳、检索、更新与清理记忆；
-- **V-Memory** 负责兜底：确保记忆可靠存储与按需读取，并在版本冲突、重复重试和异常中断时提供确定性的系统保护
+- **MemAuthority** 负责兜底：确保记忆可靠存储与按需读取，并在版本冲突、重复重试和异常中断时提供确定性的系统保护
 
 ---
 
 ## 它适合谁？
 
-V-Memory 适合更看重长期记忆质量的用户
+MemAuthority 适合更看重长期记忆质量的用户
 
 你可能正在经历各类平台自带 Memory 的不可控感：
 - 不清楚为什么会被记下；
@@ -33,7 +33,7 @@ V-Memory 适合更看重长期记忆质量的用户
 
 你也可能尝试过维护 `MEMORY.md`，但随着内容积累，它变得越来越臃肿、杂乱，甚至开始干扰 Agent 的正常判断
 
-V-Memory 最适合这样的使用场景：
+MemAuthority 最适合这样的使用场景：
 
 > **愿意为记忆质量投入少许精力把关，但希望将具体整理工作全部交给 Agent**
 
@@ -51,7 +51,7 @@ V-Memory 最适合这样的使用场景：
 
 如果你的项目记忆体量较小、内容极少变动，或者你不想在记忆维护上耗费任何注意力，继续使用 `MEMORY.md` 是最省心的选择
 
-V-Memory 聚焦于解决更高阶的需求：
+MemAuthority 聚焦于解决更高阶的需求：
 
 > **把“维护长期记忆”本身，变成一套可靠、可控的工程化工作流**
 
@@ -65,17 +65,17 @@ V-Memory 聚焦于解决更高阶的需求：
 
 一句话概括：
 
-> **`MEMORY.md` 优化的是“让任何人都能零门槛拥有一份记忆”；V-Memory 优化的是“让重视记忆质量的人，能够长期稳定地维护好这份记忆” **
+> **`MEMORY.md` 优化的是“让任何人都能零门槛拥有一份记忆”；MemAuthority 优化的是“让重视记忆质量的人，能够长期稳定地维护好这份记忆” **
 
 ---
 
 ## 平时怎么用？
 
-在理想的工作流中，V-Memory 隐身于 Agent 背后 你平时只需要用简短自然的指令与 Agent 交互：
+在理想的工作流中，MemAuthority 隐身于 Agent 背后 你平时只需要用简短自然的指令与 Agent 交互：
 
 ### 1. 开始任务时按需读取
 *仅在当前对话确实缺少该项目的背景信息时使用：*
-> **“先看看这个项目的 V-Memory，需要什么再读什么 ”**
+> **“先看看这个项目的 MemAuthority，需要什么再读什么 ”**
 
 Agent 会先读取当前接手状态（`handoff`），后续仅在具体任务需要时才去检索和读取对应章节 切忌默认将整个记忆库一股脑塞入上下文
 
@@ -90,12 +90,12 @@ Agent 提炼候选条目，由你最终决定保留、修改还是舍弃
 这也是常见用法 默认情况下，Agent 会采用保守策略，仅将其作为一次低风险的 `progress`（阶段进展）记录，而不会擅自改动长期的 `rules`（规则）
 
 ### 4. 任务结束后顺手维护
-> **“梳理优化一下本次任务从 V-Memory 用到的记忆，并清理过时内容 ”**
+> **“梳理优化一下本次任务从 MemAuthority 用到的记忆，并清理过时内容 ”**
 
 Agent 只针对本次任务实际读取和使用过的记忆进行针对性维护，无需每次全盘扫描整个 Vault
 
 ### 5. 暂存延后想法，释放当前上下文
-> **“这个方向以后值得研究，先放到 V-Memory TODO，别占现在的上下文 ”**
+> **“这个方向以后值得研究，先放到 MemAuthority TODO，别占现在的上下文 ”**
 
 这里的 TODO 不是项目管理工具，而是：
 > **值得未来处理，但眼下不需要占据思考带宽的信息暂存点**
@@ -106,7 +106,7 @@ Agent 只针对本次任务实际读取和使用过的记忆进行针对性维�
 
 ## “记录一下这次任务”，怎么避免越记越乱？
 
-V-Memory 不强制要求你每次记录前都先思考“该放进 rules 还是 progress”
+MemAuthority 不强制要求你每次记录前都先思考“该放进 rules 还是 progress”
 
 当你发出类似“记录一下这次任务”的模糊指令时，Agent 的默认行为应当是：
 - **优先写入 `progress`**；
@@ -123,7 +123,7 @@ V-Memory 不强制要求你每次记录前都先思考“该放进 rules 还是 
 
 同时，Agent 不应仅仅因为某句话“听起来很重要”，就擅自将其提升为长期 `rules` 真正稳固的规则、接手状态和踩坑教训，应在长期的实际工作中逐步沉淀
 
-**V-Memory 底层提供系统级兜底保护：**
+**MemAuthority 底层提供系统级兜底保护：**
 - 写入内容必须遵循规范的固定结构；
 - 不同记忆角色（Role）只能通过允许的方式进行修改；
 - 自动拦截高置信度的 Secret / 敏感凭证；
@@ -134,11 +134,11 @@ V-Memory 不强制要求你每次记录前都先思考“该放进 rules 还是 
 
 系统的承诺并不是“永远不产生一条低质量记录”，而是：
 
-> **由 Agent 执行保守记录，由 V-Memory 保障底层状态可靠，再通过后续真实工作推动记忆持续精炼收敛**
+> **由 Agent 执行保守记录，由 MemAuthority 保障底层状态可靠，再通过后续真实工作推动记忆持续精炼收敛**
 
 这里的“一致性”分为两层：
 - **语义一致性**：由 Agent 基于最新任务事实与既有记忆进行梳理维护；
-- **状态一致性**：由 V-Memory 通过 Git Authority、Revision CAS、幂等性和事务机制提供底层保障
+- **状态一致性**：由 MemAuthority 通过 Git Authority、Revision CAS、幂等性和事务机制提供底层保障
 
 记住：`progress` 是低成本的阶段性记录入口，而不是永久不变的归档日志
 
@@ -148,9 +148,9 @@ V-Memory 不强制要求你每次记录前都先思考“该放进 rules 还是 
 
 无需手动逐行重写
 
-针对旧库迁移，V-Memory 采用明确的迁移方案：
+针对旧库迁移，MemAuthority 采用明确的迁移方案：
 
-> **由 Agent 负责语义迁移，而不是由 V-Memory 为每种旧格式编写专门的 Importer **
+> **由 Agent 负责语义迁移，而不是由 MemAuthority 为每种旧格式编写专门的 Importer **
 
 只要 Agent 能够读取并理解你的旧内容，就能支持各类迁移来源：
 - 现有的 `MEMORY.md`；
@@ -162,15 +162,15 @@ V-Memory 不强制要求你每次记录前都先思考“该放进 rules 还是 
 - 其他任何 Agent 可理解的文本内容
 
 **标准迁移流程：**
-1. Agent 先学习 V-Memory 接收的长期记忆标准与结构规范；
+1. Agent 先学习 MemAuthority 接收的长期记忆标准与结构规范；
 2. Agent 读取旧资料库；
 3. 执行去重、合并、更新与分类整理；
 4. 剔除过时、冗余、纯流水账、临时性以及不宜长期保存的内容；
-5. 将提炼后的最终内容输出为标准的 V-Memory 结构
+5. 将提炼后的最终内容输出为标准的 MemAuthority 结构
 
 你可以直接对 Agent 这样说：
 
-> **“先了解 V-Memory 的记忆规范，然后检查这份旧记忆库 把仍值得长期保留的内容进行去重、合并、更新和重组；过时、重复、纯流水账、临时和不该长期保存的内容全部剔除 先整理出迁移候选方案，由我确认后再执行写入 ”**
+> **“先了解 MemAuthority 的记忆规范，然后检查这份旧记忆库 把仍值得长期保留的内容进行去重、合并、更新和重组；过时、重复、纯流水账、临时和不该长期保存的内容全部剔除 先整理出迁移候选方案，由我确认后再执行写入 ”**
 
 迁移的本质是**重新进行一次记忆裁决**，而不是机械复制
 
@@ -191,9 +191,9 @@ init（初始化空库）
 
 ---
 
-## V-Memory 里存什么？
+## MemAuthority 里存什么？
 
-V-Memory 中的长期记忆严格划分为四种角色（Roles）：
+MemAuthority 中的长期记忆严格划分为四种角色（Roles）：
 
 ### `handoff`（接手状态）
 当前接手该项目必须了解的**最小关键状态**
@@ -223,8 +223,8 @@ V-Memory 中的长期记忆严格划分为四种角色（Roles）：
 
 因为**记得多并不等于记得对**
 
-V-Memory 采用渐进式的按需召回（Progressive Recall）机制：
-1. 若当前对话的 Context 已包含足够信息，则不触发 V-Memory 调用；
+MemAuthority 采用渐进式的按需召回（Progressive Recall）机制：
+1. 若当前对话的 Context 已包含足够信息，则不触发 MemAuthority 调用；
 2. 所属项目不明确时，先定位并确认目标项目；
 3. 若已知明确的 URI 或 Section，直接发起精确读取；
 4. 若已知项目但未知具体位置，在当前项目范围内执行检索；
@@ -240,17 +240,17 @@ V-Memory 采用渐进式的按需召回（Progressive Recall）机制：
 
 ## 多个 Agent 会不会把记忆写乱？
 
-V-Memory v1 遵循的核心设计模型是：
+MemAuthority v1 遵循的核心设计模型是：
 
 > **Multi-Agent, single Authority.**（多 Agent 协作，单一权威源）
 
 多个 Agent 可以共享使用同一份记忆库，但 Authority 始终保持单线有序的版本历史
 
-如果 Agent A 已经更新了记忆，而 Agent B 仍试图基于旧版本（revision）提交修改，V-Memory 会明确返回冲突（conflict）并拒绝写入，坚决防止静默覆盖
+如果 Agent A 已经更新了记忆，而 Agent B 仍试图基于旧版本（revision）提交修改，MemAuthority 会明确返回冲突（conflict）并拒绝写入，坚决防止静默覆盖
 
 此时 Agent B 需要重新读取最新内容，再根据当前实际情况决定合并、重写、放弃还是询问用户
 
-V-Memory 不代替 Agent 判断哪一方的主观观点更正确，它的核心职责在于：
+MemAuthority 不代替 Agent 判断哪一方的主观观点更正确，它的核心职责在于：
 
 > **确保并发分歧被显式暴露，绝不让冲突悄悄演变成错误的脏记忆**
 
@@ -272,29 +272,31 @@ Git 负责忠实记录 Authority 的完整演变历史，随时可以追溯记�
 
 ## 安装
 
-V-Memory 依赖 Git，并要求 Go 1.26.5 或更高版本。安装当前稳定版本：
+MemAuthority 依赖 Git，并要求 Go 1.26.5 或更高版本。当前新品牌 CLI 已在 `main` 提供：
+
+```sh
+go install github.com/iasi777/memauthority/cmd/memauthority@main
+```
+
+验证：
+
+```sh
+memauthority version
+```
+
+在第一个 MemAuthority release tag 发布前，最近的正式稳定版本仍是 **V-Memory v1.2.0**，旧 module path 继续可用：
 
 ```sh
 go install github.com/iasi777/v-memory/cmd/v-memory@v1.2.0
 ```
 
-确认 Go 的二进制目录已经加入 `PATH`，然后验证安装：
-
-```sh
-v-memory version
-```
-
-预期输出：
-
-```text
-v-memory 1.2.0
-```
+GitHub 会把旧仓库地址重定向到 `iasi777/memauthority`。已冻结的 v1.1/v1.2 契约以及旧 `v-memory` 可执行命令继续作为兼容面保留。
 
 目前没有发布预编译二进制。如果需要从源码构建：
 
 ```sh
-go build -trimpath -o ./v-memory ./cmd/v-memory
-./v-memory version
+go build -trimpath -o ./memauthority ./cmd/memauthority
+./memauthority version
 ```
 
 Release CI 会在 Linux、macOS、Windows 原生 runner 上运行测试、vet 和 CLI 构建；Linux CI 另外验证生产使用的 Linux/ARM64 目标。
@@ -305,7 +307,7 @@ Release CI 会在 Linux、macOS、Windows 原生 runner 上运行测试、vet �
 
 ### 1. 创建空 Vault
 ```sh
-v-memory init ./vault
+memauthority init ./vault
 ```
 
 ### 2. 初始化与整理
@@ -314,13 +316,13 @@ v-memory init ./vault
 
 整理完成后执行校验：
 ```sh
-v-memory validate ./vault
+memauthority validate ./vault
 ```
 
 ### 3. 提交并启动服务
 审核内容并提交至 Git 后，通过 MCP 启动托管服务（Managed Service）：
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -333,7 +335,7 @@ v-memory serve \
 
 本地接入最简单的方式是让 MCP 客户端通过 stdio 直接拉起上述命令
 
-连接建立后，V-Memory 会自动向 Agent 提供 Tool 描述、Input Schema、Annotations 和 Resource 元数据 在日常受管使用中，你无需每次手动向 Agent 解释参数规则
+连接建立后，MemAuthority 会自动向 Agent 提供 Tool 描述、Input Schema、Annotations 和 Resource 元数据 在日常受管使用中，你无需每次手动向 Agent 解释参数规则
 
 [`AGENT-GUIDE.md`](docs/AGENT-GUIDE_ZH.md) 补充了跨工具维度的使用原则（如按需召回、保守记录、角色选择与旧库迁移等）
 
@@ -341,7 +343,7 @@ v-memory serve \
 
 ---
 
-## V-Memory 不是什么
+## MemAuthority 不是什么
 
 如果你的主要诉求属于以下类型，其他专门工具往往更加合适：
 - **完全自动记录个人日常偏好**：更适合使用各模型/平台自带的 Memory；
@@ -350,7 +352,7 @@ v-memory serve \
 - **供人类阅读的完整项目文档**：应编写专用的 README、Wiki、ADR 或 Docs；
 - **追踪排期、负责人、Deadline 与协作依赖**：应使用专业的任务或项目管理工具（如 Jira、Linear 等）
 
-V-Memory 不是聊天日志归档，不是全量知识库，也不是任务管理系统
+MemAuthority 不是聊天日志归档，不是全量知识库，也不是任务管理系统
 
 它唯一专注保留的是：
 
@@ -364,14 +366,14 @@ V-Memory 不是聊天日志归档，不是全量知识库，也不是任务管�
 go test ./...
 go vet ./...
 go mod verify
-go build -trimpath -o ./v-memory ./cmd/v-memory
+go build -trimpath -o ./memauthority ./cmd/memauthority
 ```
 
 ---
 
 ## 公共契约
 
-当前公共兼容性基线为 **v1.2.0**。
+最近一个已发布的公共兼容性基线为 **v1.2.0**，发布时项目名称仍为 V-Memory。`main` 上的 MemAuthority 品牌迁移目前尚未发布；冻结的 v1.1/v1.2 快照保持不变。
 
 Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.2/`](docs/contract/v1.2/) 下。
 
@@ -380,11 +382,11 @@ Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则�
 ## Version
 
 ```sh
-v-memory version
-v-memory --version
+memauthority version
+memauthority --version
 ```
 
-在 v1.2.0 中，两种形式均输出 `v-memory 1.2.0`。
+品牌迁移后的 `main` 上，`memauthority` 当前输出 `1.3.0-dev`；冻结的 v1.2.0 旧命令仍输出 `v-memory 1.2.0`。
 
 ## Security
 
@@ -392,7 +394,7 @@ v-memory --version
 
 - 写入权限默认关闭，需显式添加 `--write-enabled` 标志开启；
 - HTTP 写入必须严格遵守冻结 v1 规范中的 OAuth 与安全要求；
-- V-Memory 内置高置信度 Secret 敏感信息扫描，但它不能替代全功能的隐私检测工具
+- MemAuthority 内置高置信度 Secret 敏感信息扫描，但它不能替代全功能的隐私检测工具
 
 ## 相关文档
 

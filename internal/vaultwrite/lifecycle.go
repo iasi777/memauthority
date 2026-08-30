@@ -13,9 +13,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/iasi777/v-memory/internal/textcanon"
-	"github.com/iasi777/v-memory/internal/vaultread"
-	"github.com/iasi777/v-memory/internal/vaultvalidate"
+	"github.com/iasi777/memauthority/internal/textcanon"
+	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/vaultvalidate"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,7 +25,7 @@ type CreateProjectArgs struct {
 	Lifecycle             string          `json:"lifecycle" jsonschema:"Must be active for a newly created project."`
 	ExpectedIndexRevision string          `json:"expected_index_revision" jsonschema:"Current SHA-256 INDEX revision used for compare-and-swap."`
 	Aliases               []string        `json:"aliases,omitempty" jsonschema:"Optional unique routing aliases for the project."`
-	LocalPath             *string         `json:"local_path,omitempty" jsonschema:"Optional user-facing local path metadata; V-Memory does not read arbitrary host files from this value."`
+	LocalPath             *string         `json:"local_path,omitempty" jsonschema:"Optional user-facing local path metadata; MemAuthority does not read arbitrary host files from this value."`
 	CreateRulesRole       bool            `json:"create_rules_role,omitempty" jsonschema:"If true, also create an empty canonical rules role; handoff is always created."`
 	Evidence              []EvidenceInput `json:"evidence,omitempty" jsonschema:"Optional structured evidence metadata for the mutation; do not place secrets in durable content."`
 	ClientIdempotencyKey  string          `json:"client_idempotency_key,omitempty" jsonschema:"Optional stable caller key for safe replay of the same mutation payload."`

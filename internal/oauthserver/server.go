@@ -502,9 +502,9 @@ func (s *Server) loginGET(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: "oauth_csrf", Value: csrf, Path: "/oauth/login", MaxAge: 600, HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprintf(w, `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>V-Memory authorization</title></head>
+<html lang="en"><head><meta charset="utf-8"><title>MemAuthority authorization</title></head>
 <body>
-<h1>V-Memory authorization</h1>
+<h1>MemAuthority authorization</h1>
 <p>Sign in to authorize the configured MCP client.</p>
 <form method="post" action="/oauth/login">
 <input type="hidden" name="transaction" value="%s">

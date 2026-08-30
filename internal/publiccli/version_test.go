@@ -14,7 +14,7 @@ func TestVersionDiscovery(t *testing.T) {
 		if code := Run(args, &out, &errOut); code != 0 {
 			t.Fatalf("Run(%v) exit=%d stderr=%q", args, code, errOut.String())
 		}
-		if got := out.String(); got != "v-memory 1.2.0\n" {
+		if got := out.String(); got != "v-memory 1.3.0-dev\n" {
 			t.Fatalf("Run(%v) stdout=%q", args, got)
 		}
 		if errOut.Len() != 0 {
@@ -31,6 +31,18 @@ func TestVersionDiscoveryRejectsExtraArgs(t *testing.T) {
 		}
 		if out.Len() != 0 {
 			t.Fatalf("Run(%v) stdout=%q", args, out.String())
+		}
+	}
+}
+
+func TestMemAuthorityVersion(t *testing.T) {
+	for _, args := range [][]string{{"version"}, {"--version"}} {
+		var out, errOut bytes.Buffer
+		if code := RunAs("memauthority", args, &out, &errOut); code != 0 {
+			t.Fatalf("args=%v code=%d stderr=%q", args, code, errOut.String())
+		}
+		if got := out.String(); got != "memauthority 1.3.0-dev\n" {
+			t.Fatalf("args=%v output=%q", args, got)
 		}
 	}
 }

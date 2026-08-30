@@ -12,9 +12,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/iasi777/v-memory/internal/authorityscan"
-	"github.com/iasi777/v-memory/internal/runtimeview"
-	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/authorityscan"
+	"github.com/iasi777/memauthority/internal/runtimeview"
+	"github.com/iasi777/memauthority/internal/vaultread"
 )
 
 const maxSourceBytes = 2 * 1024 * 1024

@@ -1,8 +1,8 @@
-# V-Memory 接入指南
+# MemAuthority 接入指南
 
 [English](ONBOARDING.md)
 
-> 用途：V-Memory 用户接入指南。
+> 用途：MemAuthority 用户接入指南。
 > 精确 API、schema 和安全行为以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 这份文档只回答三个问题：
@@ -17,11 +17,11 @@
 
 - **你决定什么值得长期保留。**
 - **Agent 负责理解、整理、迁移和维护。**
-- **V-Memory 负责可靠读取和可靠写入。**
+- **MemAuthority 负责可靠读取和可靠写入。**
 
 > **记忆由你决定，整理交给 Agent。**
 
-V-Memory 不是自动收集聊天记录的工具，也不要求你手工学习整套 Markdown schema 后才能使用。
+MemAuthority 不是自动收集聊天记录的工具，也不要求你手工学习整套 Markdown schema 后才能使用。
 
 ---
 
@@ -44,7 +44,7 @@ V-Memory 不是自动收集聊天记录的工具，也不要求你手工学习�
 - 聊天总结；
 - 多份互相冲突的历史记忆。
 
-对于 V-Memory 的目标用户，第二条路径往往才是采用它的主要原因。
+对于 MemAuthority 的目标用户，第二条路径往往才是采用它的主要原因。
 
 ---
 
@@ -53,7 +53,7 @@ V-Memory 不是自动收集聊天记录的工具，也不要求你手工学习�
 ### 3.1 创建空 Vault
 
 ```sh
-v-memory init ./vault
+memauthority init ./vault
 ```
 
 这会建立一个空的 Git-backed Vault，并创建初始 commit。
@@ -79,7 +79,7 @@ Agent 应只建立当前已经有理由存在的内容。
 ### 3.3 验证
 
 ```sh
-v-memory validate --json ./vault
+memauthority validate --json ./vault
 ```
 
 Validation 检查：
@@ -100,7 +100,7 @@ Validation **不会**判断内容是否聪明、是否真的重要、是否已�
 确认结果以后提交 Git，再启动：
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -119,7 +119,7 @@ v-memory serve \
 
 这一方案已经定案：
 
-> **导入由 Agent 做语义迁移，不由 V-Memory 为每种格式开发 importer。**
+> **导入由 Agent 做语义迁移，不由 MemAuthority 为每种格式开发 importer。**
 
 ### 4.1 为什么由 Agent 导入
 
@@ -138,7 +138,7 @@ v-memory serve \
 
 ### 4.2 正确顺序
 
-Agent 必须先理解 V-Memory，再读取旧库：
+Agent 必须先理解 MemAuthority，再读取旧库：
 
 1. 阅读 [`AGENT-GUIDE_ZH.md`](AGENT-GUIDE_ZH.md)；
 2. 理解 Context / Memory / TODO / Forget；
@@ -146,9 +146,9 @@ Agent 必须先理解 V-Memory，再读取旧库：
 4. 理解当前真相应收敛，而不是保留完整更正历史；
 5. 再读取旧资料；
 6. 去重、合并、更新、分类和淘汰；
-7. 输出符合 V-Memory 结构的结果。
+7. 输出符合 MemAuthority 结构的结果。
 
-> **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
+> **Format-agnostic at the Agent layer; deterministic at the MemAuthority layer.**
 
 ### 4.3 导入是蒸馏，不是复制
 
@@ -160,7 +160,7 @@ Agent 必须先理解 V-Memory，再读取旧库：
 - 与其他内容合并；
 - 更新成较新的当前真相；
 - 转成 TODO；
-- 留在原始文档，只在 V-Memory 放结论或指针；
+- 留在原始文档，只在 MemAuthority 放结论或指针；
 - 从 active memory 中丢弃。
 
 一份 5000 行旧库最后只剩 500 行，完全可能是一场更成功的迁移。
@@ -168,7 +168,7 @@ Agent 必须先理解 V-Memory，再读取旧库：
 ### 4.4 推荐的用户指令
 
 ```text
-先了解 V-Memory 的记忆规则，再检查这份旧记忆库。
+先了解 MemAuthority 的记忆规则，再检查这份旧记忆库。
 把仍值得长期保留的内容去重、合并、更新并重新组织；
 过时、重复、纯历史、临时和不该长期保存的内容不要导入。
 先给我迁移候选，我确认后再写入。
@@ -178,7 +178,7 @@ Agent 必须先理解 V-Memory，再读取旧库：
 
 候选 review 是推荐工作流，不是服务器强制步骤。
 
-### 4.5 旧内容到 V-Memory 的常见映射
+### 4.5 旧内容到 MemAuthority 的常见映射
 
 - 当前接手状态 → `handoff`
 - 长期决定和约束 → `rules`
@@ -193,12 +193,12 @@ Agent 必须先理解 V-Memory，再读取旧库：
 ### 4.6 v1 大规模迁移流程
 
 ```text
-v-memory init
+memauthority init
   -> 停止或不要启动 managed ownership
-  -> Agent 阅读 V-Memory 规则
+  -> Agent 阅读 MemAuthority 规则
   -> Agent 读取并蒸馏旧库
   -> detached authoring 构建 canonical Vault
-  -> v-memory validate --json
+  -> memauthority validate --json
   -> 用户按需审核
   -> Git commit
   -> managed serve
@@ -227,12 +227,12 @@ Managed service 启动后，剩余零散旧内容可以由 Agent 按正常 typed
 
 ## 5. 怎么接到 Agent
 
-V-Memory 的日常 managed 使用通过 MCP。
+MemAuthority 的日常 managed 使用通过 MCP。
 
 本地最简单的是 stdio，由 MCP client 直接启动：
 
 ```sh
-v-memory serve \
+memauthority serve \
   --vault /absolute/path/to/vault \
   --state-dir /absolute/path/to/state \
   --write-enabled
@@ -240,7 +240,7 @@ v-memory serve \
 
 不同 Agent / 客户端的配置格式不同，但本质相同：
 
-- command：`v-memory`
+- command：`memauthority`
 - arguments：`serve` 和后续参数
 
 通用接入原则和配置结构见 [`MCP-CONFIG_ZH.md`](MCP-CONFIG_ZH.md)。
@@ -254,7 +254,7 @@ v-memory serve \
 
 这些已经包含当前服务实际暴露的字段、机械约束和使用提示。
 
-首次建库或旧记忆迁移时，**不要**因为 V-Memory 能表达 runtime/environment 就顺手创建这类元数据。没有已登记 runtime 时，这些工具默认隐藏。普通单机项目建议一直关闭；只有多环境或部署拓扑确实值得长期记住时再开启。
+首次建库或旧记忆迁移时，**不要**因为 MemAuthority 能表达 runtime/environment 就顺手创建这类元数据。没有已登记 runtime 时，这些工具默认隐藏。普通单机项目建议一直关闭；只有多环境或部署拓扑确实值得长期记住时再开启。
 
 普通 managed 使用不需要你每次重新解释参数，也不要脱离当前 tool schema 硬编码某个版本的字段。
 
@@ -283,7 +283,7 @@ HTTP 远程接入前，先阅读：
 仅在当前会话确实缺少这个项目的背景时使用：
 
 ```text
-先看看这个项目的 V-Memory，需要什么再读什么。
+先看看这个项目的 MemAuthority，需要什么再读什么。
 ```
 
 Agent 应：
@@ -311,7 +311,7 @@ Agent 默认保守写 `progress`，不复制聊天，不擅自升级长期规则
 ### 6.4 维护旧记忆
 
 ```text
-梳理优化一下本次任务从 V-Memory 用到的记忆，并清理过时内容。
+梳理优化一下本次任务从 MemAuthority 用到的记忆，并清理过时内容。
 ```
 
 默认只维护本次真正使用过的 Memory。
@@ -319,7 +319,7 @@ Agent 默认保守写 `progress`，不复制聊天，不擅自升级长期规则
 ### 6.5 TODO
 
 ```text
-这个方向以后值得研究，先放到 V-Memory TODO，别占现在的上下文。
+这个方向以后值得研究，先放到 MemAuthority TODO，别占现在的上下文。
 ```
 
 完成后，TODO 通常删除；长期结论另行进入 Memory。
@@ -328,9 +328,9 @@ Agent 默认保守写 `progress`，不复制聊天，不擅自升级长期规则
 
 ## 7. 首次使用检查清单
 
-- [ ] Vault 已由 `v-memory init` 创建；
+- [ ] Vault 已由 `memauthority init` 创建；
 - [ ] 首次完整建库或旧库迁移发生在 detached authoring 阶段；
-- [ ] `v-memory validate --json` 通过；
+- [ ] `memauthority validate --json` 通过；
 - [ ] 用户按需审核 active memory，而不只看 validation；
 - [ ] Vault 已提交且 worktree clean；
 - [ ] `state-dir` 位于 Vault 之外；
@@ -343,7 +343,7 @@ Agent 默认保守写 `progress`，不复制聊天，不擅自升级长期规则
 
 ## 8. 不要这样做
 
-- 不要把完整聊天历史批量复制进 V-Memory；
+- 不要把完整聊天历史批量复制进 MemAuthority；
 - 不要要求用户手工把旧库翻译成四个 role；
 - 不要把 validation 当语义质量证明；
 - 不要在 managed ownership 活跃时直接编辑 Vault；

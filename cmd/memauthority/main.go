@@ -10,5 +10,5 @@ import (
 )
 
 func main() {
-	os.Exit(publiccli.Run(os.Args[1:], os.Stdout, os.Stderr))
+	os.Exit(publiccli.RunAs("memauthority", os.Args[1:], os.Stdout, os.Stderr))
 }

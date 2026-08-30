@@ -42,9 +42,11 @@ jobs:
         run: go test ./...
       - name: Vet
         run: go vet ./...
-      - name: Build CLI
+      - name: Build MemAuthority CLI
+        run: go build -trimpath -buildvcs=false -o ${{ runner.temp }}/memauthority${{ runner.os == 'Windows' && '.exe' || '' }} ./cmd/memauthority
+      - name: Build legacy v-memory compatibility CLI
         run: go build -trimpath -buildvcs=false -o ${{ runner.temp }}/v-memory${{ runner.os == 'Windows' && '.exe' || '' }} ./cmd/v-memory
       - name: Build linux/arm64 production target
         if: runner.os == 'Linux'
         shell: bash
-        run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -buildvcs=false -o /tmp/v-memory-linux-arm64 ./cmd/v-memory
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -buildvcs=false -o /tmp/memauthority-linux-arm64 ./cmd/memauthority

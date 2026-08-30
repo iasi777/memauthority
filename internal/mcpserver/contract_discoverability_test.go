@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/v-memory/internal/runtimeview"
+	"github.com/iasi777/memauthority/internal/runtimeview"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -65,8 +65,8 @@ func TestToolTitlesAndPairwiseDescriptions(t *testing.T) {
 	}
 	assertDescriptionTerms(t, tools["memory_route"], "uncertain", "exact", "alias", "already known")
 	assertDescriptionTerms(t, tools["memory_search"], "known project", "exact memory resource", "does not resolve uncertain project identity")
-	assertDescriptionTerms(t, tools["memory_project_runtime"], "declarative runtime", "does not execute checks", "V-Memory service", "live deployment health")
-	assertDescriptionTerms(t, tools["memory_status"], "V-Memory service", "Authority workspace", "does not report a project's deployment")
+	assertDescriptionTerms(t, tools["memory_project_runtime"], "declarative runtime", "does not execute checks", "MemAuthority service", "live deployment health")
+	assertDescriptionTerms(t, tools["memory_status"], "MemAuthority service", "Authority workspace", "does not report a project's deployment")
 	assertDescriptionTerms(t, tools["memory_update_handoff"], "direct replacement", "Prefer memory_update_sections")
 	assertDescriptionTerms(t, tools["memory_update_sections"], "ordered typed section edits", "Prefer memory_update_handoff")
 }

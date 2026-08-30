@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iasi777/v-memory/internal/gitview"
+	"github.com/iasi777/memauthority/internal/gitview"
 	"gopkg.in/yaml.v3"
 )
 

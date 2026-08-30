@@ -1,8 +1,8 @@
-# V-Memory Agent 使用指南
+# MemAuthority Agent 使用指南
 
 [English](AGENT-GUIDE.md)
 
-> 用途：V-Memory Agent 操作指南。
+> 用途：MemAuthority Agent 操作指南。
 > 精确 tool schema、Vault 格式和拒绝行为以版本化公共契约 [`contract/v1.2/`](contract/v1.2/) 为准。
 
 这份指南不重复全部 MCP schema。
@@ -17,9 +17,9 @@ Managed MCP 连接后，你已经会自动获得 tool descriptions、input schem
 
 - **用户**决定什么值得成为长期记忆。
 - **你，Agent**负责理解、选择、搜索、压缩、合并、更新、淘汰和迁移。
-- **V-Memory**负责确定性 Recall、受控 mutation、revision safety 和 Git-backed Authority。
+- **MemAuthority**负责确定性 Recall、受控 mutation、revision safety 和 Git-backed Authority。
 
-> **V-Memory constrains state transitions, not intelligence.**
+> **MemAuthority constrains state transitions, not intelligence.**
 
 不要默认把对话历史当成长期 Memory。
 
@@ -104,9 +104,9 @@ TODO 是 handoff 下精确 H2 `已知问题 / 待办` 中的顶层 checklist。
 
 ## 4. Progressive Recall
 
-不要在任务开始时机械读取 V-Memory，更不要一次读取整个 Vault 或全部四个 role。
+不要在任务开始时机械读取 MemAuthority，更不要一次读取整个 Vault 或全部四个 role。
 
-先判断当前 Context 是否已经足够完成任务；足够时，不调用 V-Memory。需要长期项目状态时，再按当前信息状态选择最小动作：
+先判断当前 Context 是否已经足够完成任务；足够时，不调用 MemAuthority。需要长期项目状态时，再按当前信息状态选择最小动作：
 
 - 项目 id / alias 不确定 → `memory_route`；
 - 已知 URI 或明确 role / section → 直接 `memory_read`；
@@ -146,7 +146,7 @@ Cursor 只说明后面还有内容，不代表必须继续读完。
 
 ## 5. Managed write 原则
 
-Managed ownership 活跃时，Authority mutation 必须通过 V-Memory 提供的 mutation tools 完成，不要通过普通 machine / filesystem 工具直接修改 Vault 数据目录制造第二条写入路径。
+Managed ownership 活跃时，Authority mutation 必须通过 MemAuthority 提供的 mutation tools 完成，不要通过普通 machine / filesystem 工具直接修改 Vault 数据目录制造第二条写入路径。
 
 需要大规模 detached authoring 时，先停止 managed ownership，再直接编辑、validate、review、commit，最后重新启动 managed service。
 
@@ -162,7 +162,7 @@ Managed ownership 活跃时，Authority mutation 必须通过 V-Memory 提供的
 4. 决定合并、替换、放弃或询问用户；
 5. 基于当前状态重新写入。
 
-V-Memory 发现旧视图。
+MemAuthority 发现旧视图。
 
 你负责解决语义。
 
@@ -199,7 +199,7 @@ Active memory 应持续收敛。
 - 只保留足以阻止未来错误行为的必要理由；
 - 让 Git history 保存 Authority 的变化过程。
 
-> **Git 保存发生过什么；active V-Memory 保存现在还值得未来 Agent 知道什么。**
+> **Git 保存发生过什么；active MemAuthority 保存现在还值得未来 Agent 知道什么。**
 
 删除 active memory 不等于旧 Git commit 被物理擦除。
 
@@ -239,7 +239,7 @@ Active memory 应持续收敛。
 
 预期安全模型：
 
-> **保守 Agent capture + 确定性 V-Memory write safety + 后续收敛和清理**
+> **保守 Agent capture + 确定性 MemAuthority write safety + 后续收敛和清理**
 
 `progress` 是低成本入口。
 
@@ -252,7 +252,7 @@ Active memory 应持续收敛。
 用户说：
 
 ```text
-梳理优化一下本次任务从 V-Memory 用到的记忆，并清理过时内容。
+梳理优化一下本次任务从 MemAuthority 用到的记忆，并清理过时内容。
 ```
 
 你应：
@@ -306,7 +306,7 @@ Secret scanner 不是通用隐私分类器。
 
 这一方案已经定案。
 
-### 11.1 先学习 V-Memory，再读取旧库
+### 11.1 先学习 MemAuthority，再读取旧库
 
 导入前理解：
 
@@ -331,13 +331,13 @@ Secret scanner 不是通用隐私分类器。
 - 项目交接；
 - 混合来源。
 
-> **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
+> **Format-agnostic at the Agent layer; deterministic at the MemAuthority layer.**
 
-不要等待 V-Memory 提供某个平台的专用 importer。
+不要等待 MemAuthority 提供某个平台的专用 importer。
 
 迁移时不要凭空创造 runtime 拓扑。Runtime metadata 是可选高级能力，在没有既有 runtime 时默认隐藏。只有工作/部署环境属于稳定事实、且确实会帮助未来任务时才迁移；否则保持关闭。
 
-你理解来源，并把语义转换成 V-Memory。
+你理解来源，并把语义转换成 MemAuthority。
 
 ### 11.3 导入是蒸馏
 
@@ -362,12 +362,12 @@ Secret scanner 不是通用隐私分类器。
 ### 11.4 大规模 v1 迁移
 
 ```text
-v-memory init
+memauthority init
   -> 停止或不要启动 managed ownership
   -> 阅读本指南和 public Vault contract
   -> 读取并蒸馏旧资料
   -> detached authoring 构建 canonical Vault
-  -> v-memory validate --json
+  -> memauthority validate --json
   -> 修复结构和安全问题
   -> 用户按需审核
   -> Git commit
@@ -382,7 +382,7 @@ v-memory init
 
 ---
 
-## 12. 不要把 V-Memory 当成
+## 12. 不要把 MemAuthority 当成
 
 - 原始聊天归档；
 - 完整人类知识库；

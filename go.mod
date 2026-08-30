@@ -1,4 +1,4 @@
-module github.com/iasi777/v-memory
+module github.com/iasi777/memauthority
 
 go 1.26.5
 

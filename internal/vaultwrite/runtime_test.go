@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/iasi777/v-memory/internal/runtimeview"
-	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/runtimeview"
+	"github.com/iasi777/memauthority/internal/vaultread"
 )
 
 func TestRuntimeUpdateCreateReplaceAndCAS(t *testing.T) {

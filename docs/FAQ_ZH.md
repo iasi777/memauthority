@@ -1,4 +1,4 @@
-# V-Memory 常见问题
+# MemAuthority 常见问题
 
 [English](FAQ.md)
 
@@ -8,11 +8,11 @@
 
 ---
 
-## V-Memory 会自动决定什么值得记吗？
+## MemAuthority 会自动决定什么值得记吗？
 
 不会。
 
-V-Memory 负责的是可靠状态，不负责替你决定人生里什么重要，也不负责替 Agent 完成语义判断。
+MemAuthority 负责的是可靠状态，不负责替你决定人生里什么重要，也不负责替 Agent 完成语义判断。
 
 通常由 Agent 根据当前任务提出候选，你决定保留、修改还是放弃。
 
@@ -24,13 +24,13 @@ V-Memory 负责的是可靠状态，不负责替你决定人生里什么重要�
 
 如果 `MEMORY.md + Agent` 已经够用，就继续用。
 
-V-Memory 适合的是另一种需求：你希望记忆可以长期收敛，并且修改、并发写入、重试和中断都有明确边界。
+MemAuthority 适合的是另一种需求：你希望记忆可以长期收敛，并且修改、并发写入、重试和中断都有明确边界。
 
 它不是为了让所有用户都必须迁移。
 
 ---
 
-## V-Memory 会不会把每次聊天都保存下来？
+## MemAuthority 会不会把每次聊天都保存下来？
 
 不会，也不应该。
 
@@ -48,10 +48,10 @@ V-Memory 适合的是另一种需求：你希望记忆可以长期收敛，并�
 
 风险不能靠一句“自动整理”彻底消失。
 
-V-Memory 的做法是把责任拆开：
+MemAuthority 的做法是把责任拆开：
 
 - Agent 保守选择内容；
-- V-Memory 保证 revision、CAS、幂等、验证、secret scanning 和 transaction safety；
+- MemAuthority 保证 revision、CAS、幂等、验证、secret scanning 和 transaction safety；
 - 后续真实任务继续更新或删除已经失去价值的 active memory。
 
 所以 `progress` 是低成本入口，不是永久档案。
@@ -75,7 +75,7 @@ V-Memory 的做法是把责任拆开：
 
 不是。
 
-V-Memory TODO 表示：
+MemAuthority TODO 表示：
 
 > 以后值得恢复，但现在不值得继续占用注意力的意图。
 
@@ -91,7 +91,7 @@ TODO 完成后通常应该删除；真正形成的长期结论，再单独进入
 
 正确做法不是固定执行一套 Recall 仪式，而是按当前信息状态选择最小动作：
 
-- 当前 Context 已经足够 → 不调用 V-Memory；
+- 当前 Context 已经足够 → 不调用 MemAuthority；
 - 项目不确定 → 先确认项目；
 - 已知 URI / section → 直接精确读；
 - 已知项目但不知道位置 → 再搜索；
@@ -106,7 +106,7 @@ TODO 完成后通常应该删除；真正形成的长期结论，再单独进入
 
 ## 多个 Agent 同时使用会不会互相覆盖？
 
-V-Memory 的核心模型是：
+MemAuthority 的核心模型是：
 
 > Multi-Agent, single Authority.
 
@@ -114,7 +114,7 @@ V-Memory 的核心模型是：
 
 如果另一个 Agent 已经更新了内容，拿旧 revision 的写入应该发生 conflict，而不是静默覆盖。
 
-V-Memory 负责暴露分歧；Agent 负责重新读取后解决语义。
+MemAuthority 负责暴露分歧；Agent 负责重新读取后解决语义。
 
 ---
 
@@ -141,7 +141,7 @@ Validation 检查的是结构、安全和确定性约束，例如 Vault 格式�
 
 推荐让 Agent 做语义迁移：
 
-1. 先理解 V-Memory 的 retention 和 role；
+1. 先理解 MemAuthority 的 retention 和 role；
 2. 再读取旧库；
 3. 去重、合并、更新和淘汰；
 4. 只把仍值得长期保存的内容写入新 Vault；
@@ -173,7 +173,7 @@ Detached authoring 允许直接编辑 Git / Markdown / YAML；managed ownership 
 
 没有。
 
-Active V-Memory 保存当前仍值得未来 Agent 知道的内容；Git 保存 Authority 的变化历史。
+Active MemAuthority 保存当前仍值得未来 Agent 知道的内容；Git 保存 Authority 的变化历史。
 
 所以删除 active memory 不等于历史 commit 被物理擦除。
 
@@ -187,7 +187,7 @@ Active V-Memory 保存当前仍值得未来 Agent 知道的内容；Git 保存 A
 
 不能。
 
-V-Memory 会拦截高置信度 secret 形态，但它不是通用隐私分类器。
+MemAuthority 会拦截高置信度 secret 形态，但它不是通用隐私分类器。
 
 家庭地址、私人经历、商业机密、未公开计划等内容是否应该长期保存，仍然需要用户和 Agent 判断。
 
@@ -195,9 +195,9 @@ V-Memory 会拦截高置信度 secret 形态，但它不是通用隐私分类器
 
 ## 普通本地项目需要配置 runtime / environment ID 吗？
 
-通常不需要。Runtime metadata 是可选高级层；Vault 没有已登记 runtime 时，这组能力默认隐藏。普通单机项目应该先完全不配置它。以后确实需要长期记录部署/工作环境拓扑时，再用 `--runtime-enabled` 开启。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，V-Memory 会规范化为 `default`。
+通常不需要。Runtime metadata 是可选高级层；Vault 没有已登记 runtime 时，这组能力默认隐藏。普通单机项目应该先完全不配置它。以后确实需要长期记录部署/工作环境拓扑时，再用 `--runtime-enabled` 开启。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，MemAuthority 会规范化为 `default`。
 
-## V-Memory 是 RAG、知识库或者聊天归档吗？
+## MemAuthority 是 RAG、知识库或者聊天归档吗？
 
 都不是。
 
@@ -206,6 +206,6 @@ V-Memory 会拦截高置信度 secret 形态，但它不是通用隐私分类器
 - 原始对话应该留在聊天或日志系统；
 - deadline / owner / schedule 应交给任务管理工具。
 
-V-Memory 保存的是：
+MemAuthority 保存的是：
 
 > 未来 Agent 不应该再重新摸索的东西。

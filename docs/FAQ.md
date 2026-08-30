@@ -1,4 +1,4 @@
-# V-Memory FAQ
+# MemAuthority FAQ
 
 [中文](FAQ_ZH.md)
 
@@ -8,11 +8,11 @@ For exact APIs, schemas, security behavior, and compatibility rules, refer to th
 
 ---
 
-## Does V-Memory Automatically Decide What Is Worth Remembering?
+## Does MemAuthority Automatically Decide What Is Worth Remembering?
 
 No.
 
-V-Memory is responsible for reliable state, not for deciding what matters to the user or replacing the agent's semantic judgment.
+MemAuthority is responsible for reliable state, not for deciding what matters to the user or replacing the agent's semantic judgment.
 
 Normally, the agent proposes candidates based on the current task, and the user decides what to keep, edit, or discard.
 
@@ -24,13 +24,13 @@ If the user only says “record this task,” the agent can use a conservative d
 
 If `MEMORY.md + Agent` already works well enough, keep using it.
 
-V-Memory serves a different need: memory that can converge over time while edits, concurrent writes, retries, and interruptions all have explicit boundaries.
+MemAuthority serves a different need: memory that can converge over time while edits, concurrent writes, retries, and interruptions all have explicit boundaries.
 
 It is not designed to force every user to migrate.
 
 ---
 
-## Does V-Memory Save Every Conversation?
+## Does MemAuthority Save Every Conversation?
 
 No, and it should not.
 
@@ -48,10 +48,10 @@ If not, it probably should not be saved.
 
 That risk cannot be eliminated by promising “automatic cleanup.”
 
-V-Memory separates responsibilities instead:
+MemAuthority separates responsibilities instead:
 
 - the agent selects content conservatively;
-- V-Memory guarantees revision checks, CAS, idempotency, validation, secret scanning, and transaction safety;
+- MemAuthority guarantees revision checks, CAS, idempotency, validation, secret scanning, and transaction safety;
 - later real tasks continue updating or deleting active memory that has lost value.
 
 So `progress` is a low-cost entry point, not a permanent archive.
@@ -75,7 +75,7 @@ Do not fill all four roles merely for structural completeness.
 
 No.
 
-A V-Memory TODO means:
+A MemAuthority TODO means:
 
 > An intent worth resuming later, but not worth occupying attention now.
 
@@ -91,7 +91,7 @@ Because more context does not automatically produce better judgment.
 
 The correct pattern is not a fixed recall ritual. Choose the smallest action based on what is already known:
 
-- current context is sufficient -> do not call V-Memory;
+- current context is sufficient -> do not call MemAuthority;
 - project is uncertain -> identify the project first;
 - exact URI / section is known -> read it directly;
 - project is known but location is not -> search within that project;
@@ -106,7 +106,7 @@ Search results locate useful material; they are not content that must be injecte
 
 ## Can Multiple Agents Overwrite Each Other?
 
-V-Memory follows this model:
+MemAuthority follows this model:
 
 > **Multi-Agent, Single Authority.**
 
@@ -114,7 +114,7 @@ Multiple agents can share the same memory, but writes must be based on the curre
 
 If another agent has already changed the resource, a write based on an older revision should conflict instead of silently overwriting newer content.
 
-V-Memory exposes the conflict. The agent must reread and resolve the semantics.
+MemAuthority exposes the conflict. The agent must reread and resolve the semantics.
 
 ---
 
@@ -141,7 +141,7 @@ No.
 
 Let the agent perform semantic migration:
 
-1. learn V-Memory retention and role semantics;
+1. learn MemAuthority retention and role semantics;
 2. read the legacy store;
 3. deduplicate, merge, update, and retire content;
 4. write only what remains worth keeping long-term into the new Vault;
@@ -173,7 +173,7 @@ For large direct restructuring, stop Managed ownership, complete detached author
 
 No.
 
-Active V-Memory stores what future agents still need to know now. Git stores the history of Authority changes.
+Active MemAuthority stores what future agents still need to know now. Git stores the history of Authority changes.
 
 Deleting active memory does not physically erase historical commits.
 
@@ -185,7 +185,7 @@ If something should never become a durable Git-backed asset, the safest approach
 
 No.
 
-V-Memory blocks high-confidence secret patterns, but it is not a general privacy classifier.
+MemAuthority blocks high-confidence secret patterns, but it is not a general privacy classifier.
 
 Whether a home address, personal experience, business secret, or unpublished plan should be retained is still a user-and-agent decision.
 
@@ -195,7 +195,7 @@ Whether a home address, personal experience, business secret, or unpublished pla
 
 Usually no. Runtime metadata is an optional advanced layer and is hidden by default when the Vault has no registered runtime. A normal single-machine project should start without it. If you later need durable deployment/work-environment topology, start `serve` with `--runtime-enabled`. `host_id` is optional and user-defined; a single environment can omit `environment_id`, which canonicalizes to `default`.
 
-## Is V-Memory a RAG System, Knowledge Base, or Chat Archive?
+## Is MemAuthority a RAG System, Knowledge Base, or Chat Archive?
 
 No.
 
@@ -204,6 +204,6 @@ No.
 - raw conversations belong in chat or logging systems;
 - deadlines / owners / schedules belong in task-management tools.
 
-V-Memory keeps:
+MemAuthority keeps:
 
 > **What future agents should not have to rediscover from scratch.**

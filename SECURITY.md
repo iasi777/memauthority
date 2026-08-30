@@ -14,6 +14,6 @@ Follow the current frozen [transport/auth](docs/contract/v1.2/transport-auth.md)
 
 Do not open a public issue for a suspected vulnerability. Use GitHub's private vulnerability reporting flow:
 
-- [Privately report a security vulnerability](https://github.com/iasi777/v-memory/security/advisories/new)
+- [Privately report a security vulnerability](https://github.com/iasi777/memauthority/security/advisories/new)
 
 Include the affected version, impact, reproduction details, and any suggested mitigation. Do not include real credentials, private Vault contents, or production secrets in the report.

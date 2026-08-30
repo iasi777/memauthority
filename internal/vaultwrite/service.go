@@ -19,10 +19,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/iasi777/v-memory/internal/gitview"
-	"github.com/iasi777/v-memory/internal/textcanon"
-	"github.com/iasi777/v-memory/internal/vaultread"
-	"github.com/iasi777/v-memory/internal/vaultvalidate"
+	"github.com/iasi777/memauthority/internal/gitview"
+	"github.com/iasi777/memauthority/internal/textcanon"
+	"github.com/iasi777/memauthority/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/vaultvalidate"
 )
 
 const progressFilename = "进度.md"
@@ -43,7 +43,7 @@ type Config struct {
 type AppendProgressArgs struct {
 	ProjectID            string `json:"project_id"`
 	Summary              string `json:"summary"`
-	Content              string `json:"content" jsonschema:"Progress entry body. A single leading H1/H2 title is ignored because V-Memory owns the entry heading; H3/H4 subheadings are allowed, but H1/H2 headings inside the body are rejected."`
+	Content              string `json:"content" jsonschema:"Progress entry body. A single leading H1/H2 title is ignored because MemAuthority owns the entry heading; H3/H4 subheadings are allowed, but H1/H2 headings inside the body are rejected."`
 	ClientIdempotencyKey string `json:"client_idempotency_key,omitempty"`
 }
 

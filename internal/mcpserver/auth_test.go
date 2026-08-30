@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iasi777/v-memory/internal/oauthserver"
+	"github.com/iasi777/memauthority/internal/oauthserver"
 )
 
 func TestProtectedHTTPDiscoveryAndBearerChallenge(t *testing.T) {

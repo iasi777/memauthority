@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/iasi777/v-memory/internal/authorityscan"
-	"github.com/iasi777/v-memory/internal/vaultread"
+	"github.com/iasi777/memauthority/internal/authorityscan"
+	"github.com/iasi777/memauthority/internal/vaultread"
 	"gopkg.in/yaml.v3"
 )
 

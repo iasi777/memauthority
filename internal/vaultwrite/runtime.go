@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/iasi777/v-memory/internal/runtimeview"
+	"github.com/iasi777/memauthority/internal/runtimeview"
 	"gopkg.in/yaml.v3"
 )
 

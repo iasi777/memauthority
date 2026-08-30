@@ -49,15 +49,18 @@ while IFS= read -r -d '' vm_doc; do
 done < <(find . -path './.git' -prune -o -type f -name '*.md' -print0)
 test "$vm_broken" -eq 0
 
+go build -trimpath -o "$vm_check_root/memauthority" ./cmd/memauthority
 go build -trimpath -o "$vm_check_root/v-memory" ./cmd/v-memory
-"$vm_check_root/v-memory" init "$vm_check_root/vault" >/dev/null
+"$vm_check_root/memauthority" init "$vm_check_root/vault" >/dev/null
 cp -R examples/sample-vault/. "$vm_check_root/vault/"
 git -C "$vm_check_root/vault" add INDEX.yaml demo
 git -C "$vm_check_root/vault" \
-  -c user.name='V-Memory Example' \
-  -c user.email='example@v-memory.invalid' \
+  -c user.name='MemAuthority Example' \
+  -c user.email='example@memauthority.invalid' \
   commit -m 'example: add sample memory project' >/dev/null
-vm_validation=$("$vm_check_root/v-memory" validate --json "$vm_check_root/vault")
+vm_validation=$("$vm_check_root/memauthority" validate --json "$vm_check_root/vault")
+legacy_version=$("$vm_check_root/v-memory" version)
+grep -Fq 'v-memory 1.3.0-dev' <<<"$legacy_version"
 grep -Fq '"valid":true' <<<"$vm_validation"
 
 printf 'documentation checks passed\n'

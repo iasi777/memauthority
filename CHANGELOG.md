@@ -1,8 +1,11 @@
 # Changelog
 
-## Unreleased
+## Unreleased — MemAuthority rename
 
-No unreleased product changes yet.
+- Renamed the project and canonical GitHub repository from **V-Memory** / `iasi777/v-memory` to **MemAuthority** / `iasi777/memauthority` for a unique, searchable project identity.
+- Added `memauthority` as the new primary CLI while retaining `v-memory` as a compatibility executable.
+- Moved the development Go module path to `github.com/iasi777/memauthority`; frozen v1.1/v1.2 contract snapshots intentionally retain their historical identifiers.
+- Added preferred `MEMAUTHORITY_*` environment variables while retaining legacy `VM_*` aliases.
 
 ## v1.2.0
 

@@ -1,8 +1,8 @@
-# V-Memory Agent Guide
+# MemAuthority Agent Guide
 
 [中文](AGENT-GUIDE_ZH.md)
 
-> Purpose: operating guidance for agents using V-Memory.
+> Purpose: operating guidance for agents using MemAuthority.
 > Exact tool schemas, Vault format, and refusal behavior are defined by the versioned public contract under [`contract/v1.2/`](contract/v1.2/).
 
 This guide does not duplicate the full MCP schema. Once a Managed MCP connection is established, the agent already receives the current tool descriptions, input schemas, annotations, and resource metadata.
@@ -15,9 +15,9 @@ What follows covers the cross-tool principles that a single tool schema cannot e
 
 - **The user** decides what deserves to become long-term memory.
 - **You, the agent** interpret, select, retrieve, compress, merge, update, retire, and migrate memory.
-- **V-Memory** provides deterministic recall, controlled mutation, revision safety, and Git-backed Authority.
+- **MemAuthority** provides deterministic recall, controlled mutation, revision safety, and Git-backed Authority.
 
-> **V-Memory constrains state transitions, not intelligence.**
+> **MemAuthority constrains state transitions, not intelligence.**
 
 Do not treat conversation history as long-term memory by default.
 
@@ -102,9 +102,9 @@ Prefer:
 
 ## 4. Progressive Recall
 
-Do not mechanically read V-Memory at the start of every task, and do not load the whole Vault or all four roles at once.
+Do not mechanically read MemAuthority at the start of every task, and do not load the whole Vault or all four roles at once.
 
-First decide whether the current context is already sufficient. If it is, do not call V-Memory. When durable project state is actually needed, choose the smallest action that matches what is already known:
+First decide whether the current context is already sufficient. If it is, do not call MemAuthority. When durable project state is actually needed, choose the smallest action that matches what is already known:
 
 - project ID / alias uncertain -> `memory_route`;
 - exact URI, role, or section known -> direct `memory_read`;
@@ -144,7 +144,7 @@ A cursor only means more content exists; it does not mean all remaining content 
 
 ## 5. Managed Write Principles
 
-While Managed ownership is active, Authority mutations must use V-Memory mutation tools. Do not create a second Authority write path by modifying the Vault through generic machine or filesystem tools.
+While Managed ownership is active, Authority mutations must use MemAuthority mutation tools. Do not create a second Authority write path by modifying the Vault through generic machine or filesystem tools.
 
 For large detached authoring work, stop Managed ownership first, edit directly, validate, review, commit, and then restart the Managed service.
 
@@ -160,7 +160,7 @@ On conflict:
 4. decide whether to merge, replace, abandon, or ask the user;
 5. write again from the current state.
 
-V-Memory detects the stale view. You resolve the semantics.
+MemAuthority detects the stale view. You resolve the semantics.
 
 ### 5.2 Role Mutations
 
@@ -195,7 +195,7 @@ Prefer to:
 - keep only enough rationale to prevent future incorrect behavior;
 - let Git history preserve how Authority changed over time.
 
-> **Git preserves what happened; active V-Memory preserves what future agents still need to know now.**
+> **Git preserves what happened; active MemAuthority preserves what future agents still need to know now.**
 
 Removing active memory does not physically erase older Git commits.
 
@@ -235,7 +235,7 @@ Only when long-term significance is clear, or the user explicitly asks, should y
 
 Expected safety model:
 
-> **Conservative agent capture + deterministic V-Memory write safety + later convergence and cleanup.**
+> **Conservative agent capture + deterministic MemAuthority write safety + later convergence and cleanup.**
 
 `progress` is the low-friction entry point. Later real work can distill stable conclusions into other roles or remove progress that has lost value.
 
@@ -246,7 +246,7 @@ Expected safety model:
 When the user says something like:
 
 ```text
-Review and improve the V-Memory entries we actually used during this task, and clean up anything obsolete.
+Review and improve the MemAuthority entries we actually used during this task, and clean up anything obsolete.
 ```
 
 You should:
@@ -298,7 +298,7 @@ If the user does not want something to become a durable Git-backed asset, do not
 
 The migration approach is intentionally settled.
 
-### 11.1 Learn V-Memory Before Reading the Legacy Store
+### 11.1 Learn MemAuthority Before Reading the Legacy Store
 
 Before importing, understand:
 
@@ -323,9 +323,9 @@ Legacy content can be anything you can actually access and understand:
 - project handoffs;
 - mixed sources.
 
-> **Format-agnostic at the Agent layer; deterministic at the V-Memory layer.**
+> **Format-agnostic at the Agent layer; deterministic at the MemAuthority layer.**
 
-Do not wait for V-Memory to ship a platform-specific importer. You understand the source and translate its semantics into V-Memory.
+Do not wait for MemAuthority to ship a platform-specific importer. You understand the source and translate its semantics into MemAuthority.
 
 Do not invent runtime topology during migration. Runtime metadata is an optional advanced capability, hidden by default when absent. Only migrate work/deployment environments when they are durable facts that materially help future work; otherwise leave runtime disabled.
 
@@ -352,12 +352,12 @@ Unless the user has explicitly authorized direct migration, a compact review set
 ### 11.4 Large-Scale v1 Migration
 
 ```text
-v-memory init
+memauthority init
   -> stop or do not start managed ownership
   -> read this guide and the public Vault contract
   -> read and distill the legacy material
   -> build the canonical Vault through detached authoring
-  -> v-memory validate --json
+  -> memauthority validate --json
   -> repair structural and safety issues
   -> user review as needed
   -> Git commit
@@ -372,7 +372,7 @@ Do not pretend a rich first import can be completed through a Managed insertion 
 
 ---
 
-## 12. Do Not Treat V-Memory As
+## 12. Do Not Treat MemAuthority As
 
 - a raw chat archive;
 - a complete human knowledge base;

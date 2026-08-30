@@ -1,6 +1,6 @@
 # Third-party notices
 
-V-Memory uses the Go modules listed below. Exact upstream root License/NOTICE files for these dependencies are preserved under `THIRD_PARTY_LICENSES/`.
+MemAuthority uses the Go modules listed below. Exact upstream root License/NOTICE files for these dependencies are preserved under `THIRD_PARTY_LICENSES/`.
 
 License expressions below are engineering classifications for packaging review, not a substitute for the upstream text or legal advice.
 

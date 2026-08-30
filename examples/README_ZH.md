@@ -8,18 +8,18 @@
 
 ## 1. 创建临时示例 Vault
 
-安装或构建 `v-memory` 后，在仓库根目录执行：
+安装或构建 `memauthority` 后，在仓库根目录执行：
 
 ```sh
-VM_DEMO_ROOT="$(mktemp -d)"
-v-memory init "$VM_DEMO_ROOT/vault"
-cp -R examples/sample-vault/. "$VM_DEMO_ROOT/vault/"
-git -C "$VM_DEMO_ROOT/vault" add INDEX.yaml demo
-git -C "$VM_DEMO_ROOT/vault" \
-  -c user.name='V-Memory Example' \
-  -c user.email='example@v-memory.invalid' \
+MEMAUTHORITY_DEMO_ROOT="$(mktemp -d)"
+memauthority init "$MEMAUTHORITY_DEMO_ROOT/vault"
+cp -R examples/sample-vault/. "$MEMAUTHORITY_DEMO_ROOT/vault/"
+git -C "$MEMAUTHORITY_DEMO_ROOT/vault" add INDEX.yaml demo
+git -C "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  -c user.name='MemAuthority Example' \
+  -c user.email='example@memauthority.invalid' \
   commit -m 'example: add sample memory project'
-v-memory validate --json "$VM_DEMO_ROOT/vault"
+memauthority validate --json "$MEMAUTHORITY_DEMO_ROOT/vault"
 ```
 
 校验结果应包含 `"valid": true`。后续使用的临时 state 目录与 `vault` 互为同级目录，因此位于 Vault Authority 之外。
@@ -29,17 +29,17 @@ v-memory validate --json "$VM_DEMO_ROOT/vault"
 只读模式：
 
 ```sh
-v-memory serve \
-  --vault "$VM_DEMO_ROOT/vault" \
-  --state-dir "$VM_DEMO_ROOT/state"
+memauthority serve \
+  --vault "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  --state-dir "$MEMAUTHORITY_DEMO_ROOT/state"
 ```
 
 可写模式：
 
 ```sh
-v-memory serve \
-  --vault "$VM_DEMO_ROOT/vault" \
-  --state-dir "$VM_DEMO_ROOT/state" \
+memauthority serve \
+  --vault "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  --state-dir "$MEMAUTHORITY_DEMO_ROOT/state" \
   --write-enabled
 ```
 
@@ -50,7 +50,7 @@ v-memory serve \
 客户端连接后，可以先说：
 
 ```text
-先看看 demo 项目的 V-Memory，只读取当前真正需要的内容。
+先看看 demo 项目的 MemAuthority，只读取当前真正需要的内容。
 ```
 
 Agent 可以把别名 `sample-project` 路由到 `demo` 项目，读取 `memory://projects/demo/handoff`，并按需检索 rules、progress 或 pitfalls。

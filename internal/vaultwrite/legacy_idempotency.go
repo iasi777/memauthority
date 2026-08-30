@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/iasi777/v-memory/internal/textcanon"
+	"github.com/iasi777/memauthority/internal/textcanon"
 )
 
 // legacyOperationFingerprint reproduces the frozen Python operation_fingerprint

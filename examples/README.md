@@ -8,18 +8,18 @@ Exact behavior is defined by the versioned public contract under [`../docs/contr
 
 ## 1. Create a Temporary Demo Vault
 
-Run these commands from the repository root after installing or building `v-memory`:
+Run these commands from the repository root after installing or building `memauthority`:
 
 ```sh
-VM_DEMO_ROOT="$(mktemp -d)"
-v-memory init "$VM_DEMO_ROOT/vault"
-cp -R examples/sample-vault/. "$VM_DEMO_ROOT/vault/"
-git -C "$VM_DEMO_ROOT/vault" add INDEX.yaml demo
-git -C "$VM_DEMO_ROOT/vault" \
-  -c user.name='V-Memory Example' \
-  -c user.email='example@v-memory.invalid' \
+MEMAUTHORITY_DEMO_ROOT="$(mktemp -d)"
+memauthority init "$MEMAUTHORITY_DEMO_ROOT/vault"
+cp -R examples/sample-vault/. "$MEMAUTHORITY_DEMO_ROOT/vault/"
+git -C "$MEMAUTHORITY_DEMO_ROOT/vault" add INDEX.yaml demo
+git -C "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  -c user.name='MemAuthority Example' \
+  -c user.email='example@memauthority.invalid' \
   commit -m 'example: add sample memory project'
-v-memory validate --json "$VM_DEMO_ROOT/vault"
+memauthority validate --json "$MEMAUTHORITY_DEMO_ROOT/vault"
 ```
 
 The validation result should contain `"valid": true`. The temporary state directory used below is a sibling of `vault`, so it remains outside Vault Authority.
@@ -29,17 +29,17 @@ The validation result should contain `"valid": true`. The temporary state direct
 Read-only:
 
 ```sh
-v-memory serve \
-  --vault "$VM_DEMO_ROOT/vault" \
-  --state-dir "$VM_DEMO_ROOT/state"
+memauthority serve \
+  --vault "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  --state-dir "$MEMAUTHORITY_DEMO_ROOT/state"
 ```
 
 Writable:
 
 ```sh
-v-memory serve \
-  --vault "$VM_DEMO_ROOT/vault" \
-  --state-dir "$VM_DEMO_ROOT/state" \
+memauthority serve \
+  --vault "$MEMAUTHORITY_DEMO_ROOT/vault" \
+  --state-dir "$MEMAUTHORITY_DEMO_ROOT/state" \
   --write-enabled
 ```
 
@@ -50,7 +50,7 @@ For an MCP client, use the same command and arguments in its server configuratio
 After the client connects, try:
 
 ```text
-Check the demo project's V-Memory and read only what you need.
+Check the demo project's MemAuthority and read only what you need.
 ```
 
 The agent can route the alias `sample-project` to project `demo`, read `memory://projects/demo/handoff`, and selectively retrieve rules, progress, or pitfalls.
