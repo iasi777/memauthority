@@ -4,7 +4,7 @@
 
 This guide documents stable connection principles rather than trying to track every MCP client's changing UI.
 
-For exact CLI and transport / authentication behavior, use the versioned public contract under [`contract/v1.3/`](contract/v1.3/).
+For exact CLI and transport / authentication behavior, use the versioned public contract under [`contract/v1.3.1/`](contract/v1.3.1/).
 
 ---
 
@@ -124,7 +124,7 @@ Core safety boundaries in the frozen transport contract include:
 Before exposing production HTTP, read:
 
 - [`../SECURITY.md`](../SECURITY.md)
-- [`contract/v1.3/transport-auth.md`](contract/v1.3/transport-auth.md)
+- [`contract/v1.3.1/transport-auth.md`](contract/v1.3.1/transport-auth.md)
 
 Do not bypass refusal rules merely to make a deployment “start working.”
 
@@ -142,7 +142,7 @@ Check the exact options for the installed release:
 memauthority serve --help
 ```
 
-Then compare them with the current [`contract/v1.3/managed-runtime.md`](contract/v1.3/managed-runtime.md) contract or the frozen contract for the installed release.
+Then compare them with the current [`contract/v1.3.1/managed-runtime.md`](contract/v1.3.1/managed-runtime.md) contract or the frozen contract for the installed release.
 
 ---
 

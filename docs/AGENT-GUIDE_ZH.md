@@ -3,7 +3,7 @@
 [English](AGENT-GUIDE.md)
 
 > 用途：MemAuthority Agent 操作指南。
-> 精确 tool schema、Vault 格式和拒绝行为以版本化公共契约 [`contract/v1.3/`](contract/v1.3/) 为准。
+> 精确 tool schema、Vault 格式和拒绝行为以版本化公共契约 [`contract/v1.3.1/`](contract/v1.3.1/) 为准。
 
 这份指南不重复全部 MCP schema。
 

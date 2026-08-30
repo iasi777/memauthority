@@ -60,7 +60,7 @@ git -C "$vm_check_root/vault" \
   commit -m 'example: add sample memory project' >/dev/null
 vm_validation=$("$vm_check_root/memauthority" validate --json "$vm_check_root/vault")
 legacy_version=$("$vm_check_root/v-memory" version)
-grep -Fq 'v-memory 1.3.0' <<<"$legacy_version"
+grep -Fq 'v-memory 1.3.1' <<<"$legacy_version"
 grep -Fq '"valid":true' <<<"$vm_validation"
 
 printf 'documentation checks passed\n'

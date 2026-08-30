@@ -3,7 +3,7 @@
 [English](ONBOARDING.md)
 
 > 用途：MemAuthority 用户接入指南。
-> 精确 API、schema 和安全行为以版本化公共契约 [`contract/v1.3/`](contract/v1.3/) 为准。
+> 精确 API、schema 和安全行为以版本化公共契约 [`contract/v1.3.1/`](contract/v1.3.1/) 为准。
 
 这份文档只回答三个问题：
 
@@ -270,7 +270,7 @@ memauthority serve \
 HTTP 远程接入前，先阅读：
 
 - [`../SECURITY_ZH.md`](../SECURITY_ZH.md)
-- [`contract/v1.3/transport-auth.md`](contract/v1.3/transport-auth.md)
+- [`contract/v1.3.1/transport-auth.md`](contract/v1.3.1/transport-auth.md)
 
 不要把本地 stdio 示例直接改成公网监听。
 

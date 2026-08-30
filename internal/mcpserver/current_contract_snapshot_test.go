@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestV13RuntimeEnabledContractSnapshot(t *testing.T) {
+func TestCurrentRuntimeEnabledContractSnapshot(t *testing.T) {
 	root := fixtureRepoFrom(t, "route-read-revision")
 	app, err := OpenWithOptions(root, t.TempDir(), OpenOptions{RuntimeEnabled: true})
 	if err != nil {
@@ -24,13 +24,13 @@ func TestV13RuntimeEnabledContractSnapshot(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.3/mcp-tools.json")
+	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.3.1/mcp-tools.json")
 
 	templates, err := session.ListResourceTemplates(context.Background(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertJSONSnapshotEqual(t, templates.ResourceTemplates, "../../docs/contract/v1.3/mcp-resource-templates.json")
+	assertJSONSnapshotEqual(t, templates.ResourceTemplates, "../../docs/contract/v1.3.1/mcp-resource-templates.json")
 }
 
 func assertJSONSnapshotEqual(t *testing.T, current any, path string) {

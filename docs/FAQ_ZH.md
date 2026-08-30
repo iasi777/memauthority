@@ -4,7 +4,7 @@
 
 这份 FAQ 只回答使用时最容易反复遇到的问题。
 
-精确 API、schema、安全行为和版本兼容规则，以版本化公共契约 [`contract/v1.3/`](contract/v1.3/) 为准。
+精确 API、schema、安全行为和版本兼容规则，以版本化公共契约 [`contract/v1.3.1/`](contract/v1.3.1/) 为准。
 
 ---
 

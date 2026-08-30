@@ -27,7 +27,7 @@ import (
 )
 
 const implementationName = "MemAuthority"
-const ImplementationVersion = "1.3.0"
+const ImplementationVersion = "1.3.1"
 
 // Keep Layer 0 discovery compact; contract tests enforce a 512-character ceiling.
 func serverInstructions(runtimeEnabled bool) string {

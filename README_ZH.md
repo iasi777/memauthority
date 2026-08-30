@@ -275,7 +275,7 @@ Git 负责忠实记录 Authority 的完整演变历史，随时可以追溯记�
 MemAuthority 依赖 Git，并要求 Go 1.26.5 或更高版本。安装当前稳定版本：
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.0
+go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.1
 ```
 
 v1.x 的 Go module identity 为了兼容性继续保持 `github.com/iasi777/v-memory`，即使 canonical repository 和产品名已经变为 MemAuthority。GitHub 会把旧仓库地址重定向到 `iasi777/memauthority`。
@@ -289,13 +289,13 @@ memauthority version
 预期输出：
 
 ```text
-memauthority 1.3.0
+memauthority 1.3.1
 ```
 
 已有自动化可以继续安装并调用兼容命令：
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.0
+go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.1
 v-memory version
 ```
 
@@ -380,9 +380,9 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ## 公共契约
 
-当前公共兼容性基线为 **v1.3.0**，这是第一个以 MemAuthority 品牌发布的版本。冻结的 v1.1/v1.2 V-Memory 快照保持不变。
+当前公共兼容性基线为 **v1.3.1**。它保持 v1.3 的 MemAuthority 运行时契约，同时从公共源码分发中移除了维护者私有的生产部署自动化；此前已经发布的冻结契约快照保持不变。
 
-Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3/`](docs/contract/v1.3/) 下。
+Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) 下。
 
 *本 README 与其他用户文档用于辅助理解；细节不一致时，以对应版本的公共契约为准。*
 
@@ -393,7 +393,7 @@ memauthority version
 memauthority --version
 ```
 
-v1.3.0 中，主命令输出 `memauthority 1.3.0`；兼容命令输出 `v-memory 1.3.0`。
+v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory 1.3.1`。
 
 ## Security
 
@@ -411,7 +411,7 @@ v1.3.0 中，主命令输出 `memauthority 1.3.0`；兼容命令输出 `v-memory
 - [`docs/FAQ_ZH.md`](docs/FAQ_ZH.md) — 常见问题、设计边界与取舍考量
 - [`examples/README_ZH.md`](examples/README_ZH.md) — 可运行的示例 Vault 与首次本地 MCP 会话
 - [`SECURITY_ZH.md`](SECURITY_ZH.md) — 安全支持范围、部署边界与私密报告入口
-- [`docs/contract/v1.3/`](docs/contract/v1.3/) — v1.3 版本化公共契约
+- [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) — v1.3.1 版本化公共契约
 
 ## License
 

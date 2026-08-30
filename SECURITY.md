@@ -8,7 +8,7 @@ The current release is `v1.2.0` on the v1 compatibility line. Security fixes tha
 
 ## Deployment safety
 
-Follow the current frozen [transport/auth](docs/contract/v1.3/transport-auth.md), [managed runtime](docs/contract/v1.3/managed-runtime.md), and [structured error](docs/contract/v1.3/structured-errors.md) contracts. Do not weaken loopback/authentication, clean-snapshot, fencing/CAS, state-containment, or fail-closed checks to work around deployment issues.
+Follow the current frozen [transport/auth](docs/contract/v1.3.1/transport-auth.md), [managed runtime](docs/contract/v1.3.1/managed-runtime.md), and [structured error](docs/contract/v1.3.1/structured-errors.md) contracts. Do not weaken loopback/authentication, clean-snapshot, fencing/CAS, state-containment, or fail-closed checks to work around deployment issues.
 
 ## Reporting
 

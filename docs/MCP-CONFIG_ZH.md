@@ -4,7 +4,7 @@
 
 这份文档说明稳定的接入原则，不尝试维护所有 MCP 客户端各自不断变化的配置 UI。
 
-精确 CLI 和 transport / auth 行为以版本化公共契约 [`contract/v1.3/`](contract/v1.3/) 为准。
+精确 CLI 和 transport / auth 行为以版本化公共契约 [`contract/v1.3.1/`](contract/v1.3.1/) 为准。
 
 ---
 
@@ -124,7 +124,7 @@ frozen transport contract 的基本安全边界包括：
 生产暴露前请阅读：
 
 - [`../SECURITY_ZH.md`](../SECURITY_ZH.md)
-- [`contract/v1.3/transport-auth.md`](contract/v1.3/transport-auth.md)
+- [`contract/v1.3.1/transport-auth.md`](contract/v1.3.1/transport-auth.md)
 
 不要为了让部署“先跑起来”而绕过这些拒绝规则。
 
@@ -142,7 +142,7 @@ frozen transport contract 的基本安全边界包括：
 memauthority serve --help
 ```
 
-并对照当前的 [`contract/v1.3/managed-runtime.md`](contract/v1.3/managed-runtime.md)，或已安装版本对应的冻结契约。
+并对照当前的 [`contract/v1.3.1/managed-runtime.md`](contract/v1.3.1/managed-runtime.md)，或已安装版本对应的冻结契约。
 
 ---
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.1
+
+- Removed the maintainer-specific production deployment workflow from the public repository so private deployment domains, gateway paths, custom headers and deployment-secret wiring are no longer distributed in the Go module source zip.
+- Kept generic public CI/build verification in the repository; production deployment is now a maintainer-private concern outside the public source tree.
+- No product runtime, Vault, MCP tool/resource, CLI command, or v1.x Go module compatibility behavior changed beyond the patch version string.
+
 ## v1.3.0
 
 - Renamed the project and canonical GitHub repository from **V-Memory** / `iasi777/v-memory` to **MemAuthority** / `iasi777/memauthority` to establish a unique, directly searchable project identity.
