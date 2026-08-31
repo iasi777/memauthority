@@ -15,13 +15,13 @@ This guide answers three questions:
 
 ## 1. Understand One Division of Responsibility
 
-- **You decide what deserves long-term retention.**
-- **The agent interprets, organizes, migrates, and maintains it.**
-- **MemAuthority provides reliable reads and reliable writes.**
+- **You act as the gatekeeper**: make the high-level decisions at key moments about what deserves long-term retention.
+- **The agent handles execution**: understand, retrieve, organize, migrate, update, and clean up memory.
+- **MemAuthority provides the safety net**: keep long-term memory reliable, available on demand, and protect write state.
 
-> **You decide what to remember; let the agent handle the maintenance.**
+> **You make a small number of high-level decisions; let the agent handle the detailed maintenance.**
 
-MemAuthority is not an automatic chat collector, and you do not need to learn the entire Markdown schema by hand before using it.
+MemAuthority is not an automatic chat collector, and you do not need to learn the entire Markdown schema before using it.
 
 ---
 
@@ -68,7 +68,7 @@ Give the agent:
 
 - [`AGENT-GUIDE.md`](AGENT-GUIDE.md);
 - the current project's code, docs, and necessary context;
-- any durable information you explicitly want retained.
+- project facts, decisions, progress, or pitfalls that are already worth carrying forward to future agents.
 
 The agent should create only what already has a reason to exist.
 
@@ -279,7 +279,7 @@ Do not turn a local stdio example into a public listener by simply changing the 
 
 ## 6. First Day-to-Day Use
 
-### 6.1 Recall
+### 6.1 Recall on Demand
 
 Use this only when the current session genuinely lacks project context:
 
@@ -287,13 +287,13 @@ Use this only when the current session genuinely lacks project context:
 Check this project's MemAuthority and read only what you actually need.
 ```
 
-The agent should:
+There is no fixed recall order. The agent should choose the shortest useful path based on what it already knows:
 
-1. route the project only when necessary;
-2. use handoff first when overall takeover state is needed;
-3. search further only when the task requires it;
-4. treat search results as coordinates rather than automatic context;
-5. read only the sections that are actually relevant.
+- current context is already enough -> do not call MemAuthority;
+- exact resource is known -> read it directly;
+- project is known but the location is not -> search within the project;
+- quick overall project handoff is needed -> prefer `handoff`;
+- search results are coordinates, so read only the sections that are genuinely relevant.
 
 ### 6.2 Curated Recording
 
@@ -309,13 +309,13 @@ Record this task.
 
 The default should be conservative `progress`, not chat duplication or automatic promotion into long-term rules.
 
-### 6.4 Maintain Existing Memory
+### 6.4 Post-Task Maintenance
 
 ```text
-Review and improve the MemAuthority entries we actually used during this task, and clean up anything obsolete.
+Review the MemAuthority memory actually used in this task. Update it from what just happened or was verified, and remove anything obsolete.
 ```
 
-By default, maintain only memory that was genuinely used during the task.
+The agent that just completed the task has the freshest facts. By default, maintain only the memory that was actually read and used rather than scanning the entire Vault.
 
 ### 6.5 TODO
 
@@ -338,7 +338,7 @@ After completion, the TODO should usually be removed. Any durable conclusion can
 - [ ] Managed write access is enabled or disabled intentionally;
 - [ ] MCP client is configured correctly;
 - [ ] security requirements are complete before HTTP exposure;
-- [ ] the agent understands on-demand recall, conservative recording, and convergence toward current truth.
+- [ ] the agent understands on-demand recall, conservative recording, post-task maintenance, and convergence toward current truth.
 
 ---
 

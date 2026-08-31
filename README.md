@@ -2,13 +2,7 @@
 
 [中文](README_ZH.md)
 
-English is the primary documentation language. User-facing guides provide Chinese counterparts with the `_ZH.md` suffix. Frozen normative snapshots, changelogs, legal notices, provenance, contribution policy, and deployment records remain English-authoritative unless explicitly paired.
-
-**Effortless control over agent memory — leave the maintenance to the agent.**
-
-MemAuthority is a Git-backed, conflict-safe long-term memory system for AI agents, exposed through MCP (Model Context Protocol). **Formerly V-Memory**; the project was renamed to give it a unique, searchable identity.
-
-Keywords: **AI agent memory**, **long-term memory**, **MCP memory server**, **Git-backed memory**, **agent memory infrastructure**.
+MemAuthority is a Git-backed long-term memory system for AI agents, exposed through MCP (Model Context Protocol). It lets a new session, another machine, or another agent recover the project's accumulated context and continue working instead of rediscovering the same decisions and pitfalls.
 
 Rather than attempting to record every single detail, it focuses on distilling:
 
@@ -16,8 +10,10 @@ Rather than attempting to record every single detail, it focuses on distilling:
 
 A clear division of responsibility:
 - **You** act as the gatekeeper: deciding what is truly worth keeping for the long haul;
-- **The Agent** handles execution: comprehending, summarizing, retrieving, updating, and pruning memories;
-- **MemAuthority** provides the safety net: guaranteeing reliable storage and on-demand retrieval, while delivering deterministic system protection against version conflicts, retry duplicates, and unexpected interruptions.
+- **The Agent** handles execution: understanding, retrieving, summarizing, updating, and pruning memories;
+- **MemAuthority** provides the safety net: keeping long-term memory reliable and available on demand while protecting it from stale writes, duplicate retries, and interrupted updates.
+
+The agent still decides what the content means and whether it should change. MemAuthority makes sure the memory that remains is reliable over time.
 
 ---
 
@@ -33,13 +29,13 @@ You may have experienced the lack of control with built-in platform memories:
 
 Or perhaps you have tried maintaining a `MEMORY.md` file, only to watch it grow bloated and messy over time — eventually confusing the agent rather than helping it.
 
-MemAuthority shines in scenarios where you:
+MemAuthority is a good fit when:
 
 > **Want to invest minimal effort curating memory quality, while delegating all routine organization to the agent.**
 
 "Investing effort" does not mean manually editing files all day. It means making high-leverage decisions at key moments:
 - Is this information worth keeping long-term?
-- Has an earlier conclusion become obsolete or invalid?
+- When should the memory be reviewed or cleaned up?
 - Does any of this involve sensitive data or secrets?
 - Does the agent's proposed curation align with your actual intent?
 
@@ -51,21 +47,27 @@ All mechanical heavy lifting — formatting, categorizing, archiving, and target
 
 If your project's memory is small, rarely changes, or you simply do not want to spend any attention on memory maintenance, sticking with a plain `MEMORY.md` is the easiest choice.
 
-MemAuthority addresses a higher-order need:
+Once that file stops being just a note and becomes long-term project state that future sessions need to trust, MemAuthority starts to become useful.
+
+It addresses a higher-order need:
 
 > **Turning long-term memory maintenance into a reliable, controllable, and engineered workflow.**
 
 It provides far more than just "letting an agent edit Markdown." It delivers a robust operational architecture:
 - **Precise On-Demand Loading**: Loads memory only when a task actually needs it, preventing irrelevant noise from bloating or polluting the context window;
 - **Clear Role Separation**: Distinctly separates handoff state, standing rules, milestone progress, and pitfall avoidance;
-- **Concurrency & Version Safety**: Enforces strict version checks (CAS — Compare-And-Swap) before writes, preventing multiple agents from silently overwriting fresh content with stale revisions;
+- **Concurrency & Version Safety**: Enforces strict version checks (CAS — Compare-And-Swap) before writes, preventing stale revisions from silently overwriting fresh content;
 - **Idempotency & Deduplication**: Safe against retries caused by network glitches or aborted runs without creating duplicate memories;
 - **Convergence & Full History**: Keeps the active working memory lean and compact, while relying on Git for complete, auditable revision history;
 - **Transactions & Crash Recovery**: Features explicit journaling and recovery mechanisms in case of interrupted or failed writes.
 
+A useful way to think about it is:
+
+> **Authority stores the state a future agent should inherit now; Git stores the full history.**
+
 In short:
 
-> **`MEMORY.md` optimizes for "giving anyone a zero-barrier memory file"; MemAuthority optimizes for "enabling quality-conscious users to sustainably maintain high-grade memory over the long haul."**
+> **`MEMORY.md` optimizes for simplicity; MemAuthority optimizes for keeping long-term memory reliable as the project grows.**
 
 ---
 
@@ -75,9 +77,9 @@ In an ideal workflow, MemAuthority stays quietly behind the scenes. You interact
 
 ### 1. Retrieve on Demand at Task Start
 *Use only when the current session genuinely lacks project context:*
-> **"Check the MemAuthority for this project first — pull in only what you need."**
+> **"Check this project's MemAuthority — pull in only what you need."**
 
-The agent reads the current handoff state (`handoff`) first, then retrieves specific sections only as the task requires. Never dump the entire vault into the context by default.
+The agent should choose the shortest useful path: read directly when the location is known, search when it is not, and use `handoff` when it needs a quick overall project handoff. If the current conversation already contains enough context, there is no need to call MemAuthority at all.
 
 ### 2. Curate What to Remember
 > **"List the takeaways from this task worth keeping long-term — I'll decide what to save."**
@@ -90,9 +92,9 @@ The agent distills candidate items, and you make the final call on what to keep,
 A common, low-effort command. By default, the agent adopts a conservative strategy — logging it as a low-risk `progress` entry without altering long-term `rules` on its own.
 
 ### 4. Post-Task Maintenance
-> **"Clean up and optimize the memories we referenced during this task, and prune anything obsolete."**
+> **"Review the MemAuthority memory actually used in this task. Update it from what just happened or was verified, and remove anything obsolete."**
 
-The agent targets only the memories loaded and referenced during the current task, avoiding unnecessary full-vault scans.
+The agent that just completed the task has the freshest code, tool results, runtime facts, and user decisions. It only needs to maintain the memory it actually read and used, rather than scanning the entire Vault every time.
 
 ### 5. Park Ideas for Later to Free Up Context
 > **"This direction is worth exploring later — drop it in MemAuthority TODO so it doesn't clutter our current context."**
@@ -223,17 +225,17 @@ If not, it probably does not belong in long-term memory.
 
 Because **remembering more does not mean reasoning better.**
 
-MemAuthority uses a **Progressive Recall** pattern:
-1. If the current conversation already has sufficient context, skip calling MemAuthority entirely;
-2. If the target project is ambiguous, locate and confirm the project first;
-3. If an exact URI or section is known, perform a direct, targeted read;
-4. If the project is known but the exact section is not, search within that project's scope;
-5. If quick global orientation is needed, `handoff` is typically the first resource to check;
-6. The agent evaluates search results and loads *only* the specific sections that are genuinely relevant.
+MemAuthority supports **Progressive Recall**, but the agent does not have to follow a fixed ritual:
+1. If the current conversation already has enough context, do not call MemAuthority at all;
+2. If the project is unclear, locate and confirm it first;
+3. If the exact URI or section is known, read it directly;
+4. If the project is known but the location is not, search within that project;
+5. If a quick overall handoff is needed, `handoff` is usually the best starting point;
+6. The agent decides what is relevant and reads only what genuinely helps the current task.
 
 > **Search results are coordinates, not context.**
 
-This progressive approach not only slashes token overhead, but more crucially shields the model from hallucination and confusion caused by stale or superficially similar snippets.
+The goal is simple: keep irrelevant memory out of the current context and let the agent decide how much evidence the task actually needs.
 
 ---
 
@@ -243,15 +245,15 @@ MemAuthority v1 is built around a core principle:
 
 > **Multi-Agent, Single Authority.**
 
-Multiple agents can read from and write to the same memory vault, but the Authority maintains a single, linear, deterministic version history.
+Different agents or clients can take turns reading and requesting changes against the same Managed Authority, while MemAuthority maintains a single, linear, deterministic version history. v1 is still designed for a **single user and a single writer**, not as a collaborative database for simultaneous team editing.
 
-If Agent A updates the memory while Agent B attempts a mutation based on a stale revision, MemAuthority rejects the write with an explicit conflict error, preventing silent overwrites.
+If Agent A updates the memory while Agent B attempts a mutation based on a stale revision, MemAuthority returns an explicit conflict and rejects the write instead of letting stale state overwrite fresh state.
 
-Agent B must then re-fetch the latest state and decide whether to merge, overwrite, abort, or prompt the user for clarification.
+Agent B must then re-fetch the latest state and decide whether to merge, overwrite, abort, or ask the user.
 
-MemAuthority does not arbitrate subjective opinions; its responsibility is clear:
+MemAuthority does not decide which subjective opinion is correct. Its responsibility is narrower:
 
-> **Surface concurrency conflicts explicitly, ensuring divergent edits never silently corrupt the vault.**
+> **Surface concurrency conflicts explicitly, so divergent edits never silently become incorrect Authority.**
 
 ---
 
@@ -345,7 +347,7 @@ Once connected, MemAuthority automatically provides tool definitions, input sche
 
 See [`AGENT-GUIDE.md`](docs/AGENT-GUIDE.md) for cross-cutting usage guidelines (on-demand recall, conservative recording, role selection, and legacy migrations).
 
-If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) and the frozen v1 Transport / Auth specifications first.
+If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) and the frozen v1.3.1 Transport / Auth specification first.
 
 ---
 
@@ -379,7 +381,7 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ## Public Contract
 
-The current public compatibility baseline is **v1.3.1**. It keeps the v1.3 MemAuthority runtime contract while removing maintainer-specific production deployment automation from the public source distribution. Earlier released contract snapshots remain unchanged.
+The current public compatibility baseline is **v1.3.1**. Earlier released contract snapshots remain unchanged.
 
 Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/).
 
@@ -391,6 +393,8 @@ Authoritative definitions of Vault storage formats, MCP tools, Managed runtime b
 memauthority version
 memauthority --version
 ```
+
+**AI Agent Memory**, **Long-Term Memory**, **MCP Memory Server**, **Git-backed Memory**, **Agent Memory Infrastructure**, **Agent Continuity**
 
 For v1.3.1, the primary command prints `memauthority 1.3.1`; the compatibility command prints `v-memory 1.3.1`.
 

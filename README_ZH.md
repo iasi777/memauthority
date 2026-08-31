@@ -2,13 +2,7 @@
 
 [English](README.md)
 
-英文为主文档语言；面向用户的指南统一提供 `_ZH.md` 中文对应版。冻结规范、更新日志、法律声明、来源说明、贡献政策和部署记录除非明确配对，否则仍以英文版本为准。
-
-**轻松掌握 Agent 的记忆，整理维护留给 Agent**
-
-MemAuthority 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆系统，并通过 MCP（Model Context Protocol）对外提供能力。**项目原名 V-Memory**；此次更名的核心目的，是获得唯一且可稳定搜索的项目身份。
-
-搜索关键词：**AI Agent Memory**、**Long-Term Memory**、**MCP Memory Server**、**Git-backed Memory**、**Agent Memory Infrastructure**。
+MemAuthority 是一套面向 AI Agent 的 Git-backed 的长期记忆系统，通过 MCP 对外提供能力。它让新的会话、另一台机器或其他 Agent 获得项目已经积累的关键上下文，继续工作，而不是再次摸索同样的决定和踩坑
 
 它不追求巨细靡遗地记住所有事情，而是专注于沉淀：
 
@@ -16,8 +10,10 @@ MemAuthority 是一套面向 AI Agent 的 Git-backed、冲突安全长期记忆�
 
 清晰的分工：
 - **你**负责把关：判断哪些信息真正值得长期留下；
-- **Agent** 负责执行：理解、归纳、检索、更新与清理记忆；
-- **MemAuthority** 负责兜底：确保记忆可靠存储与按需读取，并在版本冲突、重复重试和异常中断时提供确定性的系统保护
+- **Agent** 负责执行：理解、检索、归纳、更新与清理记忆；
+- **MemAuthority** 负责兜底：让长期记忆可靠保存、按需读取，并防止旧版本覆盖、重复重试和异常中断破坏记忆
+
+内容意味着什么、该不该修改，仍然由 Agent 判断；MemAuthority 负责让最终留下的记忆内容长期可靠
 
 ---
 
@@ -33,13 +29,13 @@ MemAuthority 适合更看重长期记忆质量的用户
 
 你也可能尝试过维护 `MEMORY.md`，但随着内容积累，它变得越来越臃肿、杂乱，甚至开始干扰 Agent 的正常判断
 
-MemAuthority 最适合这样的使用场景：
+MemAuthority 适合的场景：
 
 > **愿意为记忆质量投入少许精力把关，但希望将具体整理工作全部交给 Agent**
 
 这里的“花精力”并不需要你频繁手动修改文件，而是在关键节点做几个有价值的高层裁决：
-- 这条信息是否值得长期保留；
-- 旧结论是否已经过时失效；
+- 某些信息是否值得长期保留；
+- 什么时候应该整理记忆；
 - 哪些内容涉及隐私或敏感信息；
 - Agent 提议整理的结果是否符合你的真实意图
 
@@ -51,56 +47,62 @@ MemAuthority 最适合这样的使用场景：
 
 如果你的项目记忆体量较小、内容极少变动，或者你不想在记忆维护上耗费任何注意力，继续使用 `MEMORY.md` 是最省心的选择
 
-MemAuthority 聚焦于解决更高阶的需求：
+当这份文件不再只是一份笔记，而开始成为未来会话必须信任的长期项目状态时，MemAuthority 才真正体现价值
+
+它聚焦于解决更高阶的需求：
 
 > **把“维护长期记忆”本身，变成一套可靠、可控的工程化工作流**
 
 它带来的不只是“让 Agent 编辑 Markdown”，而是一整套严谨的运行机制：
-- **按需精准读取**：仅在任务真正需要时才加载相关记忆，避免无关信息撑爆或污染 Context；
+- **按需精准读取**：仅在任务真正需要时才加载相关记忆，避免无关信息撑爆或污染上下文；
 - **清晰的角色分层**：明确区分当前接手状态、长期规则、阶段进展与避坑经验；
-- **并发与版本安全**：修改前严格校验版本（CAS），防止多个 Agent 互相用旧版本静默覆盖新内容；
+- **并发与版本安全**：修改前严格校验版本（CAS），防止旧 revision 静默覆盖新内容；
 - **幂等防重保障**：网络波动或执行中断时的重试操作，不易产生重复记忆；
 - **收敛与历史追溯**：活跃记忆库可以持续精简收敛，而完整的修改历史始终由 Git 负责追溯；
 - **事务与容灾恢复**：写入中断或异常时具备明确的事务日志（Journal）与恢复机制
 
+可以把它简单理解为：
+
+> **Authority 保存未来 Agent 现在应该继承的状态；Git 保存完整历史**
+
 一句话概括：
 
-> **`MEMORY.md` 优化的是“让任何人都能零门槛拥有一份记忆”；MemAuthority 优化的是“让重视记忆质量的人，能够长期稳定地维护好这份记忆” **
+> **`MEMORY.md` 优化的是简单直接；MemAuthority 优化的是项目变复杂之后，长期记忆仍然能够可靠维护**
 
 ---
 
 ## 平时怎么用？
 
-在理想的工作流中，MemAuthority 隐身于 Agent 背后 你平时只需要用简短自然的指令与 Agent 交互：
+在理想的工作流中，MemAuthority 隐身于 Agent 背后。你平时只需要用简短自然的指令与 Agent 交互：
 
 ### 1. 开始任务时按需读取
-*仅在当前对话确实缺少该项目的背景信息时使用：*
-> **“先看看这个项目的 MemAuthority，需要什么再读什么 ”**
+*仅在当前对话确实缺少该项目背景时使用：*
+> **“先看看这个项目的 MemAuthority，需要什么再读什么”**
 
-Agent 会先读取当前接手状态（`handoff`），后续仅在具体任务需要时才去检索和读取对应章节 切忌默认将整个记忆库一股脑塞入上下文
+Agent 应该选择最短、最合适的读取路径：已知具体位置就直接读取，不知道位置时再检索，需要快速接手项目整体状态时再看 `handoff`。如果当前对话本身已经有足够上下文，就完全没有必要调用 MemAuthority
 
 ### 2. 精确把关要记录的内容
-> **“把这次任务里值得长期记住的内容列出来，我来决定写哪些 ”**
+> **“把这次任务里值得长期记住的内容列出来，我来决定写哪些”**
 
 Agent 提炼候选条目，由你最终决定保留、修改还是舍弃
 
 ### 3. 省心快速记录任务
-> **“记录一下这次任务 ”**
+> **“记录一下这次任务”**
 
-这也是常见用法 默认情况下，Agent 会采用保守策略，仅将其作为一次低风险的 `progress`（阶段进展）记录，而不会擅自改动长期的 `rules`（规则）
+这也是常见用法。默认情况下，Agent 会采用保守策略，仅将其作为一次低风险的 `progress`（阶段进展）记录，而不会擅自改动长期 `rules`（规则）
 
 ### 4. 任务结束后顺手维护
-> **“梳理优化一下本次任务从 MemAuthority 用到的记忆，并清理过时内容 ”**
+> **“检查一下这次任务实际用到的 MemAuthority 记忆，根据刚刚发生和核验的事实更新它，并清理过时内容”**
 
-Agent 只针对本次任务实际读取和使用过的记忆进行针对性维护，无需每次全盘扫描整个 Vault
+刚完成任务的 Agent 掌握最新的代码、工具结果、运行事实和用户裁决。它只需要维护本次真正读取和使用过的记忆，不必每次扫描整个 Vault
 
 ### 5. 暂存延后想法，释放当前上下文
-> **“这个方向以后值得研究，先放到 MemAuthority TODO，别占现在的上下文 ”**
+> **“这个方向以后值得研究，先放到 MemAuthority TODO，别占现在的上下文”**
 
 这里的 TODO 不是项目管理工具，而是：
 > **值得未来处理，但眼下不需要占据思考带宽的信息暂存点**
 
-当后续处理完毕后，TODO 记录本身通常应当删除；真正形成的长期有效结论，再单独归入长期记忆
+后续处理完成后，TODO 本身通常应当删除；真正形成的长期有效结论，再单独归入长期记忆
 
 ---
 
@@ -150,7 +152,7 @@ MemAuthority 不强制要求你每次记录前都先思考“该放进 rules 还
 
 针对旧库迁移，MemAuthority 采用明确的迁移方案：
 
-> **由 Agent 负责语义迁移，而不是由 MemAuthority 为每种旧格式编写专门的 Importer **
+> **由 Agent 负责语义迁移，而不是由 MemAuthority 为每种旧格式编写专门的 Importer**
 
 只要 Agent 能够读取并理解你的旧内容，就能支持各类迁移来源：
 - 现有的 `MEMORY.md`；
@@ -223,36 +225,36 @@ MemAuthority 中的长期记忆严格划分为四种角色（Roles）：
 
 因为**记得多并不等于记得对**
 
-MemAuthority 采用渐进式的按需召回（Progressive Recall）机制：
-1. 若当前对话的 Context 已包含足够信息，则不触发 MemAuthority 调用；
-2. 所属项目不明确时，先定位并确认目标项目；
-3. 若已知明确的 URI 或 Section，直接发起精确读取；
-4. 若已知项目但未知具体位置，在当前项目范围内执行检索；
-5. 若需要快速恢复项目全局概况，`handoff` 通常是最优先读取的核心资源；
-6. Agent 对搜索结果进行评估，仅进一步读取真正相关的章节内容
+MemAuthority 支持渐进式按需召回（Progressive Recall），但不要求 Agent 遵守一套固定仪式：
+1. 当前对话已经有足够信息时，完全不调用 MemAuthority；
+2. 项目不明确时，先定位并确认项目；
+3. 已知明确 URI 或 Section 时，直接精确读取；
+4. 已知项目但不知道具体位置时，再在项目范围内检索；
+5. 需要快速恢复项目整体接手状态时，`handoff` 通常是最合适的起点；
+6. Agent 自己判断结果是否相关，只继续读取真正有助于当前任务的内容
 
 > **Search results are coordinates, not context.**
-> （搜索结果是定位坐标，而不是直接塞进 Prompt 的上下文 ）
+> （搜索结果是定位坐标，而不是直接塞进 Prompt 的上下文）
 
-这种机制不仅大幅节省 Token 开销，更重要的是防止陈旧、相似却不相关的信息干扰 Agent 的推理与判断
+目标很简单：不要让无关记忆进入当前 Context，把“需要多少证据才够”留给正在执行任务的 Agent 判断
 
 ---
 
 ## 多个 Agent 会不会把记忆写乱？
 
-MemAuthority v1 遵循的核心设计模型是：
+MemAuthority v1 遵循一个简单原则：
 
-> **Multi-Agent, single Authority.**（多 Agent 协作，单一权威源）
+> **Multi-Agent, Single Authority**（多 Agent 使用，单一权威源）
 
-多个 Agent 可以共享使用同一份记忆库，但 Authority 始终保持单线有序的版本历史
+不同 Agent 或客户端可以轮流读取同一份 Managed Authority，并请求修改；MemAuthority 始终维持一条线性、确定的版本历史。v1 仍然是面向**单用户、单写者**的系统，而不是团队多人同时编辑的协作数据库
 
-如果 Agent A 已经更新了记忆，而 Agent B 仍试图基于旧版本（revision）提交修改，MemAuthority 会明确返回冲突（conflict）并拒绝写入，坚决防止静默覆盖
+如果 Agent A 已经更新了记忆，而 Agent B 仍试图基于旧 revision 提交修改，MemAuthority 会明确返回 conflict 并拒绝写入，而不是让旧状态静默覆盖新状态
 
-此时 Agent B 需要重新读取最新内容，再根据当前实际情况决定合并、重写、放弃还是询问用户
+此时 Agent B 需要重新读取最新内容，再根据实际情况决定合并、重写、放弃还是询问用户
 
-MemAuthority 不代替 Agent 判断哪一方的主观观点更正确，它的核心职责在于：
+MemAuthority 不负责判断双方哪一个主观观点更正确，它只保证一件更确定的事：
 
-> **确保并发分歧被显式暴露，绝不让冲突悄悄演变成错误的脏记忆**
+> **让并发分歧明确暴露，绝不让冲突悄悄变成错误的 Authority**
 
 ---
 
@@ -278,7 +280,7 @@ MemAuthority 依赖 Git，并要求 Go 1.26.5 或更高版本。安装当前稳�
 go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.1
 ```
 
-v1.x 的 Go module identity 为了兼容性继续保持 `github.com/iasi777/v-memory`，即使 canonical repository 和产品名已经变为 MemAuthority。GitHub 会把旧仓库地址重定向到 `iasi777/memauthority`。
+v1.x 的 Go module identity 为了兼容性继续保持 `github.com/iasi777/v-memory`，即使 canonical repository 和产品名已经变为 MemAuthority。GitHub 会把旧仓库地址重定向到 `iasi777/memauthority`
 
 验证：
 
@@ -306,7 +308,7 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 ./memauthority version
 ```
 
-Release CI 会在 Linux、macOS、Windows 原生 runner 上运行测试、vet 和 CLI 构建；Linux CI 另外验证生产使用的 Linux/ARM64 目标。
+Release CI 会在 Linux、macOS、Windows 原生 runner 上运行测试、vet 和 CLI 构建；Linux CI 另外验证生产使用的 Linux/ARM64 目标
 
 ---
 
@@ -338,7 +340,7 @@ memauthority serve \
 - 省略 `--write-enabled` 即以**只读模式**运行；
 - `state-dir` 必须存放在 Vault Authority 目录之外；
 - 请勿同时进行 Detached 模式（直接编辑文件）与 Managed 模式（服务运行中托管）；
-- 可选的 declarative runtime metadata 在 Vault 没有已登记 runtime 时**默认关闭**。绝大多数单机用户建议保持关闭。已有 `runtime_resource` 的 Vault 会自动继续暴露 runtime 工具；只有你明确需要开始记录工作环境/部署拓扑时，才添加 `--runtime-enabled`。
+- 可选的 declarative runtime metadata 在 Vault 没有已登记 runtime 时**默认关闭**。绝大多数单机用户建议保持关闭。已有 `runtime_resource` 的 Vault 会自动继续暴露 runtime 工具；只有你明确需要开始记录工作环境/部署拓扑时，才添加 `--runtime-enabled`
 
 本地接入最简单的方式是让 MCP 客户端通过 stdio 直接拉起上述命令
 
@@ -346,7 +348,7 @@ memauthority serve \
 
 [`AGENT-GUIDE.md`](docs/AGENT-GUIDE_ZH.md) 补充了跨工具维度的使用原则（如按需召回、保守记录、角色选择与旧库迁移等）
 
-如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.2 Transport / Auth 规范
+如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.3.1 Transport / Auth 规范
 
 ---
 
@@ -380,11 +382,11 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ## 公共契约
 
-当前公共兼容性基线为 **v1.3.1**。它保持 v1.3 的 MemAuthority 运行时契约，同时从公共源码分发中移除了维护者私有的生产部署自动化；此前已经发布的冻结契约快照保持不变。
+当前公共兼容性基线为 **v1.3.1**；此前已经发布的历史契约快照保持不变
 
-Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) 下。
+Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) 下
 
-*本 README 与其他用户文档用于辅助理解；细节不一致时，以对应版本的公共契约为准。*
+*本 README 与其他用户文档用于辅助理解；细节不一致时，以对应版本的公共契约为准*
 
 ## Version
 
@@ -392,8 +394,9 @@ Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则�
 memauthority version
 memauthority --version
 ```
+**AI Agent Memory**、**Long-Term Memory**、**MCP Memory Server**、**Git-backed Memory**、**Agent Memory Infrastructure**、**Agent Continuity**
 
-v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory 1.3.1`。
+v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory 1.3.1`
 
 ## Security
 
@@ -417,4 +420,4 @@ v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory
 
 本项目基于 Apache License 2.0 开源，详情请参阅 [`LICENSE`](LICENSE)
 
-归属与第三方说明请参阅 [`NOTICE`](NOTICE) 和 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
+归属与第三方说明请参阅 [`NOTICE`](NOTICE) 和 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)

@@ -7,19 +7,19 @@
 
 This guide does not duplicate the full MCP schema. Once a Managed MCP connection is established, the agent already receives the current tool descriptions, input schemas, annotations, and resource metadata.
 
-What follows covers the cross-tool principles that a single tool schema cannot express well, plus the authoring doctrine required for detached bootstrap and legacy-memory migration.
+What follows covers the cross-tool principles that a single tool schema cannot express well, plus the authoring principles needed for detached bootstrap and legacy-memory migration.
 
 ---
 
 ## 1. Responsibility Boundaries
 
-- **The user** decides what deserves to become long-term memory.
-- **You, the agent** interpret, select, retrieve, compress, merge, update, retire, and migrate memory.
-- **MemAuthority** provides deterministic recall, controlled mutation, revision safety, and Git-backed Authority.
+- **The user** makes a small number of high-level decisions: what deserves long-term retention, what should stay out of long-term memory, and whether important changes match the user's actual intent.
+- **You, the agent** handle day-to-day execution: interpret, select, retrieve, compress, merge, update, retire, and migrate memory.
+- **MemAuthority** provides the reliability layer: deterministic recall, controlled mutation, revision safety, and Git-backed Authority.
 
 > **MemAuthority constrains state transitions, not intelligence.**
 
-Do not treat conversation history as long-term memory by default.
+You decide what the content means and whether it should change based on the real task. Do not treat conversation history as long-term memory by default.
 
 ---
 
@@ -146,6 +146,8 @@ A cursor only means more content exists; it does not mean all remaining content 
 
 While Managed ownership is active, Authority mutations must use MemAuthority mutation tools. Do not create a second Authority write path by modifying the Vault through generic machine or filesystem tools.
 
+v1 is designed for a single-user, single-writer workflow. Different agents or clients can take turns using the same Authority, but it is not a collaborative database for simultaneous team editing.
+
 For large detached authoring work, stop Managed ownership first, edit directly, validate, review, commit, and then restart the Managed service.
 
 ### 5.1 Read Before Updating Existing Content
@@ -243,13 +245,13 @@ Expected safety model:
 
 ## 8. Maintenance After a Task
 
-When the user says something like:
+The user can simply say:
 
 ```text
-Review and improve the MemAuthority entries we actually used during this task, and clean up anything obsolete.
+Review the MemAuthority memory actually used in this task. Update it from what just happened or was verified, and remove anything obsolete.
 ```
 
-You should:
+Equivalent natural-language instructions are fine. You should:
 
 1. focus by default on memory actually recalled or used during the task;
 2. compare it with the newest code, docs, runtime results, or business facts produced by the task;

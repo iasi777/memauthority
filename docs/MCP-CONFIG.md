@@ -99,7 +99,7 @@ The Managed MCP server already exposes its current:
 - annotations;
 - resource metadata.
 
-[`AGENT-GUIDE.md`](AGENT-GUIDE.md) adds only the cross-tool doctrine that schemas do not express well: progressive recall, conservative recording, rereading after CAS conflicts, post-task maintenance, and semantic migration of legacy memory.
+[`AGENT-GUIDE.md`](AGENT-GUIDE.md) adds only cross-tool usage principles that schemas do not express well: on-demand recall, conservative recording, rereading after CAS conflicts, post-task maintenance, and semantic migration of legacy memory.
 
 When a field or operation is critical, the agent should rely on the schema returned by the current connection and the contract for that release, not guess from an old prompt.
 
@@ -113,7 +113,7 @@ HTTP must be selected explicitly:
 --transport http
 ```
 
-Core safety boundaries in the frozen transport contract include:
+The current frozen Transport / Auth contract requires:
 
 - default listen address is `127.0.0.1:8000`;
 - without OAuth, HTTP may listen only on loopback;
@@ -156,4 +156,4 @@ Only when the current session genuinely lacks project context, you can tell the 
 Check this project's MemAuthority and read only what you actually need.
 ```
 
-The ideal behavior is not a fixed `route -> handoff` ritual. If current context is enough, no MemAuthority call is needed. Route when the project is uncertain, read directly when the URI is known, search when the project is known but the location is not, and prefer handoff when the task needs an overall project-state recovery.
+There is no fixed `route -> handoff` flow. If the current context is already enough, do not call MemAuthority. Locate the project when it is uncertain, read directly when the URI is known, search when the project is known but the location is not, and prefer `handoff` when the task needs an overall project handoff.

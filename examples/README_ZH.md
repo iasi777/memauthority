@@ -4,7 +4,7 @@
 
 本目录在 [`sample-vault/`](sample-vault/) 中提供一个经过脱敏、结构合法的示例 Vault。它包含四种记忆角色，但不包含 runtime 或生产环境元数据。
 
-精确行为以[`../docs/contract/v1.2/`](../docs/contract/v1.2/) 下的版本化公共契约为准。
+精确行为以当前 [`../docs/contract/v1.3.1/`](../docs/contract/v1.3.1/) 版本化公共契约为准。
 
 ## 1. 创建临时示例 Vault
 
@@ -50,7 +50,7 @@ memauthority serve \
 客户端连接后，可以先说：
 
 ```text
-先看看 demo 项目的 MemAuthority，只读取当前真正需要的内容。
+先看看 demo 项目的 MemAuthority，需要什么再读什么。
 ```
 
 Agent 可以把别名 `sample-project` 路由到 `demo` 项目，读取 `memory://projects/demo/handoff`，并按需检索 rules、progress 或 pitfalls。
@@ -68,4 +68,4 @@ Agent 可以把别名 `sample-project` 路由到 `demo` 项目，读取 `memory:
 - 示例不包含凭据或真实生产路径。
 - 不要直接把示例当作自己项目的长期记忆。
 - Managed 服务运行时不要直接编辑 Vault 文件。
-- HTTP / OAuth 暴露前，请阅读 [`../SECURITY_ZH.md`](../SECURITY_ZH.md) 和当前的 [Transport / Auth 契约](../docs/contract/v1.2/transport-auth.md)。
+- HTTP / OAuth 暴露前，请阅读 [`../SECURITY_ZH.md`](../SECURITY_ZH.md) 和当前的 [Transport / Auth 契约](../docs/contract/v1.3.1/transport-auth.md)。

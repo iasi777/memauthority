@@ -9,19 +9,19 @@
 
 Managed MCP 连接后，你已经会自动获得 tool descriptions、input schemas、annotations 和 resource metadata。
 
-本文只补充单个 tool schema 很难完整表达的**跨工具使用原则**，以及 detached bootstrap / 旧库迁移时需要遵守的 authoring doctrine。
+本文只补充单个 tool schema 很难完整表达的**跨工具使用原则**，以及 detached bootstrap / 旧库迁移时需要遵守的编写原则。
 
 ---
 
 ## 1. 责任边界
 
-- **用户**决定什么值得成为长期记忆。
-- **你，Agent**负责理解、选择、搜索、压缩、合并、更新、淘汰和迁移。
-- **MemAuthority**负责确定性 Recall、受控 mutation、revision safety 和 Git-backed Authority。
+- **用户**负责少量高层裁决：什么值得长期留下、哪些内容不该进入长期记忆、重要变化是否符合真实意图；
+- **你，Agent**负责日常执行：理解、选择、搜索、压缩、合并、更新、淘汰和迁移；
+- **MemAuthority**负责底层可靠性：确定性 Recall、受控 mutation、revision safety 和 Git-backed Authority。
 
 > **MemAuthority constrains state transitions, not intelligence.**
 
-不要默认把对话历史当成长期 Memory。
+内容意味着什么、该不该修改，由你根据真实任务判断。不要默认把对话历史当成长期 Memory。
 
 ---
 
@@ -148,6 +148,8 @@ Cursor 只说明后面还有内容，不代表必须继续读完。
 
 Managed ownership 活跃时，Authority mutation 必须通过 MemAuthority 提供的 mutation tools 完成，不要通过普通 machine / filesystem 工具直接修改 Vault 数据目录制造第二条写入路径。
 
+v1 面向单用户、单写者场景。不同 Agent 或客户端可以轮流使用同一份 Authority，但并不是团队多人同时编辑的协作数据库。
+
 需要大规模 detached authoring 时，先停止 managed ownership，再直接编辑、validate、review、commit，最后重新启动 managed service。
 
 ### 5.1 修改已有内容前先读取
@@ -249,13 +251,13 @@ Active memory 应持续收敛。
 
 ## 8. 任务结束后的维护
 
-用户说：
+用户可以直接说：
 
 ```text
-梳理优化一下本次任务从 MemAuthority 用到的记忆，并清理过时内容。
+检查一下这次任务实际用到的 MemAuthority 记忆，根据刚刚发生和核验的事实更新它，并清理过时内容。
 ```
 
-你应：
+自然语言等价表达都可以。你应：
 
 1. 默认只关注本次真正 Recall / 使用过的 Memory；
 2. 与本次任务产生的最新代码、文档、运行结果或业务事实比较；

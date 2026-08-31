@@ -99,7 +99,7 @@ Managed MCP 会提供当前服务的：
 - annotations；
 - resource metadata。
 
-[`AGENT-GUIDE_ZH.md`](AGENT-GUIDE_ZH.md) 只补充跨工具 doctrine，例如 progressive Recall、保守记录、CAS conflict 后重新读取、任务后维护和旧库语义迁移。
+[`AGENT-GUIDE_ZH.md`](AGENT-GUIDE_ZH.md) 只补充跨工具使用原则，例如按需 Recall、保守记录、CAS conflict 后重新读取、任务后维护和旧库语义迁移。
 
 如果某个字段或 operation 对任务很关键，让 Agent 以**当前连接实际返回的 schema**和**对应 release contract**为准，不要从旧 prompt 猜参数。
 
@@ -113,7 +113,7 @@ HTTP 必须显式使用：
 --transport http
 ```
 
-frozen transport contract 的基本安全边界包括：
+当前冻结的 Transport / Auth 契约要求：
 
 - 默认监听 `127.0.0.1:8000`；
 - 没有 OAuth 时只能监听 loopback；
@@ -156,4 +156,4 @@ memauthority serve --help
 先看看这个项目的 MemAuthority，需要什么再读什么。
 ```
 
-理想行为不是固定 `route → handoff`：当前 Context 已经足够时不需要调用 MemAuthority；项目不确定时 route，已知 URI 时直接 read，已知项目但不知道位置时 search，需要恢复整体项目状态时再优先考虑 handoff。
+没有固定的 `route → handoff` 流程：当前上下文已经足够时不调用 MemAuthority；项目不确定时先定位，已知 URI 时直接读取，已知项目但不知道位置时再检索，需要恢复整体项目状态时再优先考虑 `handoff`。

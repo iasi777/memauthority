@@ -108,13 +108,13 @@ TODO 完成后通常应该删除；真正形成的长期结论，再单独进入
 
 MemAuthority 的核心模型是：
 
-> Multi-Agent, single Authority.
+> Multi-Agent, Single Authority.
 
-多个 Agent 可以共享一份 Memory，但写入必须基于当前 revision。
+不同 Agent 或客户端可以轮流使用同一份 Memory，但 v1 仍然是**单用户、单写者**模型，不是团队多人同时编辑的协作数据库。
 
-如果另一个 Agent 已经更新了内容，拿旧 revision 的写入应该发生 conflict，而不是静默覆盖。
+写入必须基于当前 revision。如果另一个请求已经更新了内容，拿旧 revision 的写入应该发生 conflict，而不是静默覆盖。
 
-MemAuthority 负责暴露分歧；Agent 负责重新读取后解决语义。
+MemAuthority 负责暴露分歧；Agent 重新读取最新状态后负责解决语义。
 
 ---
 
@@ -195,7 +195,11 @@ MemAuthority 会拦截高置信度 secret 形态，但它不是通用隐私分�
 
 ## 普通本地项目需要配置 runtime / environment ID 吗？
 
-通常不需要。Runtime metadata 是可选高级层；Vault 没有已登记 runtime 时，这组能力默认隐藏。普通单机项目应该先完全不配置它。以后确实需要长期记录部署/工作环境拓扑时，再用 `--runtime-enabled` 开启。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，MemAuthority 会规范化为 `default`。
+通常不需要。
+
+Runtime metadata 是可选高级能力。Vault 没有已登记 runtime 时，这组工具默认隐藏，普通单机项目完全可以一直不配置。
+
+以后确实需要长期记录部署或工作环境拓扑时，再用 `--runtime-enabled` 开启。`host_id` 是可选的用户自定义 ID；只有一个 environment 时可以省略 `environment_id`，MemAuthority 会规范化为 `default`。
 
 ## MemAuthority 是 RAG、知识库或者聊天归档吗？
 

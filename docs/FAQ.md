@@ -110,11 +110,11 @@ MemAuthority follows this model:
 
 > **Multi-Agent, Single Authority.**
 
-Multiple agents can share the same memory, but writes must be based on the current revision.
+Different agents or clients can take turns using the same memory, but v1 is still a **single-user, single-writer** model rather than a collaborative database for simultaneous team editing.
 
-If another agent has already changed the resource, a write based on an older revision should conflict instead of silently overwriting newer content.
+Writes must be based on the current revision. If another request has already changed the resource, a write based on an older revision should conflict instead of silently overwriting newer content.
 
-MemAuthority exposes the conflict. The agent must reread and resolve the semantics.
+MemAuthority exposes the conflict. The agent rereads the latest state and resolves the semantics.
 
 ---
 
@@ -193,7 +193,11 @@ Whether a home address, personal experience, business secret, or unpublished pla
 
 ## Do I Need Runtime/Environment IDs for a Normal Local Project?
 
-Usually no. Runtime metadata is an optional advanced layer and is hidden by default when the Vault has no registered runtime. A normal single-machine project should start without it. If you later need durable deployment/work-environment topology, start `serve` with `--runtime-enabled`. `host_id` is optional and user-defined; a single environment can omit `environment_id`, which canonicalizes to `default`.
+Usually no.
+
+Runtime metadata is an optional advanced capability. When the Vault has no registered runtime, these tools are hidden by default, and a normal single-machine project can keep them disabled indefinitely.
+
+If you later need to preserve deployment or work-environment topology, start `serve` with `--runtime-enabled`. `host_id` is optional and user-defined; a single environment can omit `environment_id`, which canonicalizes to `default`.
 
 ## Is MemAuthority a RAG System, Knowledge Base, or Chat Archive?
 
