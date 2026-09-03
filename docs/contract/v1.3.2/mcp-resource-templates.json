@@ -1,0 +1,8 @@
+[
+  {
+    "description": "Validated raw runtime manifest resource; distinct from the four memory roles.",
+    "mimeType": "application/yaml",
+    "name": "memory_project_runtime_resource",
+    "uriTemplate": "memory://projects/{project_id}/runtime"
+  }
+]

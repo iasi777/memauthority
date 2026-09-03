@@ -24,13 +24,13 @@ func TestCurrentRuntimeEnabledContractSnapshot(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.3.1/mcp-tools.json")
+	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.3.2/mcp-tools.json")
 
 	templates, err := session.ListResourceTemplates(context.Background(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertJSONSnapshotEqual(t, templates.ResourceTemplates, "../../docs/contract/v1.3.1/mcp-resource-templates.json")
+	assertJSONSnapshotEqual(t, templates.ResourceTemplates, "../../docs/contract/v1.3.2/mcp-resource-templates.json")
 }
 
 func assertJSONSnapshotEqual(t *testing.T, current any, path string) {

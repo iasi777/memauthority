@@ -1,0 +1,72 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/mcpb/v2.1.2/schemas/mcpb-manifest-v0.3.schema.json",
+  "manifest_version": "0.3",
+  "name": "memauthority",
+  "display_name": "MemAuthority",
+  "version": "__VERSION__",
+  "description": "Git-backed long-term memory authority for AI agents.",
+  "long_description": "MemAuthority gives AI agents durable, Git-backed project memory with validated writes, revision safety, and explicit current Authority. This MCP Bundle runs the local stdio server against a Vault directory selected by the user.",
+  "author": {
+    "name": "iasi777",
+    "url": "https://github.com/iasi777"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iasi777/memauthority"
+  },
+  "homepage": "https://github.com/iasi777/memauthority",
+  "documentation": "https://github.com/iasi777/memauthority/blob/main/README.md",
+  "support": "https://github.com/iasi777/memauthority/issues",
+  "server": {
+    "type": "binary",
+    "entry_point": "server/__BINARY__",
+    "mcp_config": {
+      "command": "${__dirname}/server/__BINARY__",
+      "args": [
+        "serve",
+        "--vault",
+        "${user_config.vault_directory}",
+        "--state-dir",
+        "${user_config.state_directory}",
+        "--write-enabled=${user_config.write_enabled}"
+      ],
+      "env": {}
+    }
+  },
+  "tools_generated": true,
+  "keywords": [
+    "agent-memory",
+    "long-term-memory",
+    "mcp",
+    "git",
+    "ai-agents",
+    "memory-governance"
+  ],
+  "license": "Apache-2.0",
+  "compatibility": {
+    "platforms": [
+      "__PLATFORM__"
+    ]
+  },
+  "user_config": {
+    "vault_directory": {
+      "type": "directory",
+      "title": "MemAuthority Vault",
+      "description": "Select the Git-backed Vault directory that stores MemAuthority Authority.",
+      "required": true
+    },
+    "state_directory": {
+      "type": "directory",
+      "title": "Runtime state directory",
+      "description": "Select a runtime-private state directory outside the Vault Authority directory.",
+      "required": true
+    },
+    "write_enabled": {
+      "type": "boolean",
+      "title": "Enable memory writes",
+      "description": "Allow MemAuthority mutation tools to update the selected Vault. Leave off for read-only use.",
+      "required": true,
+      "default": false
+    }
+  }
+}

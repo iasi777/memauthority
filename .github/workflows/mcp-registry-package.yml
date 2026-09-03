@@ -1,0 +1,58 @@
+name: MCP Registry Packaging
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: go.sum
+      - name: Set up Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '24'
+      - name: Install pinned MCPB CLI
+        run: npm install --global @anthropic-ai/mcpb@2.1.2
+      - name: Build and validate six MCPB packages
+        shell: bash
+        run: |
+          mkdir -p artifacts/mcpb
+          for target in \
+            'linux amd64' 'linux arm64' \
+            'darwin amd64' 'darwin arm64' \
+            'windows amd64' 'windows arm64'; do
+            set -- $target
+            bash tools/package-mcpb.sh 1.3.2 "$1" "$2" artifacts/mcpb
+          done
+      - name: Render server.json
+        run: go run ./tools/serverjson 1.3.2 artifacts/mcpb > artifacts/server.json
+      - name: Install pinned mcp-publisher
+        shell: bash
+        run: |
+          curl -fsSL https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz \
+            | tar xz mcp-publisher
+          chmod +x mcp-publisher
+      - name: Validate Official MCP Registry metadata
+        run: ./mcp-publisher validate artifacts/server.json
+      - name: Compare checked-in server.json
+        shell: bash
+        run: diff -u server.json artifacts/server.json
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: memauthority-mcp-registry-packaging
+          path: |
+            artifacts/mcpb/*.mcpb
+            artifacts/server.json
+          if-no-files-found: error

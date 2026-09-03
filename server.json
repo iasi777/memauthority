@@ -1,0 +1,68 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.iasi777/memauthority",
+  "title": "MemAuthority",
+  "description": "Git-backed long-term memory authority for AI agents via MCP.",
+  "version": "1.3.2",
+  "repository": {
+    "url": "https://github.com/iasi777/memauthority",
+    "source": "github",
+    "id": "1349426409"
+  },
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-win-x64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "bfefaf96a3ad2d13b9f96be9456973a84eed12bf935e8bc8b768c65993c45479",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-win-arm64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "29b891b223384418cfecc364e32ccb9a17e87d5fa2f8547e3607726c99c2d619",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-linux-x64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "6205e4ca8f53c0076d7b7efe413ee8bf77e826ce949e7c94f14d0a85a31b6a4a",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-linux-arm64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "0901d9ea00917e67847e1bea7d8846016923bc576d2cfd412327f787a81ce84b",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-osx-x64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "d1e08ab63f2960ed75994e62a6046798e454deb2ec44167a12b8ba9809aa1a1f",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/iasi777/memauthority/releases/download/v1.3.2/memauthority-1.3.2-osx-arm64.mcpb",
+      "version": "1.3.2",
+      "fileSha256": "bc1b6aa53df65064bfc8d52fb835afaf22e076347652beef5d73a4594f633b8a",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

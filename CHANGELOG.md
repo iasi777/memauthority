@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Prepare MemAuthority v1.3.2 as a compatibility-preserving packaging patch for the Official MCP Registry.
+- Add six native MCP Bundle (MCPB) targets for Windows, Linux, and macOS on x64/ARM64, with deterministic package hashes and validated `server.json` metadata.
+- Keep MCPB installs read-only by default; write access is an explicit bundle setting.
+- No Vault format, MCP tool/resource, transport/auth, or v1.x Go module compatibility change is intended beyond the patch version identity.
+
 ## v1.3.1
 
 - Removed the maintainer-specific production deployment workflow from the public repository so private deployment domains, gateway paths, custom headers and deployment-secret wiring are no longer distributed in the Go module source zip.
