@@ -1,0 +1,86 @@
+{
+  "change_rule": "Do not rewrite this released contract in place. Publish compatibility changes through a new versioned contract and release identity.",
+  "compatibility_policy": {
+    "backward_compatible_fix": "patch",
+    "backward_compatible_public_addition": "minor",
+    "breaking_change": "major",
+    "scheme": "Semantic Versioning"
+  },
+  "history_boundary": "Earlier V-Memory and MemAuthority contract snapshots remain immutable. This v1.3.2 freeze adds deterministic MCPB distribution and Official MCP Registry metadata without changing the v1 product compatibility surface beyond the patch version identity.",
+  "kind": "memauthority_public_contract_freeze_manifest",
+  "normative_contract": {
+    "directory": "docs/contract/v1.3.2",
+    "files": [
+      {
+        "path": "docs/contract/v1.3.2/README.md",
+        "sha256": "d80eafdb638e2b11a53b8cb248dd80458517bb44ebd185c9f76682093e8f398f",
+        "size_bytes": 1544
+      },
+      {
+        "path": "docs/contract/v1.3.2/VERSION-DECISION.md",
+        "sha256": "b2c6c6e971a45b4b24a5b241f35de471cfea5d93b5f0617d44e9256ba46487a3",
+        "size_bytes": 1323
+      },
+      {
+        "path": "docs/contract/v1.3.2/cli.md",
+        "sha256": "730c700893635677c667910f89b4358c1cf5e6b70eaab89c89c00a8866f55a49",
+        "size_bytes": 4543
+      },
+      {
+        "path": "docs/contract/v1.3.2/managed-runtime.md",
+        "sha256": "aa46680460be036560b3e7b086a89469442865edbb9ee4c77cc507ca97a7f0ef",
+        "size_bytes": 2010
+      },
+      {
+        "path": "docs/contract/v1.3.2/mcp-resource-templates.json",
+        "sha256": "a42c2a5000c64e439595ecbf769ebad9bd876c8a28b1b42d51f56c074e1e84d4",
+        "size_bytes": 255
+      },
+      {
+        "path": "docs/contract/v1.3.2/mcp-tools.json",
+        "sha256": "ee912c6f828e02c637cc22aeeb468c350aba7e991d6d258a7ecc9cb1d7358cd2",
+        "size_bytes": 40183
+      },
+      {
+        "path": "docs/contract/v1.3.2/mcp.md",
+        "sha256": "c7038220ad8900b827aa5c81bd9a4940dc1c360f733e2d99a65de7e2d42c8500",
+        "size_bytes": 3846
+      },
+      {
+        "path": "docs/contract/v1.3.2/runtime-closed-values.json",
+        "sha256": "02dca84aee6ac4ea002d07639c265d226a4ed7c7f32e1ffe51ef99c320f16341",
+        "size_bytes": 755
+      },
+      {
+        "path": "docs/contract/v1.3.2/structured-errors.md",
+        "sha256": "8cae0c0b4552360977f20ce679a3e173e788e04515976edc19dbee6267a05bf5",
+        "size_bytes": 2167
+      },
+      {
+        "path": "docs/contract/v1.3.2/transport-auth.md",
+        "sha256": "74c3e5713f299aa5990590c566b5d6d217b45ffca97fe964088b34b9c17d5698",
+        "size_bytes": 1590
+      },
+      {
+        "path": "docs/contract/v1.3.2/vault-format.md",
+        "sha256": "61edf654b737056b24a821072475cf68f17969b5e3202d2c43d33912eacfbfd9",
+        "size_bytes": 4366
+      }
+    ],
+    "identity_sha256": "7ee8e2b1af9ba7bde7843ea04bb1df97f2ca7ef5bd2f4f777cac4bac517d2964"
+  },
+  "release": {
+    "module_path": "github.com/iasi777/v-memory",
+    "product": "MemAuthority",
+    "repository": "iasi777/memauthority",
+    "tag": "v1.3.2",
+    "version": "1.3.2"
+  },
+  "schema_version": 1,
+  "source_binding": {
+    "commit": "2601df60c02d90cc073c01022f37f1225741469b",
+    "commit_subject": "release: finalize MemAuthority v1.3.2 source baseline",
+    "tree": "ee66475c4d03de9c92112d69b74397afb810f684"
+  },
+  "status": "PUBLIC_V1_3_2_FROZEN"
+}
