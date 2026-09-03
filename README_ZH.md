@@ -277,7 +277,7 @@ Git 负责忠实记录 Authority 的完整演变历史，随时可以追溯记�
 MemAuthority 依赖 Git，并要求 Go 1.26.5 或更高版本。安装当前稳定版本：
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.1
+go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.2
 ```
 
 v1.x 的 Go module identity 为了兼容性继续保持 `github.com/iasi777/v-memory`，即使 canonical repository 和产品名已经变为 MemAuthority。GitHub 会把旧仓库地址重定向到 `iasi777/memauthority`
@@ -291,13 +291,13 @@ memauthority version
 预期输出：
 
 ```text
-memauthority 1.3.1
+memauthority 1.3.2
 ```
 
 已有自动化可以继续安装并调用兼容命令：
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.1
+go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.2
 v-memory version
 ```
 
@@ -348,7 +348,7 @@ memauthority serve \
 
 [`AGENT-GUIDE.md`](docs/AGENT-GUIDE_ZH.md) 补充了跨工具维度的使用原则（如按需召回、保守记录、角色选择与旧库迁移等）
 
-如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.3.1 Transport / Auth 规范
+如需通过 HTTP 远程接入，请务必先查阅 [`SECURITY_ZH.md`](SECURITY_ZH.md) 以及冻结的 v1.3.2 Transport / Auth 规范
 
 ---
 
@@ -382,9 +382,9 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ## 公共契约
 
-当前公共兼容性基线为 **v1.3.1**；此前已经发布的历史契约快照保持不变
+当前公共兼容性基线为 **v1.3.2**；此前已经发布的历史契约快照保持不变
 
-Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) 下
+Vault 存储格式、MCP 工具、Managed 运行时行为、变更/拒绝规则、安全边界、Transport / Auth 行为以及兼容策略的权威定义，统一维护在 [`docs/contract/v1.3.2/`](docs/contract/v1.3.2/) 下
 
 *本 README 与其他用户文档用于辅助理解；细节不一致时，以对应版本的公共契约为准*
 
@@ -396,7 +396,7 @@ memauthority --version
 ```
 **AI Agent Memory**、**Long-Term Memory**、**MCP Memory Server**、**Git-backed Memory**、**Agent Memory Infrastructure**、**Agent Continuity**
 
-v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory 1.3.1`
+v1.3.2 中，主命令输出 `memauthority 1.3.2`；兼容命令输出 `v-memory 1.3.2`
 
 ## Security
 
@@ -414,7 +414,7 @@ v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory
 - [`docs/FAQ_ZH.md`](docs/FAQ_ZH.md) — 常见问题、设计边界与取舍考量
 - [`examples/README_ZH.md`](examples/README_ZH.md) — 可运行的示例 Vault 与首次本地 MCP 会话
 - [`SECURITY_ZH.md`](SECURITY_ZH.md) — 安全支持范围、部署边界与私密报告入口
-- [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) — v1.3.1 版本化公共契约
+- [`docs/contract/v1.3.2/`](docs/contract/v1.3.2/) — v1.3.2 版本化公共契约
 
 ## 社区
 

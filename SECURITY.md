@@ -4,11 +4,11 @@
 
 ## Supported line
 
-The currently supported release is `v1.3.1` on the v1 compatibility line. Security fixes that preserve the frozen public surface use patch releases; incompatible security changes require a new major version.
+The currently supported release is `v1.3.2` on the v1 compatibility line. Security fixes that preserve the frozen public surface use patch releases; incompatible security changes require a new major version.
 
 ## Deployment safety
 
-When deploying, follow the current frozen [transport/auth](docs/contract/v1.3.1/transport-auth.md), [managed runtime](docs/contract/v1.3.1/managed-runtime.md), and [structured error](docs/contract/v1.3.1/structured-errors.md) contracts. Do not bypass loopback/authentication, clean-snapshot, fencing/CAS, state-containment, or fail-closed checks just to make a deployment start working.
+When deploying, follow the current frozen [transport/auth](docs/contract/v1.3.2/transport-auth.md), [managed runtime](docs/contract/v1.3.2/managed-runtime.md), and [structured error](docs/contract/v1.3.2/structured-errors.md) contracts. Do not bypass loopback/authentication, clean-snapshot, fencing/CAS, state-containment, or fail-closed checks just to make a deployment start working.
 
 ## Reporting
 

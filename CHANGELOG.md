@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.3.2
 
 - Prepare MemAuthority v1.3.2 as a compatibility-preserving packaging patch for the Official MCP Registry.
 - Add six native MCP Bundle (MCPB) targets for Windows, Linux, and macOS on x64/ARM64, with deterministic package hashes and validated `server.json` metadata.

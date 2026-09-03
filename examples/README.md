@@ -4,7 +4,7 @@
 
 This directory contains a sanitized, structurally valid sample Vault under [`sample-vault/`](sample-vault/). It demonstrates all four memory roles without runtime or production metadata.
 
-Exact behavior is defined by the current versioned public contract under [`../docs/contract/v1.3.1/`](../docs/contract/v1.3.1/).
+Exact behavior is defined by the current versioned public contract under [`../docs/contract/v1.3.2/`](../docs/contract/v1.3.2/).
 
 ## 1. Create a Temporary Demo Vault
 
@@ -68,4 +68,4 @@ The writable server should use the controlled mutation path, create a Git-backed
 - The sample contains no credentials or real production paths.
 - Do not use the sample as a substitute for curating your own project memory.
 - Do not edit Vault files directly while the Managed server is running.
-- For HTTP/OAuth exposure, read [`../SECURITY.md`](../SECURITY.md) and the current [transport/auth contract](../docs/contract/v1.3.1/transport-auth.md).
+- For HTTP/OAuth exposure, read [`../SECURITY.md`](../SECURITY.md) and the current [transport/auth contract](../docs/contract/v1.3.2/transport-auth.md).

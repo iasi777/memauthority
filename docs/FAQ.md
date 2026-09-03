@@ -4,7 +4,7 @@
 
 This FAQ covers the questions most likely to recur in day-to-day use.
 
-For exact APIs, schemas, security behavior, and compatibility rules, refer to the versioned public contract under [`contract/v1.3.1/`](contract/v1.3.1/).
+For exact APIs, schemas, security behavior, and compatibility rules, refer to the versioned public contract under [`contract/v1.3.2/`](contract/v1.3.2/).
 
 ---
 

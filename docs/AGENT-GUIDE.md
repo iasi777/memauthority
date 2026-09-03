@@ -3,7 +3,7 @@
 [中文](AGENT-GUIDE_ZH.md)
 
 > Purpose: operating guidance for agents using MemAuthority.
-> Exact tool schemas, Vault format, and refusal behavior are defined by the versioned public contract under [`contract/v1.3.1/`](contract/v1.3.1/).
+> Exact tool schemas, Vault format, and refusal behavior are defined by the versioned public contract under [`contract/v1.3.2/`](contract/v1.3.2/).
 
 This guide does not duplicate the full MCP schema. Once a Managed MCP connection is established, the agent already receives the current tool descriptions, input schemas, annotations, and resource metadata.
 

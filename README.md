@@ -276,7 +276,7 @@ Pruning an item from active memory does not erase it from Git history. However, 
 MemAuthority requires Git and Go 1.26.5 or later. Install the current stable release with:
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.1
+go install github.com/iasi777/v-memory/cmd/memauthority@v1.3.2
 ```
 
 The v1.x Go module identity intentionally remains `github.com/iasi777/v-memory` for compatibility even though the canonical repository and product name are now MemAuthority. GitHub redirects the former repository URL to `iasi777/memauthority`.
@@ -290,13 +290,13 @@ memauthority version
 Expected output:
 
 ```text
-memauthority 1.3.1
+memauthority 1.3.2
 ```
 
 Existing automation may continue installing and invoking the compatibility executable:
 
 ```sh
-go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.1
+go install github.com/iasi777/v-memory/cmd/v-memory@v1.3.2
 v-memory version
 ```
 
@@ -347,7 +347,7 @@ Once connected, MemAuthority automatically provides tool definitions, input sche
 
 See [`AGENT-GUIDE.md`](docs/AGENT-GUIDE.md) for cross-cutting usage guidelines (on-demand recall, conservative recording, role selection, and legacy migrations).
 
-If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) and the frozen v1.3.1 Transport / Auth specification first.
+If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) and the frozen v1.3.2 Transport / Auth specification first.
 
 ---
 
@@ -381,9 +381,9 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ## Public Contract
 
-The current public compatibility baseline is **v1.3.1**. Earlier released contract snapshots remain unchanged.
+The current public compatibility baseline is **v1.3.2**. Earlier released contract snapshots remain unchanged.
 
-Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/).
+Authoritative definitions of Vault storage formats, MCP tools, Managed runtime behavior, mutation/refusal rules, security boundaries, transport/authentication behavior, and compatibility policy are maintained under [`docs/contract/v1.3.2/`](docs/contract/v1.3.2/).
 
 *This README and the user guides are explanatory; the versioned contract is authoritative when details differ.*
 
@@ -396,7 +396,7 @@ memauthority --version
 
 **AI Agent Memory**, **Long-Term Memory**, **MCP Memory Server**, **Git-backed Memory**, **Agent Memory Infrastructure**, **Agent Continuity**
 
-For v1.3.1, the primary command prints `memauthority 1.3.1`; the compatibility command prints `v-memory 1.3.1`.
+For v1.3.2, the primary command prints `memauthority 1.3.2`; the compatibility command prints `v-memory 1.3.2`.
 
 ## Security
 
@@ -414,7 +414,7 @@ Before exposing the service over HTTP transport, make sure to read [`SECURITY.md
 - [`docs/FAQ.md`](docs/FAQ.md) — Frequently asked questions, design boundaries, and trade-offs
 - [`examples/README.md`](examples/README.md) — Runnable sample Vault and first local MCP session
 - [`SECURITY.md`](SECURITY.md) — Supported security line, deployment boundaries, and private reporting
-- [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) — Versioned v1.3.1 public contract
+- [`docs/contract/v1.3.2/`](docs/contract/v1.3.2/) — Versioned v1.3.2 public contract
 
 ## Community
 
