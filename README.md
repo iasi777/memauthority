@@ -416,6 +416,10 @@ Before exposing the service over HTTP transport, make sure to read [`SECURITY.md
 - [`SECURITY.md`](SECURITY.md) — Supported security line, deployment boundaries, and private reporting
 - [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) — Versioned v1.3.1 public contract
 
+## Community
+
+MemAuthority recognizes and supports the [LINUX DO](https://linux.do/) community.
+
 ## License
 
 Released under the Apache License 2.0. See [`LICENSE`](LICENSE) for details.

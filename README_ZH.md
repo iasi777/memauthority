@@ -416,6 +416,10 @@ v1.3.1 中，主命令输出 `memauthority 1.3.1`；兼容命令输出 `v-memory
 - [`SECURITY_ZH.md`](SECURITY_ZH.md) — 安全支持范围、部署边界与私密报告入口
 - [`docs/contract/v1.3.1/`](docs/contract/v1.3.1/) — v1.3.1 版本化公共契约
 
+## 社区
+
+MemAuthority 认可并支持 [LINUX DO](https://linux.do/) 社区。
+
 ## License
 
 本项目基于 Apache License 2.0 开源，详情请参阅 [`LICENSE`](LICENSE)
