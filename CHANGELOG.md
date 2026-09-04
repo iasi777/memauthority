@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Improve `memory_search` robustness for natural-language queries by adding a deterministic lexical-overlap fallback only when the existing exact FTS5 trigram phrase path returns no hits.
+- Preserve the existing exact-phrase and short-query substring paths; fallback results use the distinct `lexical_overlap` match type, exclude frontmatter-only rows, return at most 10 coordinates, and retain `truncated=true` when more matches exist. The tool's advertised "up to 50" remains the exact-path ceiling; lexical fallback intentionally uses the lower cap to encourage query refinement.
+- Normalize fallback matching with NFC and Unicode case folding, handle trailing connector punctuation without breaking version/path/tool identifiers, and rank CJK overlap by query-position coverage with scoped rarity weighting.
+- Keep semantic synonym expansion and query planning outside the retrieval engine; agents should search exact identifiers separately from broader conceptual questions.
+
 ## v1.3.2
 
 - Prepare MemAuthority v1.3.2 as a compatibility-preserving packaging patch for the Official MCP Registry.

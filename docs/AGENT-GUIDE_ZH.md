@@ -115,6 +115,8 @@ TODO 是 handoff 下精确 H2 `已知问题 / 待办` 中的顶层 checklist。
 - 只有明确探索跨项目经验时才使用 cross-project search；
 - 只有任务需要时才继续展开。
 
+Search query 应聚焦真正承载证据的词。如果问题把精确 identifier 和较长自然语言混在一起，先单独检索 identifier，仍需解释时再发起第二个概念查询。典型 identifier 包括 commit、version、port、path、issue ID、环境变量、tool name 和 function name。遇到 `truncated=true` 时，应缩小或拆分 query，而不是把全部返回坐标都当作 Context。
+
 > **Context first. Recall on demand.**
 
 ### Search results are coordinates, not context

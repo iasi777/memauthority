@@ -113,6 +113,8 @@ First decide whether the current context is already sufficient. If it is, do not
 - cross-project search only when the task explicitly needs cross-project experience;
 - expand further only when the task requires it.
 
+Keep search queries focused on evidence-bearing terms. If a question combines an exact identifier with broader prose, search the identifier separately, then issue a second conceptual query only if needed. Typical identifiers include commits, versions, ports, paths, issue IDs, environment variables, tool names, and function names. If `truncated=true`, narrow or decompose the query instead of treating all returned coordinates as context.
+
 > **Context first. Recall on demand.**
 
 ### Search Results Are Coordinates, Not Context

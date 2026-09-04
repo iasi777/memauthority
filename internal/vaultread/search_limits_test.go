@@ -51,4 +51,15 @@ func TestSearchReportsHardLimitTruncation(t *testing.T) {
 	if result["truncated"] != true {
 		t.Fatalf("truncated=%#v want true", result["truncated"])
 	}
+
+	fallback := svc.Search(SearchArgs{Query: "Where is slice5searchtoken recorded?", ProjectID: "demo"})
+	if fallback["status"] != "ok" || fallback["match_type"] != "lexical_overlap" {
+		t.Fatalf("fallback search: %#v", fallback)
+	}
+	if got := len(fallback["results"].([]map[string]any)); got != lexicalResultLimit {
+		t.Fatalf("fallback rows=%d want %d", got, lexicalResultLimit)
+	}
+	if fallback["truncated"] != true {
+		t.Fatalf("fallback truncated=%#v want true", fallback["truncated"])
+	}
 }

@@ -325,6 +325,14 @@ func splitIndexedSections(raw []byte, projectID, role, revision, sourceRevision 
 	return result
 }
 
+const (
+	searchResultLimit   = 50
+	searchFetchLimit    = searchResultLimit + 1
+	matchFTSTrigram     = "fts5_trigram"
+	matchShortSubstring = "like_short_query"
+	matchLexicalOverlap = "lexical_overlap"
+)
+
 func (s *Service) Search(args SearchArgs) map[string]any {
 	query := strings.TrimSpace(args.Query)
 	if query == "" {
@@ -341,18 +349,18 @@ func (s *Service) Search(args SearchArgs) map[string]any {
 	if s.projection == nil || s.projection.db == nil {
 		return searchError("index_unavailable", "read projection is not configured")
 	}
-	matchType := "fts5_trigram"
-	useFTS := utf8.RuneCountInString(query) >= 3
-	if !useFTS {
-		matchType = "like_short_query"
-	}
-	results, err := s.projection.search(query, args.ProjectID, args.CrossProject, useFTS, matchType)
+
+	results, matchType, err := s.projection.search(query, args.ProjectID, args.CrossProject)
 	if err != nil {
 		return searchError("search_failed", err.Error())
 	}
-	truncated := len(results) > 50
+	resultLimit := searchResultLimit
+	if matchType == matchLexicalOverlap {
+		resultLimit = lexicalResultLimit
+	}
+	truncated := len(results) > resultLimit
 	if truncated {
-		results = results[:50]
+		results = results[:resultLimit]
 	}
 	var project any = args.ProjectID
 	if args.CrossProject {
@@ -374,55 +382,79 @@ func searchError(code, message string) map[string]any {
 	}
 }
 
-func (p *projection) search(query, projectID string, crossProject, useFTS bool, matchType string) ([]map[string]any, error) {
-	var rows *sql.Rows
-	var err error
-	base := `SELECT s.project_id, s.role, s.heading, s.line_start, s.line_end, s.content, s.section_hash, s.resource_revision, s.resource_uri, s.source_revision
-             FROM sections s `
-	if useFTS {
-		phrase := `"` + strings.ReplaceAll(query, `"`, `""`) + `"`
-		base += `JOIN sections_fts f ON f.rowid=s.id WHERE sections_fts MATCH ?`
-		args := []any{phrase}
-		if !crossProject {
-			base += ` AND s.project_id=?`
-			args = append(args, projectID)
-		}
-		base += ` ORDER BY s.project_id, s.role, s.line_start LIMIT 51`
-		rows, err = p.db.Query(base, args...)
-	} else {
-		base += `WHERE instr(s.search_text, ?) > 0`
-		args := []any{query}
-		if !crossProject {
-			base += ` AND s.project_id=?`
-			args = append(args, projectID)
-		}
-		base += ` ORDER BY s.project_id, s.role, s.line_start LIMIT 51`
-		rows, err = p.db.Query(base, args...)
+func (p *projection) search(query, projectID string, crossProject bool) ([]map[string]any, string, error) {
+	if utf8.RuneCountInString(query) < 3 {
+		return p.searchIndexed(query, projectID, crossProject, false)
 	}
+
+	results, matchType, err := p.searchIndexed(query, projectID, crossProject, true)
+	if err != nil || len(results) > 0 {
+		return results, matchType, err
+	}
+	results, err = p.searchLexicalOverlap(query, projectID, crossProject)
+	return results, matchLexicalOverlap, err
+}
+
+func (p *projection) searchIndexed(query, projectID string, crossProject, useFTS bool) ([]map[string]any, string, error) {
+	var statement, matchType string
+	var args []any
+	if useFTS {
+		statement = `SELECT s.project_id, s.role, s.heading, s.line_start, s.line_end, s.content, s.section_hash, s.resource_revision, s.resource_uri, s.source_revision
+			FROM sections s JOIN sections_fts f ON f.rowid=s.id WHERE sections_fts MATCH ?`
+		args = append(args, `"`+strings.ReplaceAll(query, `"`, `""`)+`"`)
+		matchType = matchFTSTrigram
+	} else {
+		statement = `SELECT s.project_id, s.role, s.heading, s.line_start, s.line_end, s.content, s.section_hash, s.resource_revision, s.resource_uri, s.source_revision
+			FROM sections s WHERE instr(s.search_text, ?) > 0`
+		args = append(args, query)
+		matchType = matchShortSubstring
+	}
+	if !crossProject {
+		statement += ` AND s.project_id=?`
+		args = append(args, projectID)
+	}
+	statement += ` ORDER BY s.project_id, s.role, s.line_start LIMIT ?`
+	args = append(args, searchFetchLimit)
+	results, err := p.querySearchResults(statement, args, matchType)
+	return results, matchType, err
+}
+
+func (p *projection) querySearchResults(statement string, args []any, matchType string) ([]map[string]any, error) {
+	rows, err := p.db.Query(statement, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	results := make([]map[string]any, 0)
 	for rows.Next() {
-		var project, role, heading, content, sectionHash, revision, uri, source string
-		var lineStart, lineEnd int
-		if err := rows.Scan(&project, &role, &heading, &lineStart, &lineEnd, &content, &sectionHash, &revision, &uri, &source); err != nil {
+		var section indexedSection
+		if err := scanIndexedSection(rows, &section); err != nil {
 			return nil, err
 		}
-		results = append(results, map[string]any{
-			"project_id": project, "role": role, "heading": heading,
-			"line_start": lineStart, "line_end": lineEnd,
-			"snippet": projectionSnippet(content), "section_hash": sectionHash,
-			"resource_revision": revision, "content_hash": revision,
-			"resource_uri": uri, "source_revision": source,
-			"match_type": matchType,
-		})
+		results = append(results, searchResult(section, matchType))
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 	return results, nil
+}
+
+func scanIndexedSection(rows *sql.Rows, section *indexedSection) error {
+	return rows.Scan(
+		&section.ProjectID, &section.Role, &section.Heading, &section.LineStart, &section.LineEnd,
+		&section.Content, &section.SectionHash, &section.ResourceRevision, &section.ResourceURI, &section.SourceRevision,
+	)
+}
+
+func searchResult(section indexedSection, matchType string) map[string]any {
+	return map[string]any{
+		"project_id": section.ProjectID, "role": section.Role, "heading": section.Heading,
+		"line_start": section.LineStart, "line_end": section.LineEnd,
+		"snippet": projectionSnippet(section.Content), "section_hash": section.SectionHash,
+		"resource_revision": section.ResourceRevision, "content_hash": section.ResourceRevision,
+		"resource_uri": section.ResourceURI, "source_revision": section.SourceRevision,
+		"match_type": matchType,
+	}
 }
 
 func projectionSnippet(content string) string {
