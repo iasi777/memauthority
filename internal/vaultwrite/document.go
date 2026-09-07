@@ -12,6 +12,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/iasi777/v-memory/internal/checklist"
+	"github.com/iasi777/v-memory/internal/sectionpolicy"
 	"github.com/iasi777/v-memory/internal/vaultread"
 	"github.com/iasi777/v-memory/internal/vaultvalidate"
 )
@@ -23,7 +24,7 @@ type EvidenceInput struct {
 }
 
 type SectionUpdateInput struct {
-	Heading     string `json:"heading"`
+	Heading     string `json:"heading" jsonschema:"Exact existing H2 heading from memory_read.sections. Missing sections must first be explicitly inserted with memory_update_sections. 核验记录 requires memory_mark_verified."`
 	Replacement string `json:"replacement"`
 }
 
@@ -89,6 +90,7 @@ type documentMutationSpec struct {
 	DefaultRoleTitle   string
 	DuplicateBody      string
 	SyncLastVerified   bool
+	ResultMetadata     map[string]any
 }
 
 type renderFailure struct{ result map[string]any }
@@ -98,13 +100,10 @@ func (s *Service) UpdateHandoff(args UpdateHandoffArgs) map[string]any {
 	if len(args.SectionUpdates) == 0 {
 		return mutationError("validation_failed", "arguments", "section_updates must not be empty")
 	}
-	for i, update := range args.SectionUpdates {
+	for _, update := range args.SectionUpdates {
 		heading := normalizeHeading(update.Heading)
 		if heading == "" {
 			return mutationError("validation_failed", "arguments", "section update heading is required")
-		}
-		if heading == "核验记录" {
-			return protectedSectionResult(i, "replace", heading, nil)
 		}
 		if err := validateHandoffReplacement(update.Replacement); err != nil {
 			return mutationError("validation_failed", "section_content", err.Error())
@@ -119,11 +118,14 @@ func (s *Service) UpdateHandoff(args UpdateHandoffArgs) map[string]any {
 	}
 	return s.commitDocumentMutation(spec, func(raw []byte, _, date string) ([]byte, *renderFailure) {
 		text := string(raw)
-		for _, update := range args.SectionUpdates {
+		for i, update := range args.SectionUpdates {
+			if sectionpolicy.Protected("handoff", update.Heading) {
+				return nil, &renderFailure{protectedSectionResult(i, "replace", "核验记录", availableSectionNames(text, "handoff"))}
+			}
 			var err error
 			text, err = replaceH2Body(text, cleanHeading(update.Heading), update.Replacement)
 			if err != nil {
-				return nil, &renderFailure{mutationError("validation_failed", "section", err.Error())}
+				return nil, &renderFailure{sectionFailure("validation_failed", err.Error(), i, SectionOperationInput{Operation: "replace", Heading: update.Heading}, availableSectionNames(text, "handoff"))}
 			}
 		}
 		return []byte(updateFrontmatterDates(text, date, false)), nil
@@ -139,6 +141,7 @@ func (s *Service) UpdateSections(args UpdateSectionsArgs) map[string]any {
 	}
 	spec := documentMutationSpec{
 		Operation: "update_sections", ProjectID: args.ProjectID, Role: args.Role,
+		ResultMetadata:   map[string]any{},
 		ExpectedRevision: args.ExpectedResourceRevision, ClientKey: args.ClientIdempotencyKey,
 		Payload:       map[string]any{"operation": "update_sections", "project_id": args.ProjectID, "role": args.Role, "expected_resource_revision": args.ExpectedResourceRevision, "operations": args.Operations, "evidence": args.Evidence},
 		LegacyPayload: map[string]any{"expected_resource_revision": args.ExpectedResourceRevision, "operations": p5LegacySectionOperations(args.Operations), "evidence": p5LegacyEvidence(args.Evidence)},
@@ -147,6 +150,7 @@ func (s *Service) UpdateSections(args UpdateSectionsArgs) map[string]any {
 	return s.commitDocumentMutation(spec, func(raw []byte, _, date string) ([]byte, *renderFailure) {
 		text := string(raw)
 		available := availableSectionNames(text, args.Role)
+		removedChecklistItems := 0
 		if isChecklistOperation(args.Operations[0].Operation) {
 			mutations := make([]checklist.Mutation, 0, len(args.Operations))
 			for _, op := range args.Operations {
@@ -177,11 +181,14 @@ func (s *Service) UpdateSections(args UpdateSectionsArgs) map[string]any {
 		}
 		for i, op := range args.Operations {
 			heading := cleanHeading(op.Heading)
-			if args.Role == "handoff" && normalizeHeading(op.Heading) == "核验记录" {
+			if sectionpolicy.Protected(args.Role, op.Heading) {
 				return nil, &renderFailure{protectedSectionResult(i, op.Operation, "核验记录", available)}
 			}
 			if heading == "" || !operationAllowed(args.Role, op.Operation) {
 				return nil, &renderFailure{sectionFailure("validation_failed", "invalid section operation", i, op, available)}
+			}
+			if args.Role == "handoff" && op.Operation == "insert" && strings.ContainsAny(heading, "\r\n") {
+				return nil, &renderFailure{sectionFailure("validation_failed", "insert heading must be a single H2 title, without line breaks", i, op, available)}
 			}
 			if op.Operation != "delete" {
 				if op.Content == nil {
@@ -198,13 +205,34 @@ func (s *Service) UpdateSections(args UpdateSectionsArgs) map[string]any {
 			case "append":
 				text, err = appendH2Body(text, heading, valueOrEmpty(op.Content))
 			case "delete":
+				before := len(checklist.ParseHandoff([]byte(text), ""))
 				text, err = deleteH2Section(text, heading)
+				if err == nil && args.Role == "handoff" {
+					removedChecklistItems += before - len(checklist.ParseHandoff([]byte(text), ""))
+				}
 			case "insert":
-				text, err = insertH2Section(text, normalizeHeading(op.Heading), valueOrEmpty(op.Content))
+				if args.Role == "handoff" {
+					// New handoff titles are literal; the legacy lookup fallback
+					// must not confuse 待办 with 已知问题 / 待办.
+					for _, section := range sectionsH2(text) {
+						if section.heading == heading {
+							err = fmt.Errorf("section %q already exists", heading)
+							break
+						}
+					}
+					if err == nil {
+						text, err = insertH2AfterRoot(text, heading, valueOrEmpty(op.Content))
+					}
+				} else {
+					text, err = insertH2Section(text, normalizeHeading(op.Heading), valueOrEmpty(op.Content))
+				}
 			}
 			if err != nil {
 				return nil, &renderFailure{sectionFailure("validation_failed", err.Error(), i, op, available)}
 			}
+		}
+		if args.Role == "handoff" {
+			spec.ResultMetadata["removed_checklist_items"] = removedChecklistItems
 		}
 		return []byte(updateFrontmatterDates(text, date, false)), nil
 	})
@@ -381,6 +409,13 @@ func (s *Service) commitDocumentMutation(spec documentMutationSpec, render docum
 	}
 	candidateContent, failure := render(raw, payloadHash, effectiveDate)
 	if failure != nil {
+		failure.result["sections"] = sectionpolicy.Describe(string(raw), spec.Role)
+		failure.result["allowed_operations"] = sectionpolicy.Operations(spec.Role)
+		failure.result["current_revision"] = previousRevision
+		failure.result["section_creation_hint"] = sectionpolicy.CreationHint(spec.Role)
+		if failure.result["code"] == "section_protected" {
+			failure.result["dedicated_tool"] = "memory_mark_verified"
+		}
 		return failure.result
 	}
 	if !utf8.Valid(candidateContent) {
@@ -417,6 +452,9 @@ func (s *Service) commitDocumentMutation(spec documentMutationSpec, render docum
 		return mutationError("mutation_failed", "candidate", err.Error())
 	}
 	plannedResult := committedDocumentResult(spec, operationID, callerKeyHash, previousCommit, candidateCommit, previousRevision, newRevision, s.writeSource)
+	for key, value := range spec.ResultMetadata {
+		plannedResult[key] = value
+	}
 	journal := journalRecord{SchemaVersion: 2, OperationID: operationID, Operation: spec.Operation, ProjectID: spec.ProjectID, Role: spec.Role, State: "prepared", PreviousCommit: previousCommit, CandidateCommit: candidateCommit, RelativePath: relativePath, PayloadHash: payloadHash, CallerKeyHash: callerKeyHash, HasEntryMarker: spec.HasEntryMarker, Result: cloneMap(plannedResult)}
 	journalPath := filepath.Join(s.journalDir, operationID+".json")
 	if err := writeJSONDurable(journalPath, journal); err != nil {
@@ -722,16 +760,7 @@ func validMutationRole(role string) bool {
 }
 
 func operationAllowed(role, operation string) bool {
-	switch role {
-	case "handoff":
-		return operation == "replace" || operation == "append" || isChecklistOperation(operation)
-	case "progress", "pitfalls":
-		return operation == "replace" || operation == "delete"
-	case "rules":
-		return operation == "replace" || operation == "append" || operation == "insert" || operation == "delete"
-	default:
-		return false
-	}
+	return sectionpolicy.Allowed(role, operation)
 }
 
 func isChecklistOperation(operation string) bool {

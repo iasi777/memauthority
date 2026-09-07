@@ -20,6 +20,7 @@ import (
 	"github.com/iasi777/v-memory/internal/oauthserver"
 	"github.com/iasi777/v-memory/internal/pathguard"
 	"github.com/iasi777/v-memory/internal/runtimeview"
+	"github.com/iasi777/v-memory/internal/sectionpolicy"
 	"github.com/iasi777/v-memory/internal/vaultread"
 	"github.com/iasi777/v-memory/internal/vaultvalidate"
 	"github.com/iasi777/v-memory/internal/vaultwrite"
@@ -299,6 +300,22 @@ func statusAnnotations() *mcp.ToolAnnotations {
 	return &mcp.ToolAnnotations{ReadOnlyHint: true, DestructiveHint: boolPtr(false), OpenWorldHint: boolPtr(false)}
 }
 
+func updateSectionsInputSchema() *jsonschema.Schema {
+	schema, err := jsonschema.For[vaultwrite.UpdateSectionsArgs](nil)
+	if err != nil {
+		panic(err)
+	}
+	schema.Properties["role"].Enum = []any{"handoff", "rules", "progress", "pitfalls"}
+	operations := schema.Properties["operations"]
+	operations.Description = sectionpolicy.EditDescription
+	op := operations.Items.Properties["operation"]
+	op.Description = sectionpolicy.EditDescription
+	for _, operation := range sectionpolicy.Operations("handoff") {
+		op.Enum = append(op.Enum, operation)
+	}
+	return schema
+}
+
 func markVerifiedInputSchema() *jsonschema.Schema {
 	schema, err := jsonschema.For[vaultwrite.MarkVerifiedArgs](nil)
 	if err != nil {
@@ -436,7 +453,7 @@ func (a *App) newServer() *mcp.Server {
 			}
 			return nil, a.vault.Route(in.Query), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_read", Description: "Use this to read a known handoff, rules, progress, or pitfalls memory resource by URI, optionally by heading or line range. Prefer it directly when the resource URI is already known; it does not read runtime resources. Eligible handoff reads also return checklist_items for top-level todos under 已知问题 / 待办.", Annotations: titledAnnotations("Read memory resource", ro)},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_read", Description: "Use this to read a known handoff, rules, progress, or pitfalls memory resource by URI, optionally by heading or line range. Prefer it directly when the resource URI is already known; it does not read runtime resources. Returns resource-wide sections with exact mutation headings, allowed_operations, protected status and dedicated tools at the returned revision, plus section_creation_hint. Eligible handoff reads also return checklist_items for top-level todos under the optional exact heading 已知问题 / 待办. An empty list means no recorded checklist items, not proof that no work remains.", Annotations: titledAnnotations("Read memory resource", ro)},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultread.ReadArgs) (*mcp.CallToolResult, map[string]any, error) {
 			if in.URI == "" {
 				return nil, nil, fmt.Errorf("uri is required")
@@ -506,11 +523,11 @@ func (a *App) addMutationTools(s *mcp.Server) {
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.AppendProgressArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.AppendProgress(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_update_handoff", Description: "Use this for direct replacement of allowed canonical handoff sections with resource CAS. Prefer memory_update_sections when you need ordered append/insert/delete operations, checklist item changes, or edits outside the handoff role.", Annotations: titledAnnotations("Update handoff summary", mutationAnnotations(false, true))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_update_handoff", Description: "Use this for direct replacement of existing ordinary handoff sections with resource CAS. Keep current implementation, confirmed decisions and pending work distinct; progress is execution history and rules are long-term constraints. Copy exact headings from memory_read.sections. Missing sections are not created: use memory_update_sections insert. 核验记录 is protected: use memory_mark_verified. Prefer memory_update_sections for append/insert/delete operations, checklist item changes, or edits outside handoff. Successful relevant state maintenance does not require duplicating content in every role.", Annotations: titledAnnotations("Update handoff summary", mutationAnnotations(false, true))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.UpdateHandoffArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.UpdateHandoff(in) }), nil
 		})
-	mcp.AddTool(s, &mcp.Tool{Name: "memory_update_sections", Description: "Use this for ordered typed section edits across supported memory roles with resource CAS. H2 operations may replace, append, insert, or delete according to role; handoff also supports checklist_remove and checklist_set_checked using item_ref values returned by memory_read. Prefer memory_update_handoff for simple whole-section handoff replacement.", Annotations: titledAnnotations("Edit memory sections", mutationAnnotations(false, true))},
+	mcp.AddTool(s, &mcp.Tool{Name: "memory_update_sections", Description: "Use this for ordered section edits with resource CAS. " + sectionpolicy.EditDescription + " Copy existing headings and checklist item_ref values from memory_read. New handoff headings are literal, including slashes. The optional TODO heading is exactly 已知问题 / 待办, not an English translation. Deleting it removes its recorded items, not completes them; removed_checklist_items reports the count removed by H2 delete. Prefer memory_update_handoff for simple whole-section handoff replacement.", InputSchema: updateSectionsInputSchema(), Annotations: titledAnnotations("Edit memory sections", mutationAnnotations(false, true))},
 		func(_ context.Context, _ *mcp.CallToolRequest, in vaultwrite.UpdateSectionsArgs) (*mcp.CallToolResult, map[string]any, error) {
 			return nil, a.callAuthorityMutation(func(w *vaultwrite.Service) map[string]any { return w.UpdateSections(in) }), nil
 		})

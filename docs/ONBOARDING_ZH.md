@@ -204,9 +204,14 @@ memauthority init
   -> managed serve
 ```
 
-当前 v1 的 `memory_create_project` 只创建最小 handoff scaffold；managed handoff mutation 也不能任意插入新的 H2 section。
+`memory_create_project` 创建最小 handoff scaffold。普通 H2 栏目可以通过
+`memory_update_sections` 的 insert 在资源 CAS 保护下显式创建。后续 replace、
+append 或 delete 使用 `memory_read.sections` 返回的准确标题；受保护的核验记录
+仍然必须使用 `memory_mark_verified`。
 
-因此，丰富的首次 handoff 或大量旧库迁移使用 detached authoring 是明确的 v1 路径，不是临时绕过方案。
+可选结构化待办栏目使用精确标题 `已知问题 / 待办`。缺失或空栏目都是合法状态，
+表示没有记录的 checklist 条目。跨整个 Vault 的大型迁移仍可使用 detached authoring，
+但创建丰富 handoff 本身不要求进入 detached authoring。
 
 ### 4.7 后续增量迁移
 

@@ -79,9 +79,26 @@ Do not record every one-off error.
 
 ### TODO
 
-A TODO is a top-level checklist item under the canonical handoff H2 heading `Known Issues / TODO` (the literal heading used by the Vault format).
+A TODO is a top-level checklist item under the canonical handoff H2 heading `已知问题 / 待办` (the exact literal heading used by the Vault format). “Known Issues / TODO” is an English translation, not an accepted heading alias.
 
 It represents deferred intent, not deadline / owner / schedule management.
+
+This section is optional. A missing or empty section means no recorded checklist
+items, not a verified absence of pending work. Other handoff sections may describe
+pending work in prose, but only this exact heading projects structured TODOs.
+Use `memory_update_sections` with `insert` to create it explicitly when needed.
+Deleting the section removes its items from the current projection; deletion is
+not completion. The mutation returns `removed_checklist_items` for H2 deletions,
+and Git retains history. No empty placeholder checklist is required.
+
+`memory_read` returns resource-wide `sections` at the returned revision, including
+exact headings, allowed operations and protected-section routing. Ordinary
+handoff sections support explicit `insert`, `replace`, `append` and `delete`.
+Insert requires a new heading; the other operations require an existing heading.
+`核验记录` remains writable only through `memory_mark_verified`.
+Keep current implementation and confirmed pending changes distinct in handoff;
+use rules for long-term constraints and progress for execution history. Do not
+duplicate the same state across every role merely to finish a session.
 
 ### Write Maintainable Sections
 
@@ -370,9 +387,10 @@ memauthority init
 
 Do not edit files or Git directly while Managed runtime ownership is active.
 
-In current v1, `memory_create_project` creates only the minimal handoff scaffold, and Managed handoff operations cannot arbitrarily insert new H2 sections.
-
-Do not pretend a rich first import can be completed through a Managed insertion operation that does not exist.
+`memory_create_project` creates a minimal handoff scaffold. Add ordinary H2
+sections through explicit `memory_update_sections` insert operations with resource
+CAS. Rich handoff content can therefore be authored through Managed mutations;
+detached authoring remains an option for large Vault-wide migrations.
 
 ---
 

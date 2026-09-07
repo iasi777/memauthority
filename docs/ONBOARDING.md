@@ -205,9 +205,16 @@ memauthority init
   -> managed serve
 ```
 
-In current v1, `memory_create_project` creates only a minimal handoff scaffold, and Managed handoff mutations cannot insert arbitrary new H2 sections.
+`memory_create_project` creates a minimal handoff scaffold. Ordinary handoff H2
+sections can be explicitly created with `memory_update_sections` (`insert`) under
+resource CAS. Use exact headings from `memory_read.sections` for subsequent
+replace, append or delete operations. The verification section is protected and
+requires `memory_mark_verified`.
 
-For that reason, detached authoring is the intended v1 path for a rich first handoff or a large legacy migration, not a temporary workaround.
+The optional structured TODO section uses the literal heading `已知问题 / 待办`.
+An absent or empty section is valid and means no recorded checklist items.
+Detached authoring remains available for large Vault-wide migrations; it is not
+required merely to create a rich handoff.
 
 ### 4.7 Incremental Migration Later
 

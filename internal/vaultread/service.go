@@ -20,6 +20,7 @@ import (
 
 	"github.com/iasi777/v-memory/internal/checklist"
 	"github.com/iasi777/v-memory/internal/gitview"
+	"github.com/iasi777/v-memory/internal/sectionpolicy"
 	"github.com/iasi777/v-memory/internal/textcanon"
 	"gopkg.in/yaml.v3"
 )
@@ -398,6 +399,9 @@ func (s *Service) read(args ReadArgs) (map[string]any, error) {
 		"source_commit": sourceCommit, "line_start": lineStart, "line_end": lineEnd,
 		"truncated": truncated, "cursor": cursor, "last_updated": lastUpdated, "last_verified": lastVerified, "staleness": staleness,
 	}
+	result["sections"] = sectionpolicy.Describe(string(raw), role)
+	result["allowed_operations"] = sectionpolicy.Operations(role)
+	result["section_creation_hint"] = sectionpolicy.CreationHint(role)
 	if role == "handoff" && initialOffset == 0 && checklistSelectorEligible(state) {
 		result["checklist_items"] = checklist.ParseHandoff(raw, revision)
 	}

@@ -85,6 +85,19 @@ TODO 是 handoff 下精确 H2 `已知问题 / 待办` 中的顶层 checklist。
 
 它表示 deferred intent，不是 deadline / owner / schedule 管理。
 
+这个栏目是可选的。栏目缺失或为空表示没有记录的 checklist 条目，不证明没有
+待办工作。其他 handoff 栏目可以用自然语言记录 pending，但只有精确标题
+`已知问题 / 待办` 产生结构化投影；英文翻译 `Known Issues / TODO` 不是标题别名。
+需要时使用 `memory_update_sections` 的 `insert` 显式创建，不必填写占位 checklist。
+删除栏目会让条目退出当前投影，不表示完成；H2 删除结果中的
+`removed_checklist_items` 报告移除数量，Git 保留历史。
+
+`memory_read` 返回该 revision 下整个资源的 `sections`，包含准确标题、允许操作
+和保护区专用工具。普通 handoff 栏目支持 `insert / replace / append / delete`：
+insert 要求标题不存在，其余操作要求目标已经存在。核验记录仍然只通过
+`memory_mark_verified` 维护。handoff 应区分当前实现与已确认的 pending；rules
+保存长期约束，progress 保存执行历史。不必为了结束 session 而在每个 role 重复写入。
+
 ### 写出可维护的 section
 
 每个 section 应尽量只表达一个可以独立 Recall、独立过时、独立更新的主题。
@@ -380,9 +393,9 @@ memauthority init
 
 不要在 managed runtime ownership 活跃时并发直接编辑文件或 Git。
 
-当前 v1 `memory_create_project` 只创建最小 handoff，managed handoff operation 不能任意插入新 H2。
-
-不要假装丰富首次导入可以通过一个不存在的 managed insertion operation 完成。
+`memory_create_project` 创建最小 handoff。普通 H2 栏目可以通过
+`memory_update_sections` 的显式 insert 在资源 CAS 保护下创建，因此丰富 handoff
+也可以通过 Managed mutation 编写。跨整个 Vault 的大型迁移仍可使用 detached authoring。
 
 ---
 

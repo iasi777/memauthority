@@ -68,7 +68,7 @@ func TestToolTitlesAndPairwiseDescriptions(t *testing.T) {
 	assertDescriptionTerms(t, tools["memory_project_runtime"], "declarative runtime", "does not execute checks", "MemAuthority service", "live deployment health")
 	assertDescriptionTerms(t, tools["memory_status"], "MemAuthority service", "Authority workspace", "does not report a project's deployment")
 	assertDescriptionTerms(t, tools["memory_update_handoff"], "direct replacement", "Prefer memory_update_sections")
-	assertDescriptionTerms(t, tools["memory_update_sections"], "ordered typed section edits", "Prefer memory_update_handoff")
+	assertDescriptionTerms(t, tools["memory_update_sections"], "ordered section edits", "Prefer memory_update_handoff", "insert requires", "memory_mark_verified", "已知问题 / 待办")
 }
 
 func TestRuntimeUpdateSelectedToolContractUsesClosedValueTruth(t *testing.T) {

@@ -24,7 +24,7 @@ func TestCurrentRuntimeEnabledContractSnapshot(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.3.2/mcp-tools.json")
+	assertJSONSnapshotEqual(t, tools.Tools, "../../docs/contract/v1.4/mcp-tools.json")
 
 	templates, err := session.ListResourceTemplates(context.Background(), nil)
 	if err != nil {
@@ -35,6 +35,15 @@ func TestCurrentRuntimeEnabledContractSnapshot(t *testing.T) {
 
 func assertJSONSnapshotEqual(t *testing.T, current any, path string) {
 	t.Helper()
+	if os.Getenv("UPDATE_MCP_SNAPSHOT") == "1" && path == "../../docs/contract/v1.4/mcp-tools.json" {
+		raw, err := json.MarshalIndent(current, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, append(raw, '\n'), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
