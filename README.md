@@ -21,13 +21,13 @@ The agent still decides what the content means and whether it should change. Mem
 
 MemAuthority is designed for users who prioritize the **quality** of long-term memory.
 
-You may have experienced the lack of control with built-in platform memories:
+You may have experienced the lack of control with various memory tools:
 - Unclear *why* something was remembered;
 - Uncertain *when* it will be recalled;
 - Unable to verify whether information has become obsolete;
 - Left with no clean way to make precise edits or deletions.
 
-Or perhaps you have tried maintaining a `MEMORY.md` file, only to watch it grow bloated and messy over time — eventually confusing the agent rather than helping it.
+Or perhaps you have tried maintaining a memory store, only to watch it grow bloated and messy over time — eventually confusing the agent rather than helping it.
 
 MemAuthority is a good fit when:
 
@@ -73,13 +73,13 @@ In short:
 
 ## Everyday Workflow
 
-In an ideal workflow, MemAuthority stays quietly behind the scenes. You interact with the agent using natural, concise instructions:
+You interact with the agent using natural, concise instructions:
 
 ### 1. Retrieve on Demand at Task Start
-*Use only when the current session genuinely lacks project context:*
+*The agent decides whether to invoke memory based on actual task conditions, similar to `MEMORY.md`, or you can instruct the agent to read specific memories:*
 > **"Check this project's MemAuthority — pull in only what you need."**
 
-The agent should choose the shortest useful path: read directly when the location is known, search when it is not, and use `handoff` when it needs a quick overall project handoff. If the current conversation already contains enough context, there is no need to call MemAuthority at all.
+The agent chooses the shortest and most suitable retrieval path, as MemAuthority does not mandate a fixed retrieval method: read directly when the location is known, search when it is not, and use `handoff` when it needs a quick overall project handoff. If the current conversation already contains enough context, there is no need to call MemAuthority at all.
 
 ### 2. Curate What to Remember
 > **"List the takeaways from this task worth keeping long-term — I'll decide what to save."**
@@ -123,7 +123,7 @@ When you give an open-ended command like *"Record this task"*, the agent's defau
 - Duplicate facts already documented in the vault;
 - Transient, outdated, sensitive, or purely speculative content.
 
-Furthermore, an agent must never elevate something to a long-term `rules` entry simply because it "sounds important." Durable rules, handoff states, and pitfall lessons should be distilled progressively through real-world work.
+Meanwhile, an agent will not elevate something to a long-term `rules` entry simply because it "sounds important." Truly solid rules, handoff states, and pitfall lessons should be distilled progressively through real-world work.
 
 **System-level guardrails provided by MemAuthority:**
 - Enforces a standard schema for all written content;
@@ -134,7 +134,7 @@ Furthermore, an agent must never elevate something to a long-term `rules` entry 
 - Validates candidate vault integrity before committing writes;
 - Supports journaled transactions with crash recovery.
 
-The system's promise is not that "a low-quality note will never be written," but rather:
+The goal is not to "never produce a single low-quality note," but rather:
 
 > **The agent records conservatively, MemAuthority guarantees underlying state integrity, and ongoing real-world work continuously refines and prunes the memory.**
 
@@ -175,8 +175,6 @@ You can simply instruct your agent:
 > **"Read MemAuthority's memory specification first, then inspect this legacy memory file. Deduplicate, merge, update, and restructure anything worth keeping long-term. Remove anything outdated, repetitive, raw logs, ephemeral notes, or unfit for long-term storage. Propose a migration draft for my review before writing."**
 
 Migration is fundamentally **a curation decision**, not a mechanical copy-paste.
-
-Distilling a bloated 5,000-line legacy dump down to 500 lines of high-signal memory is often the hallmark of a successful migration.
 
 For initial onboarding or large-scale migration, the recommended v1 workflow is:
 
@@ -221,11 +219,9 @@ If not, it probably does not belong in long-term memory.
 
 ---
 
-## Why Not Dump All Memories into Context?
+## How to Prevent Unnecessary MemAuthority Memories from Entering Conversation Context?
 
-Because **remembering more does not mean reasoning better.**
-
-MemAuthority supports **Progressive Recall**, but the agent does not have to follow a fixed ritual:
+MemAuthority supports Progressive Recall, but does not require the agent to follow a fixed ritual:
 1. If the current conversation already has enough context, do not call MemAuthority at all;
 2. If the project is unclear, locate and confirm it first;
 3. If the exact URI or section is known, read it directly;
@@ -235,7 +231,7 @@ MemAuthority supports **Progressive Recall**, but the agent does not have to fol
 
 > **Search results are coordinates, not context.**
 
-The goal is simple: keep irrelevant memory out of the current context and let the agent decide how much evidence the task actually needs.
+The goal is simple: keep irrelevant memory out of the current conversation context, leaving the judgment of how much evidence is sufficient to the agent performing the task.
 
 ---
 
@@ -257,17 +253,13 @@ MemAuthority does not decide which subjective opinion is correct. Its responsibi
 
 ---
 
-## Active Memory Is Not an Archive
+## How to Avoid MemAuthority Growing Bloated
 
-Git faithfully records the complete evolution of the Authority for full auditability. Active Memory contains **only what remains valuable for future agents today**.
+Git faithfully records the complete evolution of the Authority so memory can be traced at any time, but agents do not read Git history in practical work; agents only read active memory, which can be revised freely while Git guarantees recoverability:
 
 - When rules change, update the rules in place;
 - When state evolves, update the handoff state;
-- When content becomes obsolete, prune it from active memory.
-
-> **History preserves evolution; memory maintains convergence.**
-
-Pruning an item from active memory does not erase it from Git history. However, truly sensitive secrets or ephemeral noise should be filtered out before they ever enter the vault.
+- When content becomes obsolete and no longer needs recall, delete it directly.
 
 ---
 
@@ -348,25 +340,6 @@ Once connected, MemAuthority automatically provides tool definitions, input sche
 See [`AGENT-GUIDE.md`](docs/AGENT-GUIDE.md) for cross-cutting usage guidelines (on-demand recall, conservative recording, role selection, and legacy migrations).
 
 If exposing via HTTP transport, be sure to review [`SECURITY.md`](SECURITY.md) and the frozen v1.3.2 Transport / Auth specification first.
-
----
-
-## What MemAuthority Is Not
-
-If your primary need falls into one of these categories, dedicated alternatives are a better fit:
-- **Fully automatic personal preference tracking**: Better served by built-in model/platform memory;
-- **Tiny, static, manual notes**: A simple `MEMORY.md` is fine;
-- **Full-text search across large technical docs**: Standard RAG / documentation search engines;
-- **Human-facing project documentation**: Dedicated READMEs, wikis, ADRs, or docs folders;
-- **Tracking schedules, assignees, deadlines, and dependencies**: Project management tools like Jira or Linear.
-
-MemAuthority is not a chat archiver, not an exhaustive knowledge base, and not a task tracker.
-
-Its single focus is preserving:
-
-> **Lessons and conclusions that future agents should never have to rediscover from scratch.**
-
----
 
 ## Building and Verification
 
