@@ -1,0 +1,42 @@
+{
+  "audit_date": "2026-09-08",
+  "auditor": "Claude Code (Opus 5)",
+  "methodology": "Comprehensive MCP log analysis of all mutation tool calls",
+  "error_definition": "JSON-RPC error envelope OR isError=true in tool result",
+  "total_mutation_attempts": 426,
+  "total_mutation_errors": 2,
+  "by_stack": {
+    "Codex CLI + GPT-5.6 Luna": {
+      "mutation_attempts": 138,
+      "mutation_errors": 0
+    },
+    "Codex CLI + GPT-5.6 Sol": {
+      "mutation_attempts": 136,
+      "mutation_errors": 0
+    },
+    "Pi Agent + Gemini 3.8 Flash": {
+      "mutation_attempts": 152,
+      "mutation_errors": 2
+    }
+  },
+  "error_instances": [
+    {
+      "run": "20260908T013817Z-handoff-pending-01-pi-gemini-3.8-flash-cd88c9",
+      "stage": "3",
+      "stack": "Pi Agent + Gemini 3.8 Flash",
+      "tool": "memory_mark_verified",
+      "error_type": "isError_true",
+      "error_code": null,
+      "error_message": "validating \"arguments\": validating root: unexpected additional properties [\"witness\"]"
+    },
+    {
+      "run": "20260908T013817Z-handoff-pending-01-pi-gemini-3.8-flash-cd88c9",
+      "stage": "3",
+      "stack": "Pi Agent + Gemini 3.8 Flash",
+      "tool": "memory_mark_verified",
+      "error_type": "isError_true",
+      "error_code": null,
+      "error_message": "validating \"arguments\": validating root: unexpected additional properties [\"witness\"]"
+    }
+  ]
+}

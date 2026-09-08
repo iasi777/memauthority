@@ -379,6 +379,38 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ---
 
+## Benchmark
+
+MemAuthority maintains a public, auditable benchmark suite that validates cross-session memory reliability under real agent workloads.
+
+### Latest Campaign: Mutation Usability Regression (2026-09-08)
+
+**handoff-pending-01** — Cross-session project handoff with pending work tracking
+
+| Metric | Result |
+|---|---:|
+| Total runs | 30/30 PASS |
+| Total sessions | 90/90 PASS |
+| **Mutation operations** | **426 total** |
+| **Mutation errors** | **2 (0.5%)** |
+| Human semantic review | 30/30 confirmed |
+| Independent audit | Claude Opus 5, HIGH confidence |
+
+**Tested Agent Stacks** (10 rounds each):
+- **Codex CLI + GPT-5.6 Sol**: 10/10 runs, **0/136 mutation errors** (0.0%)
+- **Codex CLI + GPT-5.6 Luna**: 10/10 runs, **0/138 mutation errors** (0.0%)
+- **Pi Agent + Gemini 3.8 Flash**: 10/10 runs, **2/152 mutation errors** (1.3%, both recovered)
+
+**Key finding**: All tested Agent Stacks successfully preserved and recovered project state across fully independent sessions. The corrected mutation error rate of **0.5% (2/426)** demonstrates high API usability.
+
+**Audit note**: Original report claimed 18/426 errors. Comprehensive MCP log analysis corrected this to 2/426. Both errors occurred in the same run, same tool, same validation issue. Agent recovered successfully. See audit documentation for methodology.
+
+📊 **Complete results**: [`benchmark/results/mutation-usability-regression/`](benchmark/results/mutation-usability-regression/)  
+📋 **Benchmark specifications**: [`benchmark/`](benchmark/) | [Full documentation](docs/BENCHMARK.md)  
+📦 **Evidence download**: [GitHub Releases](https://github.com/iasi777/memauthority/releases) (30 complete runs, all artifacts)
+
+---
+
 ## Public Contract
 
 The current public compatibility baseline is **v1.3.2**. Earlier released contract snapshots remain unchanged.

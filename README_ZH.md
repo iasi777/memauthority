@@ -380,6 +380,38 @@ go build -trimpath -o ./memauthority ./cmd/memauthority
 
 ---
 
+## Benchmark
+
+MemAuthority 维护公开、可审计的 benchmark suite，验证跨会话记忆在真实 Agent 工作负载下的可靠性。
+
+### 最新 Campaign：Mutation 可用性回归 (2026-09-08)
+
+**handoff-pending-01** — 跨会话项目交接与待办工作追踪
+
+| 指标 | 结果 |
+|---|---:|
+| 运行完成 | 30/30 通过 |
+| Session 完成 | 90/90 通过 |
+| **Mutation 操作总数** | **426** |
+| **Mutation 错误** | **2 (0.5%)** |
+| 人工语义审阅 | 30/30 确认 |
+| 独立审计 | Claude Opus 5，高置信度 |
+
+**测试的 Agent Stack**（各 10 轮）：
+- **Codex CLI + GPT-5.6 Sol**: 10/10 运行，**0/136 mutation 错误** (0.0%)
+- **Codex CLI + GPT-5.6 Luna**: 10/10 运行，**0/138 mutation 错误** (0.0%)
+- **Pi Agent + Gemini 3.8 Flash**: 10/10 运行，**2/152 mutation 错误** (1.3%，均已恢复)
+
+**关键发现**：所有测试的 Agent Stack 成功在完全独立的会话间保存和恢复项目状态。更正后的 mutation 错误率 **0.5% (2/426)** 展示了高 API 可用性。
+
+**审计说明**：原报告声称 18/426 错误。完整 MCP 日志分析更正为 2/426。两个错误发生在同一运行、同一工具、同一验证问题。Agent 成功恢复。详见审计文档方法论。
+
+📊 **完整结果**：[`benchmark/results/mutation-usability-regression/`](benchmark/results/mutation-usability-regression/)  
+📋 **Benchmark 规范**：[`benchmark/`](benchmark/) | [完整文档](docs/BENCHMARK.md)  
+📦 **证据下载**：[GitHub Releases](https://github.com/iasi777/memauthority/releases)（30 次完整运行，所有 artifact）
+
+---
+
 ## 公共契约
 
 当前公共兼容性基线为 **v1.3.2**；此前已经发布的历史契约快照保持不变

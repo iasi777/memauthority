@@ -1,0 +1,9 @@
+{
+  "source_path": "/home/tang/projects/memauthority/repo",
+  "source_sha256": "cbedde22b24baee1dba235ced23d89c1e8f88d2624e9bbf34807c2cd915f84de",
+  "source_file_count": 225,
+  "binary_path": "/tmp/memauthority-current",
+  "binary_sha256": "4b3958121927719644c547eac329dcd4e084bdab5ca63839ca88bc7823b36829",
+  "build_command": "go build -o /tmp/memauthority-current ./cmd/memauthority",
+  "note": "Fresh build after the later agent-guidance commit; this is separate from historical Agent runs."
+}

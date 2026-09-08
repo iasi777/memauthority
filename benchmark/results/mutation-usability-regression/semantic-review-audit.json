@@ -1,0 +1,769 @@
+{
+  "schema_version": 1,
+  "audit_metadata": {
+    "audit_date": "2026-09-08",
+    "auditor": "Claude Code (Opus 5)",
+    "auditor_model": "claude-opus-5",
+    "audit_type": "comprehensive_technical_review",
+    "methodology": "MCP log analysis + artifact inspection + semantic verification",
+    "coverage": "100% (30/30 runs, 90/90 sessions)",
+    "confidence": "high",
+    "companion_documents": [
+      "AUDIT_REPORT.md",
+      "SEMANTIC_REVIEW_CONFIRMATION.md",
+      "mutation_error_audit.json"
+    ]
+  },
+  "summary": {
+    "total_runs": 30,
+    "runs_passed": 30,
+    "runs_failed": 0,
+    "total_sessions": 90,
+    "sessions_passed": 90,
+    "sessions_failed": 0,
+    "pass_rate": 1.0
+  },
+  "mutation_errors": {
+    "definition": "JSON-RPC error OR isError=true in mutation tool result",
+    "total_attempts": 426,
+    "total_errors": 2,
+    "error_rate": 0.0047,
+    "by_stack": {
+      "Codex CLI + GPT-5.6 Sol": {
+        "attempts": 136,
+        "errors": 0
+      },
+      "Codex CLI + GPT-5.6 Luna": {
+        "attempts": 138,
+        "errors": 0
+      },
+      "Pi Agent + Gemini 3.8 Flash": {
+        "attempts": 152,
+        "errors": 2
+      }
+    },
+    "error_details": "See mutation_error_audit.json for complete error instance details"
+  },
+  "runs": {
+    "20260908T010504Z-handoff-pending-01-codex-gpt-5.6-luna-101d7e": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T010504Z-handoff-pending-01-codex-gpt-5.6-sol-772e93": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T010504Z-handoff-pending-01-pi-gemini-3.8-flash-c315f7": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T012556Z-handoff-pending-01-codex-gpt-5.6-luna-f558f6": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T012556Z-handoff-pending-01-codex-gpt-5.6-sol-548b38": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T012556Z-handoff-pending-01-pi-gemini-3.8-flash-2c2d86": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T013817Z-handoff-pending-01-codex-gpt-5.6-luna-3ea395": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T013817Z-handoff-pending-01-codex-gpt-5.6-sol-d09890": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T013817Z-handoff-pending-01-pi-gemini-3.8-flash-cd88c9": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T014922Z-handoff-pending-01-codex-gpt-5.6-luna-43bb45": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T014922Z-handoff-pending-01-codex-gpt-5.6-sol-45784c": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T014922Z-handoff-pending-01-pi-gemini-3.8-flash-9ad1bd": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T020427Z-handoff-pending-01-codex-gpt-5.6-luna-53b1ad": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T020427Z-handoff-pending-01-codex-gpt-5.6-sol-4c2866": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T020427Z-handoff-pending-01-pi-gemini-3.8-flash-be1363": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T021003Z-handoff-pending-01-codex-gpt-5.6-luna-367bb2": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T021335Z-handoff-pending-01-pi-gemini-3.8-flash-401e70": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T021413Z-handoff-pending-01-codex-gpt-5.6-sol-8f75a0": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T022729Z-handoff-pending-01-codex-gpt-5.6-luna-d7534b": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T022729Z-handoff-pending-01-codex-gpt-5.6-sol-955364": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T022729Z-handoff-pending-01-pi-gemini-3.8-flash-896eac": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T023758Z-handoff-pending-01-codex-gpt-5.6-sol-69184f": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T023759Z-handoff-pending-01-codex-gpt-5.6-luna-68ad52": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T023759Z-handoff-pending-01-pi-gemini-3.8-flash-957c92": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T024742Z-handoff-pending-01-codex-gpt-5.6-luna-37b1d2": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T024742Z-handoff-pending-01-codex-gpt-5.6-sol-61e635": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T024742Z-handoff-pending-01-pi-gemini-3.8-flash-8c8da6": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T025641Z-handoff-pending-01-codex-gpt-5.6-luna-02db3f": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T025641Z-handoff-pending-01-codex-gpt-5.6-sol-2a200b": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    },
+    "20260908T025641Z-handoff-pending-01-pi-gemini-3.8-flash-98e0be": {
+      "reviewer": "Benchmark owner human confirmation",
+      "human_confirmed": true,
+      "stages": {
+        "1": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "2": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        },
+        "3": {
+          "review_complete": true,
+          "criteria_not_met": [],
+          "failure_category": null,
+          "errors": []
+        }
+      }
+    }
+  }
+}
